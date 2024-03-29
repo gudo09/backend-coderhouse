@@ -1,13 +1,12 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-//creo el ripo Product con los datos necesarios
-const util_1 = require("util");
+//creo la clase ProductManager que es la que va a crear instancias
 class ProductManager {
+    //la llamada al constuctor genera un array vacio
     constructor() {
         this.id = 1;
         this.products = [];
     }
-    //creo el metodo addProduct que va a recibir un elemento del tipo Producty lo agrega al arreglo Products[]
+    //creo el metodo addProduct que va a recibir un elemento del tipo Product y lo agrega al arreglo Products[]
     //el metodo es de tipo void porque no retorna nada
     addProduct(product) {
         //le agrego un id al nuevo producto
@@ -16,7 +15,7 @@ class ProductManager {
         const duplicatedCode = this.products.some((product) => product.code === newProductWithId.code);
         //Si está diplicado muestro un mensaje por consola
         if (duplicatedCode) {
-            console.log(`\nEl código ${newProductWithId.code} ya existe en otro producto, no se pudo agregar el producto con el título ${(0, util_1.inspect)(newProductWithId.title, {})}`);
+            console.log(`\nEl código ${newProductWithId.code} ya existe en otro producto, no se pudo agregar el producto con el título '${newProductWithId.title}'`);
             return;
         }
         this.products.push(newProductWithId);
@@ -25,16 +24,30 @@ class ProductManager {
     }
     //el metodo es de tipo ProductWithId[] porque retorna un arreglo con los productos y su id
     getProducts() {
-        return this.products;
+        let result = "\n---------------------------\nListado de productos:\n---------------------------\n";
+        //recorro el array de productos y ejecuto el toString para cada producto
+        this.products.forEach((prod) => {
+            result += this.toString(prod);
+        });
+        return result + "\n---------------------------";
     }
     //el metodo es de tipo ProductWithId[] porque retorna un arreglo con los productos y su id
     getProductById(id) {
         const result = this.products.find((prod) => id === prod.id);
         if (result === undefined)
             return `\nNo se ha encontrado el producto con el ID ${id}`;
-        return `\nSe ha encontrado un producto con el id ${id}\n${JSON.stringify(result)}`;
+        return `\nSe ha encontrado un producto con el id ${id}:\n${this.toString(result)}`;
+    }
+    //metodo toString para imprimir cada producto
+    toString(prod) {
+        let result = "\n";
+        for (let propiedad in prod) {
+            result += `${propiedad}: ${prod[propiedad]}\n`;
+        }
+        return result;
     }
 }
+//probando el codigo
 const listadoProductos = new ProductManager();
 listadoProductos.addProduct({
     title: "Producto 1",

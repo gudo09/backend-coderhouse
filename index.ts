@@ -1,6 +1,4 @@
 //creo el ripo Product con los datos necesarios
-import { inspect } from "util";
-
 type Product = {
   title: string;
   description: string;
@@ -8,6 +6,7 @@ type Product = {
   thumbnail: string;
   code: string;
   stock: number;
+  [key: string]: any; // Índice de cadena para permitir propiedades adicionales
 };
 
 //creo el ripo ProductWithId con los datos del tipo Product mas un id
@@ -15,17 +14,20 @@ type ProductWithId = Product & {
   id: number;
 };
 
+//creo la clase ProductManager que es la que va a crear instancias
 class ProductManager {
   products: ProductWithId[];
   id: number = 1;
 
+  //la llamada al constuctor genera un array vacio
   constructor() {
     this.products = [];
   }
 
-  //creo el metodo addProduct que va a recibir un elemento del tipo Producty lo agrega al arreglo Products[]
+  //creo el metodo addProduct que va a recibir un elemento del tipo Product y lo agrega al arreglo Products[]
   //el metodo es de tipo void porque no retorna nada
   addProduct(product: Product): void {
+    
     //le agrego un id al nuevo producto
     const newProductWithId: ProductWithId = { id: this.id, ...product };
 
@@ -33,12 +35,11 @@ class ProductManager {
     const duplicatedCode: boolean = this.products.some(
       (product) => product.code === newProductWithId.code
     );
+
     //Si está diplicado muestro un mensaje por consola
     if (duplicatedCode) {
       console.log(
-        `\nEl código ${
-          newProductWithId.code
-        } ya existe en otro producto, no se pudo agregar el producto con el título ${inspect(newProductWithId.title,{})}`
+        `\nEl código ${newProductWithId.code} ya existe en otro producto, no se pudo agregar el producto con el título '${newProductWithId.title}'`
       );
       return;
     }
@@ -49,8 +50,13 @@ class ProductManager {
   }
 
   //el metodo es de tipo ProductWithId[] porque retorna un arreglo con los productos y su id
-  getProducts(): ProductWithId[] {
-    return this.products;
+  getProducts(): string {
+    let result: string = "\n---------------------------\nListado de productos:\n---------------------------\n";
+    //recorro el array de productos y ejecuto el toString para cada producto
+    this.products.forEach((prod: ProductWithId) => {
+      result += this.toString(prod);
+    });
+    return result+"\n---------------------------";
   }
 
   //el metodo es de tipo ProductWithId[] porque retorna un arreglo con los productos y su id
@@ -60,12 +66,20 @@ class ProductManager {
     );
     if (result === undefined)
       return `\nNo se ha encontrado el producto con el ID ${id}`;
-    return `\nSe ha encontrado un producto con el id ${id}\n${JSON.stringify(
-      result
-    )}`;
+    return `\nSe ha encontrado un producto con el id ${id}:\n${this.toString(result)}`;
+  }
+
+  //metodo toString para imprimir cada producto
+  toString(prod: ProductWithId): string {
+    let result: string = "\n";
+    for (let propiedad in prod) {
+      result += `${propiedad}: ${prod[propiedad]}\n`;
+    }
+    return result;
   }
 }
 
+//probando el codigo
 const listadoProductos = new ProductManager();
 
 listadoProductos.addProduct({
