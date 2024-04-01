@@ -6,10 +6,10 @@ type Product = {
   thumbnail: string;
   code: string;
   stock: number;
-  [key: string]: any; // Índice de cadena para permitir propiedades adicionales
+  [key: string]: any; // indice de cadena para permitir el acceso a propiedades adicionales
 };
 
-//creo el ripo ProductWithId con los datos del tipo Product mas un id
+//creo el tipo ProductWithId con los datos del tipo Product mas un id
 type ProductWithId = Product & {
   id: number;
 };
@@ -79,7 +79,7 @@ class ProductManager {
   }
 }
 
-//probando el codigo
+//------------------------------------------------------probando el codigo
 const listadoProductos = new ProductManager();
 
 listadoProductos.addProduct({
