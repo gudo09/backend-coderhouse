@@ -18,12 +18,15 @@ type ProductWithId = Product & {
 
 //creo la clase ProductManager que es la que va a crear instancias
 class ProductManager {
+  products: ProductWithId[];
   path: string = "";
   id: number = 1;
 
-  //la llamada al constuctor genera un array vacio
-  constructor() {
+  //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
+  constructor () {
+    this.products = [];
     this.path = "./src/products.json";
+    fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
   }
 
   //creo el metodo addProduct que va a recibir un elemento del tipo Product y lo agrega al products.json
@@ -32,11 +35,11 @@ class ProductManager {
     //le agrego un id al nuevo producto
     const newProductWithId: ProductWithId = { id: this.id, ...product };
 
-    //traigo todos los productos del json a un arreglo
-    const products: ProductWithId[] = await this.getProducts();
+    //actualizo el arreglo products de la clase
+    await this.updateArrayProducts();
 
     //Valido si la propiedad code se repite en algun otro producto
-    const duplicatedCode: boolean = products.some(
+    const duplicatedCode: boolean = this.products.some(
       (product) => product.code === newProductWithId.code
     );
 
@@ -48,9 +51,18 @@ class ProductManager {
       return;
     }
 
-    //Si no está repetido, lo agrego al arreglo y guardo el arreglo en el json
-    products.push(newProductWithId);
-    await fs.writeFile(this.path, JSON.stringify(products, null, 2));
+    if (this.products.length !== 0) {
+      //Valido el id del producto a agregar para que no se repita
+      let duplicatedId: boolean = true;
+      while (duplicatedId === true) {
+        duplicatedId = this.products.some((product) => product.id === this.id);
+        duplicatedId && this.id++;
+      }
+    }
+
+    //Si no está repetido, lo agrego al arreglo products y guardo en el archivo json
+    this.products.push(newProductWithId);
+    await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
 
     //aumento el id para el siguiente producto
     this.id++;
@@ -65,8 +77,8 @@ class ProductManager {
 
   //el metodo es de tipo Promise<string> porque retorna un mensaje por consola
   async getProductById(id: number): Promise<string> {
-    const products = await this.getProducts();
-    const result: ProductWithId | undefined = products.find(
+    await this.updateArrayProducts();
+    const result: ProductWithId | undefined = this.products.find(
       (prod: ProductWithId) => id === prod.id
     );
     if (result === undefined)
@@ -78,6 +90,25 @@ class ProductManager {
     //return JSON.stringify(result, null, 2);
   }
 
+  //el metodo deteleProduct recibe un id y elimila el producto con ese id
+  async deteleProduct(id: number): Promise<string> {
+    //busco si hay algun producto con el id a eliminar
+    const someProductId: boolean = this.products.some(
+      (prod: ProductWithId) => prod.id === id
+    );
+
+    //si no hay producto con el id buscado, devuelvo mensaje
+    if (!someProductId)
+      return `\nNo se ha encontrado producto con el id ${id} para eliminar.`;
+
+    //si hay producto con el id buscado, lo elimino del arreglo, actualizo el json y devuelvo mensaje
+    this.products = this.products.filter(
+      (prod: ProductWithId) => prod.id !== id
+    );
+    await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+    return `\nEl producto con el id ${id} se ha eliminado`;
+  }
+
   //metodo toString para imprimir cada producto
   toString(prod: ProductWithId): string {
     let result: string = "\n";
@@ -87,14 +118,18 @@ class ProductManager {
     return result;
   }
 
+  async updateArrayProducts(): Promise<void> {
+    this.products = await this.getProducts();
+  }
+
   //metodo para imprimir por consola todos los productos
   async printProducts() {
     try {
-      const products: ProductWithId[] = await this.getProducts();
+      await this.updateArrayProducts();
       let result: string =
         "\n---------------------------\nListado de productos:\n---------------------------\n";
       //recorro el array de productos y ejecuto el toString para cada producto
-      products.forEach((prod: ProductWithId) => {
+      this.products.forEach((prod: ProductWithId) => {
         result += this.toString(prod);
       });
       return result + "\n---------------------------";
@@ -148,5 +183,17 @@ const prueba = async () => {
 
   console.table(await listadoProductos.getProductById(2));
   console.table(await listadoProductos.getProductById(5));
+  console.log(await listadoProductos.deteleProduct(2));
+
+  await listadoProductos.addProduct({
+    title: "Producto 5",
+    description: "Este es el quinto producto",
+    price: 1500,
+    thumbnail: "productoC4.png",
+    code: "c5",
+    stock: 280,
+  });
+
+  console.log(await listadoProductos.printProducts());
 };
 prueba();

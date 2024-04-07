@@ -9,15 +9,6 @@
     "stock": 100
   },
   {
-    "id": 2,
-    "title": "Producto 2",
-    "description": "Este es el segundo producto",
-    "price": 2000,
-    "thumbnail": "productoC2.png",
-    "code": "c2",
-    "stock": 150
-  },
-  {
     "id": 3,
     "title": "Producto 4",
     "description": "Este es el cuarto producto",
@@ -25,5 +16,14 @@
     "thumbnail": "productoC4.png",
     "code": "c4",
     "stock": 180
+  },
+  {
+    "id": 4,
+    "title": "Producto 5",
+    "description": "Este es el quinto producto",
+    "price": 1500,
+    "thumbnail": "productoC4.png",
+    "code": "c5",
+    "stock": 280
   }
 ]
