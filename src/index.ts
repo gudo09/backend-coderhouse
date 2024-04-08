@@ -52,8 +52,8 @@ class ProductManager {
       return;
     }
 
+    //Valido que el id del producto a agregar para que no se repita y ajusto el incremento del id
     if (this.products.length !== 0) {
-      //Valido el id del producto a agregar para que no se repita
       let duplicatedId: boolean = true;
       while (duplicatedId === true) {
         duplicatedId = this.isSomeProductWith( "id", this.id);
@@ -61,9 +61,9 @@ class ProductManager {
       }
     }
 
-    //Si no está repetido, lo agrego al arreglo products y guardo en el archivo json
+    //Si no está repetido, lo agrego al arreglo products y actualizo el archivo json
     this.products.push(newProductWithId);
-    await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+    await this.updateJson();
 
     //aumento el id para el siguiente producto
     this.id++;
@@ -77,6 +77,7 @@ class ProductManager {
   }
 
   //el metodo es de tipo Promise<string> porque retorna un mensaje por consola
+  //recibe un id como parametro y devuelve un mensaje (ya sea que se haya encontrado o no)
   async getProductById(id: number): Promise<string> {
     await this.updateArrayProducts();
     const result: ProductWithId | undefined = this.products.find(
@@ -104,7 +105,9 @@ class ProductManager {
     this.products = this.products.filter(
       (prod: ProductWithId) => prod.id !== id
     );
-    await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+
+    //escribo el arreglo actualizado en el json
+    await this.updateJson();
     return `\nEl producto con el id ${id} se ha eliminado`;
   }
 
@@ -117,25 +120,34 @@ class ProductManager {
     return result;
   }
 
+  //updateProduct recube un id y un objeto de tipo Product para actualizar el producto con dicho id
   async updateProduct(id: number, updatedProduct: Product): Promise<string> {
     await this.updateArrayProducts()
+
+    //verifico si existe un producto con ese id en el arreglo de productos
     const existsProductWithId = this.isSomeProductWith("id", id)
 
+    //si no existe muestro un mensaje de que no se pudo actualizar
     if (!existsProductWithId) return `\nEl producto con el id ${id} no existe para actualizarse.` 
     
+
+    //elimino el producto con ese id del arreglo
     this.products = this.products.filter(
       (prod: ProductWithId) => prod.id !== id
     );
     
+    //agrego el producto actualizado con ese id al arreglo y actualizo el json
     this.products.push({ id: id, ...updatedProduct})
-    await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+    await this.updateJson();
     return `\nEl producto con el id ${id} ha sido actualizado`;
   }
 
+  //actualiza el array de productos con lo que hay en el json
   async updateArrayProducts(): Promise<void> {
     this.products = await this.getProducts();
   }
 
+  //metodo para buscar si hay algun producto con alguna propiedad y valor en especifico
   isSomeProductWith( propertyName: string, propertyValue: any,): boolean {
     return this.products.some(
       (product: ProductWithId) => propertyValue === product[propertyName]
@@ -156,6 +168,11 @@ class ProductManager {
     } catch (error) {
       return `Error: ${error}`;
     }
+  }
+
+  //metodo para actualizar el archivo json
+  async updateJson(): Promise<void> {
+    await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
   }
 }
 

@@ -1,5 +1,5 @@
 ##Aclaraciones para la entrega:
-  - El método getProducts está implementado dentro de la clase pero lo reutilizo en otras partes de mi código por lo que para imprimir por consola creé el método printProducts()
+  - El método getProducts está implementado dentro de la clase pero lo reutilizo en otras partes de mi código para actualizar el arreglo products por lo que para imprimir por consola creé el método printProducts()
 
 
 ###Scripts NPM:
