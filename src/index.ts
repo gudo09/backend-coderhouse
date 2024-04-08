@@ -23,7 +23,7 @@ class ProductManager {
   id: number = 1;
 
   //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
-  constructor () {
+  constructor() {
     this.products = [];
     this.path = "./src/products.json";
     fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
@@ -39,8 +39,9 @@ class ProductManager {
     await this.updateArrayProducts();
 
     //Valido si la propiedad code se repite en algun otro producto
-    const duplicatedCode: boolean = this.products.some(
-      (product) => product.code === newProductWithId.code
+    const duplicatedCode: boolean = this.isSomeProductWith(
+      "code",
+      newProductWithId.code
     );
 
     //Si está diplicado muestro un mensaje por consola y salgo del metodo
@@ -55,7 +56,7 @@ class ProductManager {
       //Valido el id del producto a agregar para que no se repita
       let duplicatedId: boolean = true;
       while (duplicatedId === true) {
-        duplicatedId = this.products.some((product) => product.id === this.id);
+        duplicatedId = this.isSomeProductWith( "id", this.id);
         duplicatedId && this.id++;
       }
     }
@@ -93,9 +94,7 @@ class ProductManager {
   //el metodo deteleProduct recibe un id y elimila el producto con ese id
   async deteleProduct(id: number): Promise<string> {
     //busco si hay algun producto con el id a eliminar
-    const someProductId: boolean = this.products.some(
-      (prod: ProductWithId) => prod.id === id
-    );
+    const someProductId: boolean = this.isSomeProductWith("id", id);
 
     //si no hay producto con el id buscado, devuelvo mensaje
     if (!someProductId)
@@ -118,8 +117,29 @@ class ProductManager {
     return result;
   }
 
+  async updateProduct(id: number, updatedProduct: Product): Promise<string> {
+    await this.updateArrayProducts()
+    const existsProductWithId = this.isSomeProductWith("id", id)
+
+    if (!existsProductWithId) return `\nEl producto con el id ${id} no existe para actualizarse.` 
+    
+    this.products = this.products.filter(
+      (prod: ProductWithId) => prod.id !== id
+    );
+    
+    this.products.push({ id: id, ...updatedProduct})
+    await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+    return `\nEl producto con el id ${id} ha sido actualizado`;
+  }
+
   async updateArrayProducts(): Promise<void> {
     this.products = await this.getProducts();
+  }
+
+  isSomeProductWith( propertyName: string, propertyValue: any,): boolean {
+    return this.products.some(
+      (product: ProductWithId) => propertyValue === product[propertyName]
+    );
   }
 
   //metodo para imprimir por consola todos los productos
@@ -193,6 +213,25 @@ const prueba = async () => {
     code: "c5",
     stock: 280,
   });
+
+  console.log(await listadoProductos.printProducts());
+  console.log(await listadoProductos.updateProduct(4,{
+    title: "Producto 4",
+    description: "Este es el cuarto producto PERO ESTÁ ACTUALIZADO",
+    price: 1400,
+    thumbnail: "productoC4.png",
+    code: "c4",
+    stock: 180,
+  }))
+
+  console.log(await listadoProductos.updateProduct(6,{
+    title: "Producto 4",
+    description: "Este es el cuarto producto PERO ESTÁ ACTUALIZADO",
+    price: 1400,
+    thumbnail: "productoC4.png",
+    code: "c4",
+    stock: 180,
+  }))
 
   console.log(await listadoProductos.printProducts());
 };

@@ -19,11 +19,11 @@
   },
   {
     "id": 4,
-    "title": "Producto 5",
-    "description": "Este es el quinto producto",
-    "price": 1500,
+    "title": "Producto 4",
+    "description": "Este es el cuarto producto PERO ESTÁ ACTUALIZADO",
+    "price": 1400,
     "thumbnail": "productoC4.png",
-    "code": "c5",
-    "stock": 280
+    "code": "c4",
+    "stock": 180
   }
 ]
