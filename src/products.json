@@ -9,21 +9,21 @@
     "stock": 100
   },
   {
-    "id": 3,
+    "id": 2,
     "title": "Producto 4",
-    "description": "Este es el cuarto producto",
-    "price": 1400,
-    "thumbnail": "productoC4.png",
-    "code": "c4",
+    "description": "Este es el segundo producto",
+    "price": 2000,
+    "thumbnail": "productoC2.png",
+    "code": "c2",
     "stock": 180
   },
   {
-    "id": 4,
-    "title": "Producto 4",
-    "description": "Este es el cuarto producto PERO ESTÁ ACTUALIZADO",
-    "price": 1400,
-    "thumbnail": "productoC4.png",
-    "code": "c4",
-    "stock": 180
+    "id": 3,
+    "title": "Producto ",
+    "description": "Este es el tercero producto",
+    "price": 1200,
+    "thumbnail": "productoC3.png",
+    "code": "c3",
+    "stock": 150
   }
 ]

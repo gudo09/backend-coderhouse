@@ -21,11 +21,19 @@ class ProductManager {
   products: ProductWithId[];
   path: string = "";
   id: number = 1;
+  idPath: string = "";
+
+  // metodo que permite ejecutar funciones asincronas en el constructor
+  async init() {
+    this.id = await this.getId();
+  }
 
   //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
   constructor() {
     this.products = [];
     this.path = "./src/products.json";
+    this.idPath = "./src/id.txt";
+    this.init();
   }
 
   //creo el metodo addProduct que va a recibir un elemento del tipo Product y lo agrega al products.json
@@ -51,6 +59,7 @@ class ProductManager {
       return;
     }
 
+    /*
     //Valido que el id del producto a agregar para que no se repita y ajusto el incremento del id
     if (this.products.length !== 0) {
       let duplicatedId: boolean = true;
@@ -59,13 +68,14 @@ class ProductManager {
         duplicatedId && this.id++;
       }
     }
+    */
 
     //Si no está repetido, lo agrego al arreglo products y actualizo el archivo json
     this.products.push(newProductWithId);
     await this.updateJson();
 
     //aumento el id para el siguiente producto
-    this.id++;
+    this.setId();
   }
 
   //el metodo es de tipo Promise<ProductWithId[]> porque retorna una promesa de un arreglo con los productos y su respectivos id
@@ -170,6 +180,18 @@ class ProductManager {
   //metodo para actualizar el archivo json
   async updateJson(): Promise<void> {
     await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+  }
+
+  async getId(): Promise<number> {
+    //obtengo el id del archivo txt
+    const lastId: number = parseInt(await fs.readFile(this.idPath, "utf-8"));
+    return lastId;
+  }
+
+  async setId(): Promise<void> {
+    //incremento el id del array de products y lo guardo en el txt del id
+    this.id++;
+    await fs.writeFile(this.idPath, JSON.stringify(this.id));
   }
 }
 

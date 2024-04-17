@@ -3,8 +3,7 @@
 
 
 ### Scripts NPM:
-  - "dev": Lo uso para desarrollar directamente en Typescript con ts-node.
-  - "start": Ejecuta el archivo index.js ya compilado.
-  - "build": Compila el index.ts en el archivo index.js.
-  - "watch-js": Modo watcher para el index.js.
-  - "watch-ts": Modo watcher para el index.ts.
+  - "start": Hace un watch del archivo app.js ya compilado.
+  - "watch-js": Modo watch para todos los archivos .ts y los compila a .js en tiempo real.
+  - "build": Compila todos los archivos .ts en .js.
+  - "dev-tsnd": watch para desarrollar sólo en ts sin compilar a js

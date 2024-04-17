@@ -4,10 +4,17 @@ class ProductManager {
     products;
     path = "";
     id = 1;
+    idPath = "";
+    // metodo que permite ejecutar funciones asincronas en el constructor
+    async init() {
+        this.id = await this.getId();
+    }
     //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
     constructor() {
         this.products = [];
         this.path = "./src/products.json";
+        this.idPath = "./src/id.txt";
+        this.init();
     }
     //creo el metodo addProduct que va a recibir un elemento del tipo Product y lo agrega al products.json
     //el metodo es de tipo void porque no retorna nada
@@ -23,19 +30,21 @@ class ProductManager {
             console.log(`\nEl código ${newProductWithId.code} ya existe en otro producto, no se pudo agregar el producto con el título '${newProductWithId.title}'`);
             return;
         }
+        /*
         //Valido que el id del producto a agregar para que no se repita y ajusto el incremento del id
         if (this.products.length !== 0) {
-            let duplicatedId = true;
-            while (duplicatedId === true) {
-                duplicatedId = this.isSomeProductWith("id", this.id);
-                duplicatedId && this.id++;
-            }
+          let duplicatedId: boolean = true;
+          while (duplicatedId === true) {
+            duplicatedId = this.isSomeProductWith("id", this.id);
+            duplicatedId && this.id++;
+          }
         }
+        */
         //Si no está repetido, lo agrego al arreglo products y actualizo el archivo json
         this.products.push(newProductWithId);
         await this.updateJson();
         //aumento el id para el siguiente producto
-        this.id++;
+        this.setId();
     }
     //el metodo es de tipo Promise<ProductWithId[]> porque retorna una promesa de un arreglo con los productos y su respectivos id
     async getProducts(limit) {
@@ -115,6 +124,16 @@ class ProductManager {
     //metodo para actualizar el archivo json
     async updateJson() {
         await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+    }
+    async getId() {
+        //obtengo el id del archivo txt
+        const lastId = parseInt(await fs.readFile(this.idPath, "utf-8"));
+        return lastId;
+    }
+    async setId() {
+        //incremento el id del array de products y lo guardo en el txt del id
+        this.id++;
+        await fs.writeFile(this.idPath, JSON.stringify(this.id));
     }
 }
 export default ProductManager;
