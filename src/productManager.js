@@ -12,8 +12,8 @@ class ProductManager {
     //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
     constructor() {
         this.products = [];
-        this.path = "./src/products.json";
-        this.idPath = "./src/id.txt";
+        this.path = "src/products.json";
+        this.idPath = "src/id.txt";
         this.init();
     }
     //creo el metodo addProduct que va a recibir un elemento del tipo Product y lo agrega al products.json
