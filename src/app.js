@@ -2,20 +2,20 @@ import ProductManager from "./productManager.js";
 import express from "express";
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
 const manager = new ProductManager();
 //configuraciones de express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // el callback es async porque ejecuta metodos asincronos del product manager
-app.get("/products", async (req, res) => {
+app.get("/", async (req, res) => {
     //Valido si el limite es string y lo parseo con el operador + a number, en caso contrario le asigno 0
     const limit = req.query.limit;
     const limitNumber = typeof limit === "string" ? +limit : 0;
     const products = await manager.getProducts(limitNumber);
     res.status(200).send({ status: "OK", payload: products });
 });
-app.get("/products/:pid", async (req, res) => {
+app.get("/:pid", async (req, res) => {
     //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
     const id = req.params.pid;
     const idNumber = typeof id === "string" ? +id : 0;

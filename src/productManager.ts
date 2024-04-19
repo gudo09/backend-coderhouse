@@ -1,5 +1,12 @@
 import { promises as fs } from "fs";
 
+import { fileURLToPath } from 'url';
+import {dirname}  from "path";
+
+//obtengo la ruta absoluta de este archivo para leer de forma relativa al products.json
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 //creo el ripo Product con los datos necesarios
 type Product = {
   title: string;
@@ -31,8 +38,8 @@ class ProductManager {
   //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
   constructor() {
     this.products = [];
-    this.path = "src/products.json";
-    this.idPath = "src/id.txt";
+    this.path = `${__dirname}/products.json`;
+    this.idPath = `${__dirname}/id.txt`;
     this.init();
   }
 
