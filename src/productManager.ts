@@ -70,14 +70,14 @@ class ProductManager {
   //el metodo es de tipo Promise<ProductWithId[]> porque retorna una promesa de un arreglo con los productos y su respectivos id
   async getProducts(limit: number): Promise<ProductWithId[]> {
     const importProducts: string = await fs.readFile(this.path, "utf-8");
+    // si el json esta vacío le asigno un []
     const products: ProductWithId[] = importProducts
       ? JSON.parse(importProducts)
       : [];
     return limit === 0 ? products : products.slice(0, limit);
   }
 
-  //el metodo es de tipo Promise<string> porque retorna un mensaje por consola
-  //recibe un id como parametro y devuelve un mensaje (ya sea que se haya encontrado o no)
+  //recibe un id como parametro y devuelve el producto, o undefined si no lo encontró
   async getProductById(id: number): Promise<ProductWithId | undefined> {
     await this.updateArrayProducts();
     // busco el producto y lo devuelvo
