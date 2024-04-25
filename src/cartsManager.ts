@@ -1,26 +1,20 @@
 import { promises as fs } from "fs";
 
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 import { ProductWithId } from "./productManager.js";
 import config from "./config.js";
 
-//obtengo la ruta absoluta de este archivo para leer de forma relativa al products.json
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Defino una interfaz para Product
+// Defino una interfaz para Cart
 interface Cart {
   products: ProductWithId[];
   [key: string]: any; // índice de cadena para permitir el acceso a propiedades adicionales
 }
 
-// Defino una interfaz extendida para Product con un id
+// Defino una interfaz extendida para Cart con un id
 interface CartWithId extends Cart {
   id: number;
 }
 
-class cartsManager {
+class cartsManager  {
   carts: CartWithId[];
   path: string;
   id: number = 1;
@@ -119,34 +113,27 @@ class cartsManager {
   }
 
   async addProductToCart(productId: number, cartId: number) {
-    const cartToModify = await this.getCartById(cartId);
-    //console.log(cartToModify)
-    let updatedProducts: [] = [];
+    // uso map para recorrer el carrito y actualizarlo
+    this.carts.map(cart => {
+      //busco el carrito con el id en cuestion
+      if (cart.id === cartId) {
+        // busco si existe el producto con el id en cuestion
+        const findProduct = cart.products.find((product)=> product.id === productId);
+        
+        findProduct
+          //si lo encuentro y su quantity es undefined, lo igualo a 0 y le sumo 1
+          ? findProduct.quantity = (findProduct.quantity|| 0) + 1   
+          // si no lo encuentro lo agrego al arreglo de productos
+          : cart.products.push({id: productId, quantity: 1})
+      }else{
+        //si no es el carrito que busco, lo retorno tal como está
+        return cart
+      }
 
-    const isInCart = cartToModify.products.find(
-      (prod) => prod.id === productId
-    );
+    })
+    //console.log(JSON.stringify(this.carts, null,2))
 
-    if (!isInCart) {
-      cartToModify.products.push({
-        id: productId,
-        quantity: 1,
-      } as ProductWithId);
-      updatedProducts = cartToModify as unknown as [];
-    } else {
-      updatedProducts = cartToModify.products.map((prod: ProductWithId) => {
-        if (prod.id === productId) {
-          if (prod.quantity === undefined) prod.quantity = 0;
-          return { quantity: prod.quantity + 1, ...prod };
-        } else {
-          return prod;
-        }
-      }) as [];
-    }
-    //console.log(cartToModify)
-    this.carts = this.carts.filter((cart) => cart.id !== cartId);
-
-    this.carts.push(updatedProducts as unknown as CartWithId);
+    //this.carts.push(updatedProducts as unknown as CartWithId);
     this.updateJson();
   }
 }

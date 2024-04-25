@@ -1,10 +1,5 @@
 import { promises as fs } from "fs";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 import config from "./config.js";
-//obtengo la ruta absoluta de este archivo para leer de forma relativa al products.json
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 class cartsManager {
     carts;
     path;
@@ -81,32 +76,25 @@ class cartsManager {
         return result;
     }
     async addProductToCart(productId, cartId) {
-        const cartToModify = await this.getCartById(cartId);
-        //console.log(cartToModify)
-        let updatedProducts = [];
-        const isInCart = cartToModify.products.find((prod) => prod.id === productId);
-        if (!isInCart) {
-            cartToModify.products.push({
-                id: productId,
-                quantity: 1,
-            });
-            updatedProducts = cartToModify;
-        }
-        else {
-            updatedProducts = cartToModify.products.map((prod) => {
-                if (prod.id === productId) {
-                    if (prod.quantity === undefined)
-                        prod.quantity = 0;
-                    return { quantity: prod.quantity + 1, ...prod };
-                }
-                else {
-                    return prod;
-                }
-            });
-        }
-        //console.log(cartToModify)
-        this.carts = this.carts.filter((cart) => cart.id !== cartId);
-        this.carts.push(updatedProducts);
+        // uso map para recorrer el carrito y actualizarlo
+        this.carts.map(cart => {
+            //busco el carrito con el id en cuestion
+            if (cart.id === cartId) {
+                // busco si existe el producto con el id en cuestion
+                const findProduct = cart.products.find((product) => product.id === productId);
+                findProduct
+                    //si lo encuentro y su quantity es undefined, lo igualo a 0 y le sumo 1
+                    ? findProduct.quantity = (findProduct.quantity || 0) + 1
+                    // si no lo encuentro lo agrego al arreglo de productos
+                    : cart.products.push({ id: productId, quantity: 1 });
+            }
+            else {
+                //si no es el carrito que busco, lo retorno tal como está
+                return cart;
+            }
+        });
+        //console.log(JSON.stringify(this.carts, null,2))
+        //this.carts.push(updatedProducts as unknown as CartWithId);
         this.updateJson();
     }
 }
