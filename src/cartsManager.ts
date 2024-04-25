@@ -84,9 +84,12 @@ class cartsManager {
 
   //el metodo es de tipo Promise<ProductWithId[]> porque retorna una promesa de un arreglo con los productos y su respectivos id
   async getCarts(limit: number): Promise<CartWithId[]> {
-    const importCarts: string | undefined = await fs.readFile(this.path, "utf-8");
+    const importCarts: string | undefined = await fs.readFile(
+      this.path,
+      "utf-8"
+    );
     // si el json esta vacío lo creo con un []
-    const carts: CartWithId[] = importCarts ? JSON.parse(importCarts): [];
+    const carts: CartWithId[] = importCarts ? JSON.parse(importCarts) : [];
     return limit === 0 ? carts : carts.slice(0, limit);
   }
 
@@ -96,7 +99,7 @@ class cartsManager {
   }
 
   //metodo para buscar si hay algun producto con alguna propiedad y valor en especifico
-  async isSomeProductWith(
+  async isSomeCartWith(
     propertyName: string,
     propertyValue: any
   ): Promise<boolean> {
@@ -106,13 +109,45 @@ class cartsManager {
 
   //el metodo es de tipo Promise<string> porque retorna un mensaje por consola
   //recibe un id como parametro y devuelve un mensaje (ya sea que se haya encontrado o no)
-  async getCartById(id: number): Promise<CartWithId | undefined> {
+  async getCartById(id: number): Promise<CartWithId> {
     await this.updateArrayCarts();
     // busco el producto y lo devuelvo
-    const result: CartWithId | undefined = this.carts.find(
+    const result: CartWithId = this.carts.find(
       (cart: CartWithId) => id === cart.id
-    );
+    ) as CartWithId;
     return result;
+  }
+
+  async addProductToCart(productId: number, cartId: number) {
+    const cartToModify = await this.getCartById(cartId);
+    //console.log(cartToModify)
+    let updatedProducts: [] = [];
+
+    const isInCart = cartToModify.products.find(
+      (prod) => prod.id === productId
+    );
+
+    if (!isInCart) {
+      cartToModify.products.push({
+        id: productId,
+        quantity: 1,
+      } as ProductWithId);
+      updatedProducts = cartToModify as unknown as [];
+    } else {
+      updatedProducts = cartToModify.products.map((prod: ProductWithId) => {
+        if (prod.id === productId) {
+          if (prod.quantity === undefined) prod.quantity = 0;
+          return { quantity: prod.quantity + 1, ...prod };
+        } else {
+          return prod;
+        }
+      }) as [];
+    }
+    //console.log(cartToModify)
+    this.carts = this.carts.filter((cart) => cart.id !== cartId);
+
+    this.carts.push(updatedProducts as unknown as CartWithId);
+    this.updateJson();
   }
 }
 

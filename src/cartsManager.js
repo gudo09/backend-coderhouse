@@ -68,7 +68,7 @@ class cartsManager {
         this.carts = await this.getCarts(0);
     }
     //metodo para buscar si hay algun producto con alguna propiedad y valor en especifico
-    async isSomeProductWith(propertyName, propertyValue) {
+    async isSomeCartWith(propertyName, propertyValue) {
         await this.updateArrayCarts();
         return this.carts.some((cart) => propertyValue === cart[propertyName]);
     }
@@ -79,6 +79,35 @@ class cartsManager {
         // busco el producto y lo devuelvo
         const result = this.carts.find((cart) => id === cart.id);
         return result;
+    }
+    async addProductToCart(productId, cartId) {
+        const cartToModify = await this.getCartById(cartId);
+        //console.log(cartToModify)
+        let updatedProducts = [];
+        const isInCart = cartToModify.products.find((prod) => prod.id === productId);
+        if (!isInCart) {
+            cartToModify.products.push({
+                id: productId,
+                quantity: 1,
+            });
+            updatedProducts = cartToModify;
+        }
+        else {
+            updatedProducts = cartToModify.products.map((prod) => {
+                if (prod.id === productId) {
+                    if (prod.quantity === undefined)
+                        prod.quantity = 0;
+                    return { quantity: prod.quantity + 1, ...prod };
+                }
+                else {
+                    return prod;
+                }
+            });
+        }
+        //console.log(cartToModify)
+        this.carts = this.carts.filter((cart) => cart.id !== cartId);
+        this.carts.push(updatedProducts);
+        this.updateJson();
     }
 }
 export default cartsManager;

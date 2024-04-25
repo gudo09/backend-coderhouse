@@ -51,5 +51,16 @@
     "stock": 750,
     "status": true,
     "category": "categoria4"
+  },
+  {
+    "id": 999,
+    "title": "Producto 4",
+    "description": "Este es el producto n° 4",
+    "price": 6400,
+    "thumbnail": ["/img/productoC4_1.png", "/img/productoC4_2.png", "/img/productoC4_3.png", "/img/productoC4_4.png"],
+    "code": "c4",
+    "stock": 750,
+    "status": true,
+    "category": "categoria4"
   }
 ]

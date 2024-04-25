@@ -3,14 +3,15 @@ import config from "./config.js";
 
 // Defino una interfaz para Product
 interface Product {
-  title: string;
-  description: string;
-  price: number;
-  thumbnail: string[]; // Cambiado a un arreglo de strings
-  status: boolean;
-  code: string;
-  stock: number;
-  category: string;
+  title?: string;
+  description?: string;
+  price?: number;
+  thumbnail?: string[]; // Cambiado a un arreglo de strings
+  status?: boolean;
+  code?: string;
+  stock?: number;
+  category?: string;
+  quantity?: number;
   [key: string]: any; // índice de cadena para permitir el acceso a propiedades adicionales
 }
 

@@ -4,6 +4,32 @@ import { manager as productManager } from "./products.routes.js";
 const router = Router();
 const manager = new cartsManager();
 // middleware para validar el id
+const validateIdCart = async (req, res, next) => {
+    //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
+    const id = req.params.cid;
+    const idNumber = typeof id === "string" ? +id : 0;
+    // verifico que el id sea positivo y mayor que 0
+    if (idNumber <= 0 || isNaN(idNumber)) {
+        res.status(400).send({
+            status: "ERROR",
+            payload: {},
+            error: "Se requiere un valor positivo y mayor que 0 en el id del carrito.",
+        });
+        return;
+    }
+    // verifico si existe el producto con ese id
+    const existsId = await manager.isSomeCartWith("id", idNumber);
+    if (!existsId) {
+        res.status(400).send({
+            status: "ERROR",
+            payload: {},
+            error: `No existe un carrito con el id ${idNumber}.`,
+        });
+        return;
+    }
+    next();
+};
+// middleware para validar el id
 const validateIdProduct = async (req, res, next) => {
     //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
     const id = req.params.pid;
@@ -24,32 +50,6 @@ const validateIdProduct = async (req, res, next) => {
             status: "ERROR",
             payload: {},
             error: `No existe un producto con el id ${idNumber}.`,
-        });
-        return;
-    }
-    next();
-};
-// middleware para validar el id
-const validateIdCart = async (req, res, next) => {
-    //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
-    const id = req.params.cid;
-    const idNumber = typeof id === "string" ? +id : 0;
-    // verifico que el id sea positivo y mayor que 0
-    if (idNumber <= 0 || isNaN(idNumber)) {
-        res.status(400).send({
-            status: "ERROR",
-            payload: {},
-            error: "Se requiere un valor positivo y mayor que 0 en el id del carrito.",
-        });
-        return;
-    }
-    // verifico si existe el producto con ese id
-    const existsId = await manager.isSomeProductWith("id", idNumber);
-    if (!existsId) {
-        res.status(400).send({
-            status: "ERROR",
-            payload: {},
-            error: `No existe un carrito con el id ${idNumber}.`,
         });
         return;
     }
@@ -86,5 +86,10 @@ router.post("/:cid/product/:pid", validateIdCart, validateIdProduct, async (req,
     */
     const cartId = +req.params.cid;
     const productId = +req.params.pid;
+    await manager.addProductToCart(productId, cartId);
+    res.status(200).send({
+        status: "OK",
+        payload: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
+    });
 });
 export default router;
