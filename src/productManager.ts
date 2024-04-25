@@ -1,27 +1,23 @@
 import { promises as fs } from "fs";
+import config from "./config.js";
 
-import { fileURLToPath } from 'url';
-import {dirname}  from "path";
-
-//obtengo la ruta absoluta de este archivo para leer de forma relativa al products.json
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-//creo el ripo Product con los datos necesarios
-type Product = {
+// Defino una interfaz para Product
+interface Product {
   title: string;
   description: string;
   price: number;
-  thumbnail: string;
+  thumbnail: string[]; // Cambiado a un arreglo de strings
+  status: boolean;
   code: string;
   stock: number;
-  [key: string]: any; // indice de cadena para permitir el acceso a propiedades adicionales
-};
+  category: string;
+  [key: string]: any; // índice de cadena para permitir el acceso a propiedades adicionales
+}
 
-//creo el tipo ProductWithId con los datos del tipo Product mas un id
-type ProductWithId = Product & {
+// Defino una interfaz extendida para Product con un id
+export interface ProductWithId extends Product {
   id: number;
-};
+}
 
 //creo la clase ProductManager que es la que va a crear instancias
 class ProductManager {
@@ -38,8 +34,8 @@ class ProductManager {
   //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
   constructor() {
     this.products = [];
-    this.path = `${__dirname}/products.json`;
-    this.idPath = `${__dirname}/id.txt`;
+    this.path = `${config.DIRNAME}/products.json`;
+    this.idPath = `${config.DIRNAME}/ProductNextId.txt`;
     this.init();
   }
 
@@ -52,20 +48,6 @@ class ProductManager {
     //actualizo el arreglo products de la clase
     await this.updateArrayProducts();
 
-    //Valido si la propiedad code se repite en algun otro producto
-    const duplicatedCode: boolean = this.isSomeProductWith(
-      "code",
-      newProductWithId.code
-    );
-
-    //Si está diplicado muestro un mensaje por consola y salgo del metodo
-    if (duplicatedCode) {
-      console.log(
-        `\nEl código ${newProductWithId.code} ya existe en otro producto, no se pudo agregar el producto con el título '${newProductWithId.title}'`
-      );
-      return;
-    }
-
     /*
     //Valido que el id del producto a agregar para que no se repita y ajusto el incremento del id
     if (this.products.length !== 0) {
@@ -77,7 +59,6 @@ class ProductManager {
     }
     */
 
-    //Si no está repetido, lo agrego al arreglo products y actualizo el archivo json
     this.products.push(newProductWithId);
     await this.updateJson();
 
@@ -88,41 +69,51 @@ class ProductManager {
   //el metodo es de tipo Promise<ProductWithId[]> porque retorna una promesa de un arreglo con los productos y su respectivos id
   async getProducts(limit: number): Promise<ProductWithId[]> {
     const importProducts: string = await fs.readFile(this.path, "utf-8");
-    const products: ProductWithId[] = JSON.parse(importProducts);
+    const products: ProductWithId[] = importProducts
+      ? JSON.parse(importProducts)
+      : [];
     return limit === 0 ? products : products.slice(0, limit);
   }
 
   //el metodo es de tipo Promise<string> porque retorna un mensaje por consola
   //recibe un id como parametro y devuelve un mensaje (ya sea que se haya encontrado o no)
-  async getProductById(id: number): Promise<string | ProductWithId> {
+  async getProductById(id: number): Promise<ProductWithId | undefined> {
     await this.updateArrayProducts();
+    // busco el producto y lo devuelvo
     const result: ProductWithId | undefined = this.products.find(
       (prod: ProductWithId) => id === prod.id
     );
-    if (result === undefined)
-      return `\nNo se ha encontrado el producto con el ID ${id}`;
     return result;
-
-    //return JSON.stringify(result, null, 2);
   }
 
   //el metodo deteleProduct recibe un id y elimila el producto con ese id
   async deteleProduct(id: number): Promise<string> {
-    //busco si hay algun producto con el id a eliminar
-    const someProductId: boolean = this.isSomeProductWith("id", id);
-
-    //si no hay producto con el id buscado, devuelvo mensaje
-    if (!someProductId)
-      return `\nNo se ha encontrado producto con el id ${id} para eliminar.`;
-
-    //si hay producto con el id buscado, lo elimino del arreglo, actualizo el json y devuelvo mensaje
+    //elimino el producto del arreglo, actualizo el json y devuelvo mensaje
     this.products = this.products.filter(
       (prod: ProductWithId) => prod.id !== id
     );
 
     //escribo el arreglo actualizado en el json
     await this.updateJson();
-    return `\nEl producto con el id ${id} se ha eliminado`;
+    return `El producto con el id ${id} se ha eliminado`;
+  }
+
+  //updateProduct recube un id y un objeto de tipo Product para actualizar el producto con dicho id
+  async updateProduct(
+    id: number,
+    updatedProduct: Product
+  ): Promise<ProductWithId> {
+    await this.updateArrayProducts();
+
+    //elimino el producto con ese id del arreglo
+    this.products = this.products.filter(
+      (prod: ProductWithId) => prod.id !== id
+    );
+
+    //agrego el producto actualizado con ese id al arreglo y actualizo el json
+    this.products.push({ id: id, ...updatedProduct });
+    await this.updateJson();
+    return { id: id, ...updatedProduct };
   }
 
   //metodo toString para imprimir cada producto
@@ -134,35 +125,17 @@ class ProductManager {
     return result;
   }
 
-  //updateProduct recube un id y un objeto de tipo Product para actualizar el producto con dicho id
-  async updateProduct(id: number, updatedProduct: Product): Promise<string> {
-    await this.updateArrayProducts();
-
-    //verifico si existe un producto con ese id en el arreglo de productos
-    const existsProductWithId = this.isSomeProductWith("id", id);
-
-    //si no existe muestro un mensaje de que no se pudo actualizar
-    if (!existsProductWithId)
-      return `\nEl producto con el id ${id} no existe para actualizarse.`;
-
-    //elimino el producto con ese id del arreglo
-    this.products = this.products.filter(
-      (prod: ProductWithId) => prod.id !== id
-    );
-
-    //agrego el producto actualizado con ese id al arreglo y actualizo el json
-    this.products.push({ id: id, ...updatedProduct });
-    await this.updateJson();
-    return `\nEl producto con el id ${id} ha sido actualizado`;
-  }
-
   //actualiza el array de productos con lo que hay en el json
   async updateArrayProducts(): Promise<void> {
     this.products = await this.getProducts(0);
   }
 
   //metodo para buscar si hay algun producto con alguna propiedad y valor en especifico
-  isSomeProductWith(propertyName: string, propertyValue: any): boolean {
+  async isSomeProductWith(
+    propertyName: string,
+    propertyValue: any
+  ): Promise<boolean> {
+    await this.updateArrayProducts();
     return this.products.some(
       (product: ProductWithId) => propertyValue === product[propertyName]
     );

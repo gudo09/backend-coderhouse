@@ -15,11 +15,15 @@ Resumen entrega 1 proyecto final:
 
 ✅ Agregar config json y urlencoded.
 
-- Colocar rutas en archivos separados, utilizando Router.
+✅ Colocar rutas en archivos separados, utilizando Router.
 
-- archivo rutas productos (products.routes.js).
+✅ archivo rutas productos (products.routes.js).
 
-- archivo rutas carritos (carts.routes.js).
+✅ archivo rutas carritos (carts.routes.js).
+
+
+
+
 
 products.routes.js (5 endpoints):
 
@@ -29,27 +33,31 @@ products.routes.js (5 endpoints):
 
 ✅ GET /:pid -> retornar solo el producto que coincide con pid.
 
-- POST / -> agregar un nuevo producto con los datos del req.body.
+✅ POST / -> agregar un nuevo producto con los datos del req.body.
 
-- id debe autogenerarse sin repetirse (usar contador, no hace falta más).
+✅ id debe autogenerarse sin repetirse (usar contador, no hace falta más).
 
-- thumbnails: array con nombres de archivos de fotos del producto.
+✅ thumbnails: array con nombres de archivos de fotos del producto.
 
-- todos obligatorios excepto thumbnails, es decir que el uso de Multer es OPCIONAL en este caso.
+⚠ todos obligatorios excepto thumbnails, es decir que el uso de Multer es OPCIONAL en este caso.
 
-- PUT /:pid -> editar producto con id pid, según datos en el req.body.
+✅ PUT /:pid -> editar producto con id pid, según datos en el req.body.
 
-- nunca modificar id.
+✅ nunca modificar id.
 
-- DELETE /:pid -> borrar producto con id pid.
+✅ DELETE /:pid -> borrar producto con id pid.
+
+
+
+
 
 carts.routes.js (3 endpoints):
 
-- GET /:cid -> retornar listado de productos del carrito con id cid.
+✅ GET /:cid -> retornar listado de productos del carrito con id cid.
 
-- POST / -> crear carrito nuevo.
+✅ POST / -> crear carrito nuevo.
 
-- id autogenerado.
+✅ id autogenerado.
 
 - products: array vacío.
 
@@ -59,12 +67,16 @@ carts.routes.js (3 endpoints):
 
 - verificar si el id de producto ya está en el array products, en ese caso sumarle 1.
 
+
+
+
+
 Generales:
 
-- Crear archivos products.json y carts.json con algunos datos random para prueba (no hacen falta muchos, solo algunos para testear).
+✅ Crear archivos products.json y carts.json con algunos datos random para prueba (no hacen falta muchos, solo algunos para testear).
 
-- Cargar arrays desde archivos.
+✅ Cargar arrays desde archivos.
 
-- Procesar sobre los arrays en los endpoins, luego actualizan archivos con contenidos de arrays.
+✅ Procesar sobre los arrays en los endpoins, luego actualizan archivos con contenidos de arrays.
 
 ✅ Publicar a repo Github SIN node_modules (agregar node_modules/ a archivo .gitignore).

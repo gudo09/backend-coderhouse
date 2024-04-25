@@ -1,29 +1,55 @@
 [
   {
-    "id": 1,
+    "id": 8,
     "title": "Producto 1",
-    "description": "Este es el primer producto",
-    "price": 1000,
-    "thumbnail": "productoC1.png",
+    "description": "Este es el producto n° 1",
+    "price": 3200,
+    "thumbnail": [
+      "/img/productoC1_1.png"
+    ],
     "code": "c1",
-    "stock": 100
+    "stock": 241,
+    "status": true,
+    "category": "categoria1"
   },
   {
-    "id": 2,
-    "title": "Producto 4",
-    "description": "Este es el segundo producto",
-    "price": 2000,
-    "thumbnail": "productoC2.png",
+    "id": 9,
+    "title": "Producto 2",
+    "description": "Este es el producto n° 2",
+    "price": 8400,
+    "thumbnail": [
+      "/img/productoC2_1.png",
+      "/img/productoC2_2.png"
+    ],
     "code": "c2",
-    "stock": 180
+    "stock": 802,
+    "status": true,
+    "category": "categoria2"
   },
   {
-    "id": 3,
-    "title": "Producto ",
-    "description": "Este es el tercero producto",
-    "price": 1200,
-    "thumbnail": "productoC3.png",
+    "id": 10,
+    "title": "Producto 3",
+    "description": "Este es el producto n° 3",
+    "price": 5600,
+    "thumbnail": [
+      "/img/productoC3_1.png",
+      "/img/productoC3_2.png",
+      "/img/productoC3_3.png"
+    ],
     "code": "c3",
-    "stock": 150
+    "stock": 490,
+    "status": true,
+    "category": "categoria3"
+  },
+  {
+    "id": 11,
+    "title": "Producto 4",
+    "description": "Este es el producto n° 4",
+    "price": 6400,
+    "thumbnail": ["/img/productoC4_1.png", "/img/productoC4_2.png", "/img/productoC4_3.png", "/img/productoC4_4.png"],
+    "code": "c4",
+    "stock": 750,
+    "status": true,
+    "category": "categoria4"
   }
 ]
