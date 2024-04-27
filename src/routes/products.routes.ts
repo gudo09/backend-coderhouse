@@ -1,4 +1,4 @@
-import { NextFunction, Router, Request, Response, } from "express";
+import { NextFunction, Router, Request, Response } from "express";
 import ProductManager from "../productManager.js";
 
 const router = Router();
@@ -6,51 +6,76 @@ export const manager = new ProductManager();
 
 // middleware para validar el id
 const validateId = async (req: Request, res: Response, next: NextFunction) => {
-//Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
-const id = req.params.pid;
-const idNumber: number = typeof id === "string" ? +id : 0;
+  //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
+  const id = req.params.pid;
+  const idNumber: number = typeof id === "string" ? +id : 0;
 
-// verifico que el id sea positivo y mayor que 0
-if (idNumber <= 0 || isNaN(idNumber)) {
-  res.status(400).send({
-    status: "ERROR",
-    payload: {},
-    error: "Se requiere un valor positivo y mayor que 0 en el id.",
-  });
-  return;
-}
-
-// verifico si existe el producto con ese id
-const existsId = await manager.isSomeProductWith("id", idNumber);
-if (!existsId) {
-  res.status(400).send({
-    status: "ERROR",
-    payload: {},
-    error: `No existe un producto con el id ${idNumber}.`,
-  });
-  return;
-}
-
-next();
-};
-// middleware para validar el los campos del body
-const validateBody = async (req: Request, res: Response, next: NextFunction) => {
-  //valido todos los campor requeridos en el body
-  req.body.status = true;
-  const {id, title, price, description, code, status, stock, category} = req.body;
-
-  if (id){
-    res.status(400).json({ status: "ERROR",payload: {}, error: 'No se debe enviar el id.' });
+  // verifico que el id sea positivo y mayor que 0
+  if (idNumber <= 0 || isNaN(idNumber)) {
+    res.status(400).send({
+      status: "ERROR",
+      payload: {},
+      error: "Se requiere un valor positivo y mayor que 0 en el id.",
+    });
     return;
   }
 
-  if (!title || !price || !description || !code || !status || !stock || !category) {
-    res.status(400).json({ status: "ERROR",payload: {}, error: 'Faltan datos en el cuerpo de la solicitud' });
+  // verifico si existe el producto con ese id
+  const existsId = await manager.isSomeProductWith("id", idNumber);
+  if (!existsId) {
+    res.status(400).send({
+      status: "ERROR",
+      payload: {},
+      error: `No existe un producto con el id ${idNumber}.`,
+    });
     return;
   }
 
   next();
-}
+};
+// middleware para validar el los campos del body
+const validateBody = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  //valido todos los campor requeridos en el body
+  req.body.status = true;
+  const { id, title, price, description, code, status, stock, category } =
+    req.body;
+
+  if (id) {
+    res
+      .status(400)
+      .json({
+        status: "ERROR",
+        payload: {},
+        error: "No se debe enviar el id.",
+      });
+    return;
+  }
+
+  if (
+    !title ||
+    !price ||
+    !description ||
+    !code ||
+    !status ||
+    !stock ||
+    !category
+  ) {
+    res
+      .status(400)
+      .json({
+        status: "ERROR",
+        payload: {},
+        error: "Faltan datos en el cuerpo de la solicitud",
+      });
+    return;
+  }
+
+  next();
+};
 // el callback es async porque ejecuta metodos asincronos del product manager
 router.get("/", async (req, res) => {
   //Valido si el limite es string y lo parseo con el operador + a number, en caso contrario le asigno 0
@@ -98,7 +123,7 @@ router.post("/", validateBody, async (req, res) => {
 });
 
 router.get("/:pid", validateId, async (req, res) => {
-  const id = +req.params.pid
+  const id = +req.params.pid;
 
   const product = await manager.getProductById(id);
   res.status(200).send({ status: "OK", payload: product });

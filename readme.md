@@ -9,74 +9,22 @@
   - "dev-tsnd": watch para desarrollar sólo en ts sin compilar a js
 
 
-Resumen entrega 1 proyecto final:
+Resumen entrega desafìo 4:
 
-✅ Inicializar servidor Express.
+Configurar nuestro proyecto para que trabaje con Handlebars y Websocket.
 
-✅ Agregar config json y urlencoded.
+- Aspectos a incluir
 
-✅ Colocar rutas en archivos separados, utilizando Router.
+    ✅ Configurar el servidor para integrar el motor de plantillas Handlebars. 
+    
+    - Instalar un servidor de socket.io al mismo.
 
-✅ archivo rutas productos (products.routes.js).
+    ✅ Crear una vista “home.handlebars” la cual contenga una lista de todos los productos agregados hasta el momento
 
-✅ archivo rutas carritos (carts.routes.js).
+    - Además, crear una vista “realTimeProducts.handlebars”, la cual vivirá en el endpoint “/realtimeproducts” en nuestro views router, ésta contendrá la misma lista de productos, sin embargo, ésta trabajará con websockets.
 
+    - Al trabajar con websockets, cada vez que creemos un producto nuevo, o bien cada vez que eliminemos un producto, se debe actualizar automáticamente en dicha vista la lista.
 
+    - Ya que la conexión entre una consulta HTTP y websocket no está contemplada dentro de la clase. Se recomienda que, para la creación y eliminación de un producto, Se cree un formulario simple en la vista  realTimeProducts.handlebars. Para que el contenido se envíe desde websockets y no HTTP. Sin embargo, esta no es la mejor solución, leer el siguiente punto.
 
-
-
-products.routes.js (5 endpoints):
-
-✅ GET / -> retornar todos los productos.
-
-✅ debe aceptar parámetro limit tipo query.
-
-✅ GET /:pid -> retornar solo el producto que coincide con pid.
-
-✅ POST / -> agregar un nuevo producto con los datos del req.body.
-
-✅ id debe autogenerarse sin repetirse (usar contador, no hace falta más).
-
-✅ thumbnails: array con nombres de archivos de fotos del producto.
-
-⚠ todos obligatorios excepto thumbnails, es decir que el uso de Multer es OPCIONAL en este caso.
-
-✅ PUT /:pid -> editar producto con id pid, según datos en el req.body.
-
-✅ nunca modificar id.
-
-✅ DELETE /:pid -> borrar producto con id pid.
-
-
-
-
-
-carts.routes.js (3 endpoints):
-
-✅ GET /:cid -> retornar listado de productos del carrito con id cid.
-
-✅ POST / -> crear carrito nuevo.
-
-✅ id autogenerado.
-
-- products: array vacío.
-
-- POST /:cid/product/:pid -> agregar producto con id pid al carrito con id cid.
-
-- debe agregar un item al array products del carrito, con solo el id del producto y una propiedad quantity (por ahora en 1).
-
-- verificar si el id de producto ya está en el array products, en ese caso sumarle 1.
-
-
-
-
-
-Generales:
-
-✅ Crear archivos products.json y carts.json con algunos datos random para prueba (no hacen falta muchos, solo algunos para testear).
-
-✅ Cargar arrays desde archivos.
-
-✅ Procesar sobre los arrays en los endpoins, luego actualizan archivos con contenidos de arrays.
-
-✅ Publicar a repo Github SIN node_modules (agregar node_modules/ a archivo .gitignore).
+    - Si se desea hacer la conexión de socket emits con HTTP, deberás buscar la forma de utilizar el servidor io de Sockets dentro de la petición POST. ¿Cómo utilizarás un emit dentro del POST?

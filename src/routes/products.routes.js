@@ -1,4 +1,4 @@
-import { Router, } from "express";
+import { Router } from "express";
 import ProductManager from "../productManager.js";
 const router = Router();
 export const manager = new ProductManager();
@@ -34,11 +34,29 @@ const validateBody = async (req, res, next) => {
     req.body.status = true;
     const { id, title, price, description, code, status, stock, category } = req.body;
     if (id) {
-        res.status(400).json({ status: "ERROR", payload: {}, error: 'No se debe enviar el id.' });
+        res
+            .status(400)
+            .json({
+            status: "ERROR",
+            payload: {},
+            error: "No se debe enviar el id.",
+        });
         return;
     }
-    if (!title || !price || !description || !code || !status || !stock || !category) {
-        res.status(400).json({ status: "ERROR", payload: {}, error: 'Faltan datos en el cuerpo de la solicitud' });
+    if (!title ||
+        !price ||
+        !description ||
+        !code ||
+        !status ||
+        !stock ||
+        !category) {
+        res
+            .status(400)
+            .json({
+            status: "ERROR",
+            payload: {},
+            error: "Faltan datos en el cuerpo de la solicitud",
+        });
         return;
     }
     next();
