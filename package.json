@@ -16,6 +16,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-handlebars": "^7.1.2"
   }
 }
