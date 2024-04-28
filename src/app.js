@@ -26,6 +26,7 @@ const httpServer = app.listen(config.PORT, () => {
     console.log(`Ruta raíz: ${config.DIRNAME}`);
 });
 const socketServer = new Server(httpServer);
+app.set("socketServer", socketServer);
 // Listener: escucho los eventos de conexion
 socketServer.on("connection", (client) => {
     console.log(`Cliente conectado! id: ${client.id} desde ${client.handshake.address} `);

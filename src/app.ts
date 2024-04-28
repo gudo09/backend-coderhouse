@@ -33,6 +33,7 @@ const httpServer = app.listen(config.PORT, () => {
 });
 
 const socketServer = new Server(httpServer);
+app.set("socketServer", socketServer);
 
 // Listener: escucho los eventos de conexion
 socketServer.on("connection", (client) => {

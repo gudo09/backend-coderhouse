@@ -9,7 +9,7 @@
   </div>
 </form>
 
-<!-- prettier-ignore -->
+
 <script>
   const formDeleteProduct = document.getElementById("formDeleteProduct");
   //controlo el evento submit del formulario
@@ -19,8 +19,7 @@
   });
   const deleteProduct = () => {
     const idDeleteProduct = document.getElementById("idDeleteProduct"); // Emito el topico deleteProduct
-
-    if (idDeleteProduct.value !== "") {
+    if (idDeleteProduct.value !== NaN) {
       socketClient.emit("deleteProduct", idDeleteProduct.value);
       socketClient.on("okMessage", data => {
         alert(data);
