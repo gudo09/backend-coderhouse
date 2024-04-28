@@ -1,6 +1,6 @@
 [
   {
-    "id": 8,
+    "id": 1,
     "title": "Producto 1",
     "description": "Este es el producto n° 1",
     "price": 3200,
@@ -13,7 +13,7 @@
     "category": "categoria1"
   },
   {
-    "id": 9,
+    "id": 2,
     "title": "Producto 2",
     "description": "Este es el producto n° 2",
     "price": 8400,
@@ -27,7 +27,7 @@
     "category": "categoria2"
   },
   {
-    "id": 10,
+    "id": 3,
     "title": "Producto 3",
     "description": "Este es el producto n° 3",
     "price": 5600,
@@ -42,24 +42,45 @@
     "category": "categoria3"
   },
   {
-    "id": 11,
+    "id": 4,
     "title": "Producto 4",
     "description": "Este es el producto n° 4",
     "price": 6400,
-    "thumbnail": ["/img/productoC4_1.png", "/img/productoC4_2.png", "/img/productoC4_3.png", "/img/productoC4_4.png"],
+    "thumbnail": [
+      "/img/productoC4_1.png",
+      "/img/productoC4_2.png",
+      "/img/productoC4_3.png",
+      "/img/productoC4_4.png"
+    ],
     "code": "c4",
     "stock": 750,
     "status": true,
     "category": "categoria4"
   },
   {
-    "id": 999,
-    "title": "Producto 4",
-    "description": "Este es el producto n° 4",
-    "price": 6400,
-    "thumbnail": ["/img/productoC4_1.png", "/img/productoC4_2.png", "/img/productoC4_3.png", "/img/productoC4_4.png"],
-    "code": "c4",
-    "stock": 750,
+    "id": 7,
+    "title": "Producto 7",
+    "description": "Este es el producto n° 7",
+    "price": 2400,
+    "thumbnail": [
+      "/img/productoC7_1.png"
+    ],
+    "code": "c7",
+    "stock": 140,
+    "status": true,
+    "category": "categoria3"
+  },
+  {
+    "id": 8,
+    "title": "Producto 8",
+    "description": "Este es el producto n° 8",
+    "price": 6000,
+    "thumbnail": [
+      "/img/productoC8_1.png",
+      "/img/productoC8_2.png"
+    ],
+    "code": "c8",
+    "stock": 317,
     "status": true,
     "category": "categoria4"
   }

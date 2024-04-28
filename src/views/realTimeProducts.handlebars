@@ -1,0 +1,37 @@
+<div class="card my-4">
+  <h1>Listado de Productos:</h1>
+  <ul class="row row-cols-4 g-3">
+    {{#each products}}
+      <div class="col">
+        <ul class="list-group card h-100 card-item">
+          <li class="list-group-item"><span>id: </span>{{id}}</li>
+          <li class="list-group-item"><span>title: </span>{{title}}</li>
+          <li class="list-group-item"><span>description:
+            </span>{{description}}</li>
+          <li class="list-group-item"><span>price: </span>{{price}}</li>
+          <li class="list-group-item"><span>thumbnail: </span>{{thumbnail}}</li>
+          <li class="list-group-item"><span>code: </span>{{code}}</li>
+          <li class="list-group-item"><span>stock: </span>{{stock}}</li>
+          <li class="list-group-item"><span>status: </span>{{status}}</li>
+          <li class="list-group-item"><span>category: </span>{{category}}</li>
+          <li class="list-group-item"><span>quantity: </span>{{quantity}}</li>
+
+        </ul>
+
+      </div>
+
+    {{/each}}
+  </ul>
+</div>
+<div class="container-fluid row row-cols-3 gap-4">
+
+{{> formAddProduct}}
+{{> formDeleteProduct}}
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socketClient = io(); 
+
+</script>

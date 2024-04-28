@@ -22,12 +22,17 @@ p {
 }
 
 .card {
-  margin: 1rem 0;
   padding: 1rem 1rem;
-  background-color: #3c5b6f;
-}
-.card h1 {
+  background-color: #1E0342;
   color:#FAF7F0;
+}
+
+.card>ul{
+  padding: 0;
+}
+
+.card-item {
+  background-color: #9AC8CD;
 }
 
 .card > .list-group {
@@ -38,4 +43,10 @@ p {
 
 .list-group-item > span {
   font-weight: bold;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Deshabilita la apariencia predeterminada */
+  margin: 0; /* Elimina el margen */
 }

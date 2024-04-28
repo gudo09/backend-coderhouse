@@ -1,0 +1,35 @@
+<form method="get" id="formDeleteProduct" class=" card mb-auto">
+  <h4>Eliminar un producto</h4>
+  <div class="row mx-0">
+    <label for="idDeleteProduct" class="form-label col-4 col-form-label px-0">Id del producto:</label>
+    <input type="number" name="idDeleteProduct" id="idDeleteProduct" class="col-form-control col-8" />
+  </div>
+  <div class="col">
+    <button type="submit" class="btn btn-primary mt-3 float-end">Eliminar producto</button>
+  </div>
+</form>
+
+<!-- prettier-ignore -->
+<script>
+  const formDeleteProduct = document.getElementById("formDeleteProduct");
+  //controlo el evento submit del formulario
+  formDeleteProduct.addEventListener("submit", (e) => {
+    e.preventDefault();
+    deleteProduct();
+  });
+  const deleteProduct = () => {
+    const idDeleteProduct = document.getElementById("idDeleteProduct"); // Emito el topico deleteProduct
+
+    if (idDeleteProduct.value !== "") {
+      socketClient.emit("deleteProduct", idDeleteProduct.value);
+      socketClient.on("okMessage", data => {
+        alert(data);
+        location.reload();
+      });
+      socketClient.on("errorMessage", data => alert(data));
+    }
+    // limpio el input
+    idDeleteProduct.value = "";
+  }
+
+</script>
