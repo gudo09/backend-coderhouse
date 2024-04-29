@@ -32,7 +32,6 @@ socketServer.on("connection", (client) => {
     console.log(`Cliente conectado! id: ${client.id} desde ${client.handshake.address} `);
     // Suscripcion al topico deleteProduct
     client.on("deleteProduct", (data) => {
-        console.log(data);
         const pid = +data;
         axios
             .delete(`${config.BASE_URL}/${pid}`)
@@ -45,5 +44,10 @@ socketServer.on("connection", (client) => {
             const erorMessage = err.response.data.error;
             client.emit("errorMessage", erorMessage);
         });
+    });
+    // Suscripcion al topico addProduct
+    client.on("addProduct", (data) => {
+        console.log(data);
+        axios.post(`${config.BASE_URL}/`, data);
     });
 });

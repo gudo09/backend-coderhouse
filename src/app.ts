@@ -43,7 +43,6 @@ socketServer.on("connection", (client) => {
 
   // Suscripcion al topico deleteProduct
   client.on("deleteProduct", (data) => {
-    console.log(data);
     const pid = +data;
 
     axios
@@ -57,5 +56,12 @@ socketServer.on("connection", (client) => {
         const erorMessage = err.response.data.error;
         client.emit("errorMessage", erorMessage);
       });
+  });
+
+  // Suscripcion al topico addProduct
+  client.on("addProduct", (data) => {
+    console.log(data);
+
+    axios.post(`${config.BASE_URL}/`, data)
   });
 });

@@ -42,19 +42,17 @@
     "category": "categoria3"
   },
   {
-    "id": 4,
-    "title": "Producto 4",
-    "description": "Este es el producto n° 4",
-    "price": 6400,
+    "id": 5,
+    "title": "Producto 5",
+    "description": "Este es el producto n° 5",
+    "price": 4800,
     "thumbnail": [
-      "/img/productoC4_1.png",
-      "/img/productoC4_2.png",
-      "/img/productoC4_3.png",
-      "/img/productoC4_4.png"
+      "/img/productoC5_1.png",
+      "/img/productoC5_2.png"
     ],
-    "code": "c4",
-    "stock": 750,
+    "code": "c5",
+    "stock": 817,
     "status": true,
-    "category": "categoria4"
+    "category": "categoria1"
   }
 ]

@@ -14,28 +14,54 @@
   const formDeleteProduct = document.getElementById("formDeleteProduct");
   //controlo el evento submit del formulario
   formDeleteProduct.addEventListener("submit", (e) => {
+    // prevengo el envío del formulario
     e.preventDefault();
+
     deleteProduct();
   });
+
   const deleteProduct = () => {
-    const idDeleteProduct = document.getElementById("idDeleteProduct"); // Emito el topico deleteProduct
+    const idDeleteProduct = document.getElementById("idDeleteProduct");
+    
     if (idDeleteProduct.value !== NaN) {
+      // Emito el topico deleteProduct
       socketClient.emit("deleteProduct", idDeleteProduct.value);
-      socketClient.on("errorMessage", data => alert(data));
-      socketClient.on("okMessage", data => {
-        alert(data);
-      });
     }
+
     // limpio el input
     idDeleteProduct.value = "";
   }
 
+  socketClient.on("errorMessage", data => {
+    // muestro con sweetalert el error por el cual no se pudo eliminar
+    Swal.fire({
+      title: 'Atención!',
+      text: data,
+      icon: 'warning',
+      confirmButtonText: 'Cool'
+    })
+  });
 
   socketClient.on("productDeleted", (data) => {
+    const productList = document.getElementById("productList");
     const productId = data.productId;
-    // Aquí puedes realizar acciones como recargar la página o actualizar la lista de productos
-    console.log(`El producto con ID ${productId} ha sido eliminado`);
-    location.reload(); // Recargar la página
+    const productToDelete = document.getElementById(`product-card-${productId}`)
+
+    // remuevo el producto de la vista
+    productToDelete.remove()
+
+    // muestro toast de que se ha eliminado el producto
+    Toastify({
+      text: `El producto con ID ${productId} ha sido eliminado`,
+      className: "info",
+      gravity: "bottom",
+      position: "right",
+      close: true,
+      style: {
+        background: "linear-gradient(to right, #d42a2a, #da2f26, #e03521, #e63b1a, #eb4112)",
+      }
+    }).showToast();
+
   });
 
 </script>

@@ -6,9 +6,9 @@
 
 <div class="card my-4">
   <h1>Listado de Productos:</h1>
-  <ul class="row row-cols-4 g-3">
+  <ul class="row row-cols-4 g-3" id="product-list">
     {{#each products}}
-      <div class="col">
+      <div class="col" id="product-card-{{id}}">
         <ul class="list-group card h-100 card-item">
           <li class="list-group-item"><span>id: </span>{{id}}</li>
           <li class="list-group-item"><span>title: </span>{{title}}</li>

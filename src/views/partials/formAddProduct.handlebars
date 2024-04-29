@@ -1,4 +1,4 @@
-<form method="get" id="addProduct" class=" card">
+<form method="get" id="formAddProduct" class=" card">
   <h4>Agregar un producto</h4>
 
   <div class="row mx-0 my-1">
@@ -35,3 +35,37 @@
 
 
 </form>
+
+<script>
+  const formAddProduct = document.getElementById("formAddProduct");
+
+  formAddProduct.addEventListener("submit", (e) => {
+    // prevengo el envío del formulario
+    e.preventDefault();
+
+    addProduct();
+  });
+
+  const addProduct = () => {
+    const title = document.getElementById("titleAddProduct");
+    const description = document.getElementById("descriptionAddProduct");
+    const price = document.getElementById("priceAddProduct");
+    const thumbnail = document.getElementById("thumbnailsAddProduct");
+    const code = document.getElementById("codeAddProduct");
+    const stock = document.getElementById("stockAddProduct");
+    const category = document.getElementById("categoryAddProduct");
+
+    const headers = {
+      title: title.value,
+      description: description.value,
+      price: +price.value,
+      thumbnail: thumbnail.value,
+      code: code.value,
+      stock: +stock.value,
+      status: true,
+      category: category.value,
+    }
+
+    socketClient.emit("addProduct", headers)
+  };
+</script>
