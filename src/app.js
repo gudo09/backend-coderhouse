@@ -38,6 +38,7 @@ socketServer.on("connection", (client) => {
             .delete(`${config.BASE_URL}/${pid}`)
             .then((resp) => {
             const okMessage = resp.data.message;
+            socketServer.emit("productDeleted", { productId: pid });
             client.emit("okMessage", okMessage);
         })
             .catch((err) => {
