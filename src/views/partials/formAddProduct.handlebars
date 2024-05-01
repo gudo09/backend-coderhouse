@@ -32,8 +32,6 @@
   <div class="col">
     <button type="submit" class="btn btn-primary mt-3 float-end">Agregar producto</button>
   </div>
-
-
 </form>
 
 <script>
@@ -42,7 +40,6 @@
   formAddProduct.addEventListener("submit", (e) => {
     // prevengo el envío del formulario
     e.preventDefault();
-
     addProduct();
   });
 
@@ -65,7 +62,55 @@
       status: true,
       category: category.value,
     }
-
+    // emito el topico addProduct
     socketClient.emit("addProduct", headers)
   };
+
+  const addProductToHTML = (data) => {
+    let { id, title, description, price, thumbnail, code, stock, status, category, quantity } = data;
+    const productList = document.getElementById("product-list");
+    quantity = quantity || "";
+    productList.innerHTML += `<div class="col" id="product-card-${id}">
+        <ul class="list-group card h-100 card-item">
+          <li class="list-group-item"><span>id: </span>${id}</li>
+          <li class="list-group-item"><span>title: </span>${title}</li>
+          <li class="list-group-item"><span>description:
+            </span>${description}</li>
+          <li class="list-group-item"><span>price: </span>${price}</li>
+          <li class="list-group-item"><span>thumbnail: </span>${thumbnail}</li>
+          <li class="list-group-item"><span>code: </span>${code}</li>
+          <li class="list-group-item"><span>stock: </span>${stock}</li>
+          <li class="list-group-item"><span>status: </span>${status}</li>
+          <li class="list-group-item"><span>category: </span>${category}</li>
+          <li class="list-group-item"><span>quantity: </span>${quantity}</li>
+        </ul>
+      </div>`
+  }
+
+  socketClient.on("productAdded", (data) => {
+    addProductToHTML(data);
+  })
+
+  socketClient.on("AddProduct_OkMessage", data => {
+    Toastify({
+      text: data,
+      className: "info",
+      gravity: "bottom",
+      position: "right",
+      close: true,
+      style: {
+        background: "linear-gradient(to right, #0e6615, #1b7916, #298d16, #38a114, #48b50d)",
+      }
+    }).showToast();
+  });
+
+  socketClient.on("AddProduct_ErrorMessage", data => {
+    // muestro con sweetalert el error por el cual no se pudo eliminar
+    Swal.fire({
+      title: 'Atención!',
+      text: data,
+      icon: 'warning',
+      confirmButtonText: 'Cool'
+    })
+  });
 </script>

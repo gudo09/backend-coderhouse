@@ -50,11 +50,11 @@ socketServer.on("connection", (client) => {
       .then((resp) => {
         const okMessage = resp.data.message;
         socketServer.emit("productDeleted", { productId: pid });
-        client.emit("okMessage", okMessage);
+        client.emit("DeleteProduct_OkMessage", okMessage);
       })
       .catch((err) => {
         const erorMessage = err.response.data.error;
-        client.emit("errorMessage", erorMessage);
+        client.emit("DeleteProduct_ErrorMessage", erorMessage);
       });
   });
 
@@ -62,6 +62,18 @@ socketServer.on("connection", (client) => {
   client.on("addProduct", (data) => {
     console.log(data);
 
-    axios.post(`${config.BASE_URL}/`, data)
+    axios
+      .post(`${config.BASE_URL}/`, data)
+      .then((resp) => {
+        const okMessage = resp.data.message;
+        const lastProductAdded = resp.data.payload;
+        socketServer.emit("productAdded", lastProductAdded);
+        client.emit("AddProduct_OkMessage", okMessage);
+      })
+      .catch((err) => {
+        const erorMessage = err.response.data.error;
+        console.log(erorMessage);
+        client.emit("AddProduct_ErrorMessage", erorMessage);
+      });
   });
 });

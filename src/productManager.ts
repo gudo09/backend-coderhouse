@@ -87,6 +87,11 @@ class ProductManager {
     return result;
   }
 
+  async getLastProductAdded(): Promise<ProductWithId> {
+    const lastProduct = this.products[this.products.length - 1];
+    return lastProduct;
+  }
+
   //el metodo deteleProduct recibe un id y elimila el producto con ese id
   async deteleProduct(id: number): Promise<string> {
     //elimino el producto del arreglo, actualizo el json y devuelvo mensaje

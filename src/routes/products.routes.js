@@ -98,9 +98,11 @@ router.post("/", validateBody, async (req, res) => {
     }
     // procedo con el alta del producto
     await manager.addProduct(body);
+    const lastProductAdded = await manager.getLastProductAdded();
     res.status(200).send({
         status: "OK",
-        payload: "El producto se ha agregado correctamente.",
+        payload: lastProductAdded,
+        message: "Se ha agregado un nuevo producto."
     });
 });
 router.get("/:pid", validateId, async (req, res) => {

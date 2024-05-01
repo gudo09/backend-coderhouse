@@ -55,6 +55,10 @@ class ProductManager {
         const result = this.products.find((prod) => id === prod.id);
         return result;
     }
+    async getLastProductAdded() {
+        const lastProduct = this.products[this.products.length - 1];
+        return lastProduct;
+    }
     //el metodo deteleProduct recibe un id y elimila el producto con ese id
     async deteleProduct(id) {
         //elimino el producto del arreglo, actualizo el json y devuelvo mensaje

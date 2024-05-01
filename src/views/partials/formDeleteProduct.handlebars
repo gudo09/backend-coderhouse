@@ -32,7 +32,7 @@
     idDeleteProduct.value = "";
   }
 
-  socketClient.on("errorMessage", data => {
+  socketClient.on("DeleteProduct_ErrorMessage", data => {
     // muestro con sweetalert el error por el cual no se pudo eliminar
     Swal.fire({
       title: 'Atención!',
@@ -49,10 +49,12 @@
 
     // remuevo el producto de la vista
     productToDelete.remove()
+  });
 
+  socketClient.on("DeleteProduct_OkMessage", data => {
     // muestro toast de que se ha eliminado el producto
     Toastify({
-      text: `El producto con ID ${productId} ha sido eliminado`,
+      text: data,
       className: "info",
       gravity: "bottom",
       position: "right",
@@ -61,7 +63,6 @@
         background: "linear-gradient(to right, #d42a2a, #da2f26, #e03521, #e63b1a, #eb4112)",
       }
     }).showToast();
-
-  });
+  })
 
 </script>

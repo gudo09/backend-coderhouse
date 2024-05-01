@@ -3,6 +3,7 @@ import { Router } from "express";
 
 const router = Router();
 
+
 router.get("/bienvenida", async (req, res) => {
   const user = { name: "Franco" };
   res.render("index", user);
