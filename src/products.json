@@ -40,19 +40,5 @@
     "stock": 490,
     "status": true,
     "category": "categoria3"
-  },
-  {
-    "id": 5,
-    "title": "Producto 5",
-    "description": "Este es el producto n° 5",
-    "price": 4800,
-    "thumbnail": [
-      "/img/productoC5_1.png",
-      "/img/productoC5_2.png"
-    ],
-    "code": "c5",
-    "stock": 817,
-    "status": true,
-    "category": "categoria1"
   }
 ]

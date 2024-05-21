@@ -1,79 +1,44 @@
 import express from "express";
+import mongoose from "mongoose";
 import config from "./config.js";
 import productRoutes from "./routes/products.routes.js";
 import cartRoutes from "./routes/carts.routes.js";
 import viewsRoutes from "./routes/views.routes.js";
 import handlebars from "express-handlebars";
-import { Server } from "socket.io";
-import axios from "axios";
+import initSocket from "./socket.js";
 
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
 
-//configuraciones de express
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// configuraciones Handlebars
-app.engine("handlebars", handlebars.engine());
-app.set("views", `${config.DIRNAME}/views`);
-app.set("view engine", "handlebars");
-
-// hago uso de las rutas
-app.use("/", productRoutes);
-app.use("/api/carts", cartRoutes);
 app.use("/views", viewsRoutes);
 
 //ruta para archivos estaticos
 app.use("/static", express.static(`${config.DIRNAME}/public`));
 
-const httpServer = app.listen(config.PORT, () => {
+const expressInstance = app.listen(config.PORT, async () => {
+  // conecto mongoose con la base de datos en Atlas
+  await mongoose.connect(config.MONGOBD_URI);
+
+  //inicializo el server de socket.io desde el archivo socket.js
+  const socketServer = initSocket(expressInstance);
+  app.set("socketServer", socketServer);
+
+  //configuraciones de express
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // configuraciones Handlebars
+  app.engine("handlebars", handlebars.engine());
+  app.set("views", `${config.DIRNAME}/views`);
+  app.set("view engine", "handlebars");
+
+  // hago uso de las rutas
+  app.use("/", productRoutes);
+  app.use("/api/carts", cartRoutes);
+
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);
-});
-
-const socketServer = new Server(httpServer);
-app.set("socketServer", socketServer);
-
-// Listener: escucho los eventos de conexion
-socketServer.on("connection", (client) => {
   console.log(
-    `Cliente conectado! id: ${client.id} desde ${client.handshake.address} `
+    `Puedes acceder desde http://localhost:${config.PORT}/views/realtimeproducts`
   );
-
-  // Suscripcion al topico deleteProduct
-  client.on("deleteProduct", (data) => {
-    const pid = +data;
-
-    axios
-      .delete(`${config.BASE_URL}/${pid}`)
-      .then((resp) => {
-        const okMessage = resp.data.message;
-        socketServer.emit("productDeleted", { productId: pid });
-        client.emit("DeleteProduct_OkMessage", okMessage);
-      })
-      .catch((err) => {
-        const erorMessage = err.response.data.error;
-        client.emit("DeleteProduct_ErrorMessage", erorMessage);
-      });
-  });
-
-  // Suscripcion al topico addProduct
-  client.on("addProduct", (data) => {
-    console.log(data);
-
-    axios
-      .post(`${config.BASE_URL}/`, data)
-      .then((resp) => {
-        const okMessage = resp.data.message;
-        const lastProductAdded = resp.data.payload;
-        socketServer.emit("productAdded", lastProductAdded);
-        client.emit("AddProduct_OkMessage", okMessage);
-      })
-      .catch((err) => {
-        const erorMessage = err.response.data.error;
-        console.log(erorMessage);
-        client.emit("AddProduct_ErrorMessage", erorMessage);
-      });
-  });
 });
