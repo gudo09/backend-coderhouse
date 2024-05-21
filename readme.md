@@ -9,24 +9,25 @@
   - "dev-tsnd": watch para desarrollar sólo en ts sin compilar a js
 
 
-Resumen entrega desafìo 4:
+Resumen primera practica integradora:
 
-Configurar nuestro proyecto para que trabaje con Handlebars y Websocket.
+Continuar sobre el proyecto que has trabajado para tu ecommerce y configurar los siguientes elementos:
 
-- Aspectos a incluir
+Aspectos a incluir
 
-    ✅ Configurar el servidor para integrar el motor de plantillas Handlebars. 
-    
-    - Instalar un servidor de socket.io al mismo.
+  ✅ Agregar el modelo de persistencia de Mongo y mongoose a tu proyecto.
 
-    ✅ Crear una vista “home.handlebars” la cual contenga una lista de todos los productos agregados hasta el momento
+  ❕ Crear una base de datos llamada “ecommerce” dentro de tu Atlas, crear sus colecciones “carts”, “messages”, “products” y sus respectivos schemas.
+  
+  ✅ Separar los Managers de fileSystem de los managers de MongoDb en una sola carpeta “dao”. Dentro de dao, agregar también una carpeta “models” donde vivirán los esquemas de MongoDB. La estructura deberá ser igual a la vista en esta clase
 
-    ✅ Además, crear una vista “realTimeProducts.handlebars”, la cual vivirá en el endpoint “/realtimeproducts” en nuestro views router.
-    
-    ✅ El endpoint “/realtimeproducts” contendrá la misma lista de productos, sin embargo, ésta trabajará con websockets.
+  ✅ Contener todos los Managers (FileSystem y DB) en una carpeta llamada “Dao”
 
-    ✅ Al trabajar con websockets, cada vez que creemos un producto nuevo, o bien cada vez que eliminemos un producto, se debe actualizar automáticamente en dicha vista la lista.
+  - Reajustar los servicios con el fin de que puedan funcionar con Mongoose en lugar de FileSystem
 
-    ✅ Ya que la conexión entre una consulta HTTP y websocket no está contemplada dentro de la clase. Se recomienda que, para la creación y eliminación de un producto, Se cree un formulario simple en la vista  realTimeProducts.handlebars. Para que el contenido se envíe desde websockets y no HTTP. Sin embargo, esta no es la mejor solución, leer el siguiente punto.
+  ✅ NO ELIMINAR FileSystem de tu proyecto.
 
-    ✅ Si se desea hacer la conexión de socket emits con HTTP, deberás buscar la forma de utilizar el servidor io de Sockets dentro de la petición POST. ¿Cómo utilizarás un emit dentro del POST?
+  - Implementar una vista nueva en handlebars llamada chat.handlebars, la cual permita implementar un chat como el visto en clase. Los mensajes deberán guardarse en una colección “messages” en mongo (no es necesario implementarlo en FileSystem). El formato es:  {user:correoDelUsuario, message: mensaje del usuario}
+
+  - Corroborar la integridad del proyecto para que todo funcione como lo ha hecho hasta ahora.
+

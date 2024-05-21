@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import config from "./config.js";
+import config from "../../config.js";
 class cartsManager {
     carts;
     path;
@@ -11,8 +11,8 @@ class cartsManager {
     }
     constructor() {
         this.carts = [];
-        this.path = `${config.DIRNAME}/carts.json`;
-        this.idPath = `${config.DIRNAME}/CartNextId.txt`;
+        this.path = `${config.DIRNAME}/dao/managers/carts.json`;
+        this.idPath = `${config.DIRNAME}/dao/managers/CartNextId.txt`;
         this.init();
     }
     //creo el metodo addCart que va a recibir un elemento del tipo Cart y lo agrega al carts.json

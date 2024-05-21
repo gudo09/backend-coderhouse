@@ -1,5 +1,5 @@
 import { NextFunction, Router, Request, Response } from "express";
-import cartsManager from "../cartsManager.js";
+import cartsManager from "../dao/managers/cartsManager.js";
 import { manager as productManager } from "./products.routes.js";
 
 const router = Router();
@@ -63,7 +63,6 @@ const validateIdProduct = async (
     return;
   }
 
-
   // verifico si existe el producto con ese id
   const existsId = await productManager.isSomeProductWith("id", idNumber);
   if (!existsId) {
@@ -105,8 +104,12 @@ router.post("/", async (req, res) => {
   });
 });
 
-router.post("/:cid/product/:pid", validateIdCart,validateIdProduct, async (req, res) => {
-  /*
+router.post(
+  "/:cid/product/:pid",
+  validateIdCart,
+  validateIdProduct,
+  async (req, res) => {
+    /*
     La ruta POST  /:cid/product/:pid deberá agregar el producto al arreglo “products” del carrito seleccionado, agregándose como un objeto bajo el siguiente formato:
     - product: SÓLO DEBE CONTENER EL ID DEL PRODUCTO (Es crucial que no agregues el producto completo)
     - quantity: debe contener el número de ejemplares de dicho producto. El producto, de momento, se agregará de uno en uno.
@@ -114,16 +117,17 @@ router.post("/:cid/product/:pid", validateIdCart,validateIdProduct, async (req, 
     Además, si un producto ya existente intenta agregarse al producto, incrementar el campo quantity de dicho producto. 
   */
 
-  const cartId = +req.params.cid;
+    const cartId = +req.params.cid;
 
-  const productId = +req.params.pid;
+    const productId = +req.params.pid;
 
-  await manager.addProductToCart(productId, cartId);
+    await manager.addProductToCart(productId, cartId);
 
-  res.status(200).send({
-    status: "OK",
-    payload: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
-  });
-});
+    res.status(200).send({
+      status: "OK",
+      payload: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
+    });
+  }
+);
 
 export default router;

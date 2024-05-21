@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "title": "Producto 1",
     "description": "Este es el producto n° 1",
     "price": 3200,
@@ -11,7 +10,6 @@
     "category": "categoria1"
   },
   {
-    "id": 2,
     "title": "Producto 2",
     "description": "Este es el producto n° 2",
     "price": 8400,
@@ -22,7 +20,6 @@
     "category": "categoria2"
   },
   {
-    "id": 3,
     "title": "Producto 3",
     "description": "Este es el producto n° 3",
     "price": 5600,
@@ -33,7 +30,6 @@
     "category": "categoria3"
   },
   {
-    "id": 4,
     "title": "Producto 4",
     "description": "Este es el producto n° 4",
     "price": 6400,
@@ -44,7 +40,6 @@
     "category": "categoria4"
   },
   {
-    "id": 5,
     "title": "Producto 5",
     "description": "Este es el producto n° 5",
     "price": 4800,
@@ -55,7 +50,6 @@
     "category": "categoria1"
   },
   {
-    "id": 6,
     "title": "Producto 6",
     "description": "Este es el producto n° 6",
     "price": 9000,
@@ -66,7 +60,6 @@
     "category": "categoria2"
   },
   {
-    "id": 7,
     "title": "Producto 7",
     "description": "Este es el producto n° 7",
     "price": 2400,
@@ -77,7 +70,6 @@
     "category": "categoria3"
   },
   {
-    "id": 8,
     "title": "Producto 8",
     "description": "Este es el producto n° 8",
     "price": 6000,
@@ -88,7 +80,6 @@
     "category": "categoria4"
   },
   {
-    "id": 9,
     "title": "Producto 9",
     "description": "Este es el producto n° 9",
     "price": 3800,
@@ -99,7 +90,6 @@
     "category": "categoria1"
   },
   {
-    "id": 10,
     "title": "Producto 10",
     "description": "Este es el producto n° 10",
     "price": 8000,
@@ -110,7 +100,6 @@
     "category": "categoria2"
   },
   {
-    "id": 11,
     "title": "Producto 11",
     "description": "Este es el producto n° 11",
     "price": 3400,
@@ -121,7 +110,6 @@
     "category": "categoria3"
   },
   {
-    "id": 12,
     "title": "Producto 12",
     "description": "Este es el producto n° 12",
     "price": 9000,
@@ -132,7 +120,6 @@
     "category": "categoria4"
   },
   {
-    "id": 13,
     "title": "Producto 13",
     "description": "Este es el producto n° 13",
     "price": 6000,
@@ -143,7 +130,6 @@
     "category": "categoria1"
   },
   {
-    "id": 14,
     "title": "Producto 14",
     "description": "Este es el producto n° 14",
     "price": 9800,
@@ -154,7 +140,6 @@
     "category": "categoria2"
   },
   {
-    "id": 15,
     "title": "Producto 15",
     "description": "Este es el producto n° 15",
     "price": 5800,
@@ -165,7 +150,6 @@
     "category": "categoria3"
   },
   {
-    "id": 16,
     "title": "Producto 16",
     "description": "Este es el producto n° 16",
     "price": 2000,
@@ -176,7 +160,6 @@
     "category": "categoria4"
   },
   {
-    "id": 17,
     "title": "Producto 17",
     "description": "Este es el producto n° 17",
     "price": 8800,
@@ -187,7 +170,6 @@
     "category": "categoria1"
   },
   {
-    "id": 18,
     "title": "Producto 18",
     "description": "Este es el producto n° 18",
     "price": 4200,
@@ -198,7 +180,6 @@
     "category": "categoria2"
   },
   {
-    "id": 19,
     "title": "Producto 19",
     "description": "Este es el producto n° 19",
     "price": 6000,
@@ -209,7 +190,6 @@
     "category": "categoria3"
   },
   {
-    "id": 20,
     "title": "Producto 20",
     "description": "Este es el producto n° 20",
     "price": 4800,

@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import config from "./config.js";
+import config from "../../config.js";
 //creo la clase ProductManager que es la que va a crear instancias
 class ProductManager {
     products;
@@ -13,8 +13,8 @@ class ProductManager {
     //la llamada al constuctor genera un array vacio a inicializa el path con la direccione en donde se guardará el archivo json
     constructor() {
         this.products = [];
-        this.path = `${config.DIRNAME}/products.json`;
-        this.idPath = `${config.DIRNAME}/ProductNextId.txt`;
+        this.path = `${config.DIRNAME}/dao/managers/products.json`;
+        this.idPath = `${config.DIRNAME}/dao/managers/ProductNextId.txt`;
         this.init();
     }
     //creo el metodo addProduct que va a recibir un elemento del tipo Product y lo agrega al products.json
@@ -125,82 +125,3 @@ class ProductManager {
     }
 }
 export default ProductManager;
-//------------------------------------------------------probando el codigo
-/*
-const prueba = async () => {
-  const listadoProductos = new ProductManager();
-
-  await listadoProductos.addProduct({
-    title: "Producto 1",
-    description: "Este es el primer producto",
-    price: 1000,
-    thumbnail: "productoC1.png",
-    code: "c1",
-    stock: 100,
-  });
-
-  await listadoProductos.addProduct({
-    title: "Producto 2",
-    description: "Este es el segundo producto",
-    price: 2000,
-    thumbnail: "productoC2.png",
-    code: "c2",
-    stock: 150,
-  });
-
-  await listadoProductos.addProduct({
-    title: "Producto 3",
-    description: "Este es el tercer producto",
-    price: 1200,
-    thumbnail: "productoC3.png",
-    code: "c1",
-    stock: 130,
-  });
-
-  await listadoProductos.addProduct({
-    title: "Producto 4",
-    description: "Este es el cuarto producto",
-    price: 1400,
-    thumbnail: "productoC4.png",
-    code: "c4",
-    stock: 180,
-  });
-
-  console.log(await listadoProductos.printProducts());
-
-  console.table(await listadoProductos.getProductById(2));
-  console.table(await listadoProductos.getProductById(5));
-  console.log(await listadoProductos.deteleProduct(2));
-
-  await listadoProductos.addProduct({
-    title: "Producto 5",
-    description: "Este es el quinto producto",
-    price: 1500,
-    thumbnail: "productoC4.png",
-    code: "c5",
-    stock: 280,
-  });
-
-  console.log(await listadoProductos.printProducts());
-  console.log(await listadoProductos.updateProduct(4,{
-    title: "Producto 4",
-    description: "Este es el cuarto producto PERO ESTÁ ACTUALIZADO",
-    price: 1400,
-    thumbnail: "productoC4.png",
-    code: "c4",
-    stock: 180,
-  }))
-
-  console.log(await listadoProductos.updateProduct(6,{
-    title: "Producto 4",
-    description: "Este es el cuarto producto PERO ESTÁ ACTUALIZADO",
-    price: 1400,
-    thumbnail: "productoC4.png",
-    code: "c4",
-    stock: 180,
-  }))
-
-  console.log(await listadoProductos.printProducts());
-};
-prueba();
-*/

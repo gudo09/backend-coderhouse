@@ -1,28 +1,18 @@
 import { Router } from "express";
-import ProductManager from "../productManager.js";
+import ProductManager from "../dao/managers/productManager.js";
+import productModel from "../dao/models/products.model.js";
+import mongoose from "mongoose";
 const router = Router();
 export const manager = new ProductManager();
 // middleware para validar el id
 const validateId = async (req, res, next) => {
-    //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
     const id = req.params.pid;
-    const idNumber = typeof id === "string" ? +id : 0;
-    // verifico que el id sea positivo y mayor que 0
-    if (idNumber <= 0 || isNaN(idNumber)) {
+    // verifico que el id sea valido para mongoose
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(400).send({
             status: "ERROR",
             payload: {},
-            error: "Se requiere un valor positivo y mayor que 0 en el id.",
-        });
-        return;
-    }
-    // verifico si existe el producto con ese id
-    const existsId = await manager.isSomeProductWith("id", idNumber);
-    if (!existsId) {
-        res.status(400).send({
-            status: "ERROR",
-            payload: {},
-            error: `No existe un producto con el id ${idNumber}.`,
+            error: "En id ingresado no es válido.",
         });
         return;
     }
@@ -34,9 +24,7 @@ const validateBody = async (req, res, next) => {
     req.body.status = true;
     const { id, title, price, description, code, status, stock, category } = req.body;
     if (id) {
-        res
-            .status(400)
-            .json({
+        res.status(400).json({
             status: "ERROR",
             payload: {},
             error: "No se debe enviar el id.",
@@ -50,9 +38,7 @@ const validateBody = async (req, res, next) => {
         !status ||
         !stock ||
         !category) {
-        res
-            .status(400)
-            .json({
+        res.status(400).json({
             status: "ERROR",
             payload: {},
             error: "Faltan datos en el cuerpo de la solicitud",
@@ -61,12 +47,12 @@ const validateBody = async (req, res, next) => {
     }
     next();
 };
-// el callback es async porque ejecuta metodos asincronos del product manager
+// el callback es async porque espera las respuestas de mongoose
 router.get("/", async (req, res) => {
     //Valido si el limite es string y lo parseo con el operador + a number, en caso contrario le asigno 0
     const limit = req.query.limit;
     const limitNumber = typeof limit === "string" ? +limit : 0;
-    const products = await manager.getProducts(limitNumber);
+    const products = await productModel.find().limit(limitNumber).lean();
     res.status(200).send({ status: "OK", payload: products });
 });
 router.post("/", validateBody, async (req, res) => {
@@ -86,7 +72,7 @@ router.post("/", validateBody, async (req, res) => {
     */
     const body = req.body;
     // valido si el código del producto a agregar está repetido
-    const isDuplicateCode = await manager.isSomeProductWith("code", body.code);
+    const isDuplicateCode = await productModel.exists({ code: body.code });
     // verifico que el codigo a agregar ya existe
     if (isDuplicateCode) {
         res.status(400).send({
@@ -97,17 +83,24 @@ router.post("/", validateBody, async (req, res) => {
         return;
     }
     // procedo con el alta del producto
-    await manager.addProduct(body);
-    const lastProductAdded = await manager.getLastProductAdded();
+    const lastProductAdded = await productModel.create(body);
     res.status(200).send({
         status: "OK",
         payload: lastProductAdded,
-        message: "Se ha agregado un nuevo producto."
+        message: "Se ha agregado un nuevo producto.",
     });
 });
 router.get("/:pid", validateId, async (req, res) => {
-    const id = +req.params.pid;
-    const product = await manager.getProductById(id);
+    const id = req.params.pid;
+    const product = await productModel.findById(id);
+    if (product === null) {
+        res.status(400).send({
+            status: "Error",
+            payload: {},
+            message: "No se ha encontrado el producto.",
+        });
+        return;
+    }
     res.status(200).send({ status: "OK", payload: product });
 });
 router.put("/:pid", validateId, async (req, res) => {
@@ -116,10 +109,12 @@ router.put("/:pid", validateId, async (req, res) => {
     desde body. NUNCA se debe actualizar o eliminar el id al momento de hacer dicha
     actualización.
     */
-    const id = +req.params.pid;
+    const id = req.params.pid;
     // procedo con la actualización del producto
     const body = req.body;
-    const updatedProduct = await manager.updateProduct(id, body);
+    const updatedProduct = await productModel.findByIdAndUpdate(id, body, {
+        new: true,
+    });
     res.status(200).send({
         status: "OK",
         message: `Se ha modificado el producto con el id ${id}`,
@@ -130,9 +125,22 @@ router.delete("/:pid", validateId, async (req, res) => {
     /*
       La ruta DELETE /:pid deberá eliminar el producto con el pid indicado.
     */
-    const id = +req.params.pid;
+    const id = req.params.pid;
+    const product = await productModel.findById(id);
+    if (product === null) {
+        res.status(400).send({
+            status: "Error",
+            payload: {},
+            message: "No se ha encontrado el producto para eliminar.",
+        });
+        return;
+    }
     // procedo con la eliminación del producto
-    const message = await manager.deteleProduct(id);
-    res.status(200).send({ status: "OK", payload: {}, message: message });
+    const productDeleted = await productModel.findByIdAndDelete(id);
+    res.status(200).send({
+        status: "OK",
+        payload: productDeleted,
+        message: "Producto eliminado.",
+    });
 });
 export default router;

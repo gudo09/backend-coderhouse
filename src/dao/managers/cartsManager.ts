@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 
 import { ProductWithId } from "./productManager.js";
-import config from "./config.js";
+import config from "../../config.js";
 
 // Defino una interfaz para Cart
 interface Cart {
@@ -27,8 +27,8 @@ class cartsManager {
 
   constructor() {
     this.carts = [];
-    this.path = `${config.DIRNAME}/carts.json`;
-    this.idPath = `${config.DIRNAME}/CartNextId.txt`;
+    this.path = `${config.DIRNAME}/dao/managers/carts.json`;
+    this.idPath = `${config.DIRNAME}/dao/managers/CartNextId.txt`;
     this.init();
   }
 
@@ -90,7 +90,6 @@ class cartsManager {
     await this.updateArrayCarts();
     return this.carts.some((cart) => propertyValue === cart[propertyName]);
   }
-
 
   //recibe un id como parametro y devuelve el carrito, o undefined si no lo encontró
   async getCartById(id: number): Promise<CartWithId> {
