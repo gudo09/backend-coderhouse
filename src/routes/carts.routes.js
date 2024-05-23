@@ -15,7 +15,7 @@ const validateIdCart = async (req, res, next) => {
         res.status(400).send({
             status: "ERROR",
             payload: {},
-            error: "En id ingresado no es válido.",
+            error: "En id ingresado no corresponde a un carrito válido.",
         });
         return;
     }
@@ -42,12 +42,12 @@ const validateIdProduct = async (req, res, next) => {
         res.status(400).send({
             status: "ERROR",
             payload: {},
-            error: "En id ingresado no es válido.",
+            error: "En id ingresado no corresponde a un producto válido.",
         });
         return;
     }
     // verifico si existe el producto con ese id
-    const existsId = await cartModel.findById(id);
+    const existsId = await productModel.findById(id);
     if (!existsId) {
         res.status(400).send({
             status: "ERROR",
@@ -90,7 +90,8 @@ router.post("/", async (req, res) => {
       - Id:Number/String (A tu elección, de igual manera como con los productos, debes asegurar que nunca se dupliquen los ids y que este se autogenere).
       - products: Array que contendrá objetos que representen cada producto
     */
-    const products = await productModel.find().lean();
+    const products = await productModel.find({}, { _id: 1 }).lean();
+    //agrego el campo quantity a cada producto
     const newProducts = products.map((element) => {
         return { ...element, quantity: 0 };
     });
@@ -112,10 +113,26 @@ router.post("/:cid/product/:pid", validateIdCart, validateIdProduct, async (req,
   */
     const cartId = req.params.cid;
     const productId = req.params.pid;
-    //await manager.addProductToCart(productId, cartId);
+    const updatedCart = await cartModel.findOneAndUpdate({ _id: cartId, "products._id": productId }, // Filtro para encontrar el carrito y el producto especifico
+    {
+        $inc: { "products.$.quantity": 1 }, // Incremento la cantidad del producto existente
+    }, {
+        new: true, // Devuelvo el documento actualizado
+    });
+    // Si el producto no estaba en el carrito, agregarlo con cantidad 1
+    if (!updatedCart) {
+        await cartModel.findOneAndUpdate({ _id: cartId }, // Filtro para encontrar sólo el carrito
+        {
+            $push: { products: { _id: productId, quantity: 1 } }, // Inserto el nuevo elemento con cantidad 1
+        }, {
+            new: true,
+            upsert: true,
+        });
+    }
     res.status(200).send({
         status: "OK",
-        payload: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
+        payload: updatedCart,
+        message: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
     });
 });
 export default router;

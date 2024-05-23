@@ -30,7 +30,3 @@ Aspectos a incluir
   - Implementar una vista nueva en handlebars llamada chat.handlebars, la cual permita implementar un chat como el visto en clase. Los mensajes deberán guardarse en una colección “messages” en mongo (no es necesario implementarlo en FileSystem). El formato es:  {user:correoDelUsuario, message: mensaje del usuario}
 
   - Corroborar la integridad del proyecto para que todo funcione como lo ha hecho hasta ahora.
-
-Importante!!
-
-❗ Falta implementar el metodo Post /:cid/product/:pid para el endpoint de Carts
