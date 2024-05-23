@@ -23,7 +23,7 @@ Aspectos a incluir
 
   ✅ Contener todos los Managers (FileSystem y DB) en una carpeta llamada “Dao”
 
-  - Reajustar los servicios con el fin de que puedan funcionar con Mongoose en lugar de FileSystem
+  ❕ Reajustar los servicios con el fin de que puedan funcionar con Mongoose en lugar de FileSystem
 
   ✅ NO ELIMINAR FileSystem de tu proyecto.
 
@@ -31,3 +31,6 @@ Aspectos a incluir
 
   - Corroborar la integridad del proyecto para que todo funcione como lo ha hecho hasta ahora.
 
+Importante!!
+
+❗ Falta implementar el metodo Post /:cid/product/:pid para el endpoint de Carts

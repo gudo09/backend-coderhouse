@@ -1,9 +1,9 @@
 import { Router } from "express";
-import ProductManager from "../dao/managers/productManager.js";
+//import ProductManager from "../dao/managers/productManager.js";
 import productModel from "../dao/models/products.model.js";
 import mongoose from "mongoose";
 const router = Router();
-export const manager = new ProductManager();
+//export const manager = new ProductManager();
 // middleware para validar el id
 const validateId = async (req, res, next) => {
     const id = req.params.pid;
@@ -110,8 +110,25 @@ router.put("/:pid", validateId, async (req, res) => {
     actualización.
     */
     const id = req.params.pid;
-    // procedo con la actualización del producto
+    const code = req.body.code;
     const body = req.body;
+    //valido que el codigo nuevo no sea repetido con el de otro producto
+    const productToUpdate = await productModel.findById(id);
+    const productWithCode = await productModel.find({ code: code });
+    let duplicateCode = false;
+    productWithCode.forEach(product => {
+        if (productToUpdate !== product) {
+            duplicateCode = true;
+        }
+    });
+    if (duplicateCode) {
+        res.status(400).send({
+            status: "Error",
+            message: `Ya existe otro producto con ese código. No se pudo actualizar.`,
+        });
+        return;
+    }
+    // procedo con la actualización del producto
     const updatedProduct = await productModel.findByIdAndUpdate(id, body, {
         new: true,
     });

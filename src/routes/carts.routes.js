@@ -1,55 +1,58 @@
 import { Router } from "express";
-import cartsManager from "../dao/managers/cartsManager.js";
-import { manager as productManager } from "./products.routes.js";
+import mongoose from "mongoose";
+import cartModel from "../dao/models/carts.model.js";
+import productModel from "../dao/models/products.model.js";
+//import cartsManager from "../dao/managers/cartsManager.js";
+//import { manager as productManager } from "./products.routes.js";
 const router = Router();
-const manager = new cartsManager();
+//const manager = new cartsManager();
 // middleware para validar el id
 const validateIdCart = async (req, res, next) => {
     //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
     const id = req.params.cid;
-    const idNumber = typeof id === "string" ? +id : 0;
-    // verifico que el id sea positivo y mayor que 0
-    if (idNumber <= 0 || isNaN(idNumber)) {
+    // verifico que el id sea valido para mongoose
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(400).send({
             status: "ERROR",
             payload: {},
-            error: "Se requiere un valor positivo y mayor que 0 en el id del carrito.",
+            error: "En id ingresado no es válido.",
         });
         return;
     }
+    /*
     // verifico si existe el producto con ese id
     const existsId = await manager.isSomeCartWith("id", idNumber);
     if (!existsId) {
-        res.status(400).send({
-            status: "ERROR",
-            payload: {},
-            error: `No existe un carrito con el id ${idNumber}.`,
-        });
-        return;
+      res.status(400).send({
+        status: "ERROR",
+        payload: {},
+        error: `No existe un carrito con el id ${idNumber}.`,
+      });
+      return;
     }
+    */
     next();
 };
 // middleware para validar el id
 const validateIdProduct = async (req, res, next) => {
     //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
     const id = req.params.pid;
-    const idNumber = typeof id === "string" ? +id : 0;
-    // verifico que el id sea positivo y mayor que 0
-    if (idNumber <= 0 || isNaN(idNumber)) {
+    // verifico que el id sea valido para mongoose
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(400).send({
             status: "ERROR",
             payload: {},
-            error: "Se requiere un valor positivo y mayor que 0 en el id del producto.",
+            error: "En id ingresado no es válido.",
         });
         return;
     }
     // verifico si existe el producto con ese id
-    const existsId = await productManager.isSomeProductWith("id", idNumber);
+    const existsId = await cartModel.findById(id);
     if (!existsId) {
         res.status(400).send({
             status: "ERROR",
             payload: {},
-            error: `No existe un producto con el id ${idNumber}.`,
+            error: `No existe un producto con el id ${id}.`,
         });
         return;
     }
@@ -59,9 +62,27 @@ router.get("/:cid", validateIdCart, async (req, res) => {
     /*
       La ruta GET /:cid deberá listar los productos que pertenezcan al carrito con el parámetro cid proporcionados.
     */
-    const id = +req.params.cid;
-    const cart = await manager.getCartById(id);
-    res.status(200).send({ status: "OK", payload: cart });
+    const id = req.params.cid;
+    const cart = await cartModel
+        .findById(id)
+        .populate({ path: "products._id", model: "products" })
+        .lean();
+    if (!cart) {
+        res.status(400).send({
+            status: "Error",
+            payload: cart,
+            messagge: "No se encuenta el carrito.",
+        });
+        return;
+    }
+    // Mapeo el array de productos para quitar la propiedad _id del objeto product
+    const productsArray = cart.products.map((product) => {
+        const { _id, ...rest } = product._id;
+        return { ...rest, quantity: product.quantity };
+    });
+    const { products, ...rest } = cart;
+    const newCart = { ...rest, products: productsArray };
+    res.status(200).send({ status: "OK", payload: newCart });
 });
 router.post("/", async (req, res) => {
     /*
@@ -69,11 +90,16 @@ router.post("/", async (req, res) => {
       - Id:Number/String (A tu elección, de igual manera como con los productos, debes asegurar que nunca se dupliquen los ids y que este se autogenere).
       - products: Array que contendrá objetos que representen cada producto
     */
-    const products = await productManager.getProducts(0);
-    await manager.addCart({ products: products });
+    const products = await productModel.find().lean();
+    const newProducts = products.map((element) => {
+        return { ...element, quantity: 0 };
+    });
+    console.log(newProducts);
+    const cart = await cartModel.create({ products: newProducts });
     res.status(200).send({
         status: "OK",
-        payload: "El carrito se ha agregado correctamente.",
+        payload: cart,
+        message: "El carrito se ha agregado correctamente.",
     });
 });
 router.post("/:cid/product/:pid", validateIdCart, validateIdProduct, async (req, res) => {
@@ -84,9 +110,9 @@ router.post("/:cid/product/:pid", validateIdCart, validateIdProduct, async (req,
     
     Además, si un producto ya existente intenta agregarse al producto, incrementar el campo quantity de dicho producto.
   */
-    const cartId = +req.params.cid;
-    const productId = +req.params.pid;
-    await manager.addProductToCart(productId, cartId);
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    //await manager.addProductToCart(productId, cartId);
     res.status(200).send({
         status: "OK",
         payload: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
