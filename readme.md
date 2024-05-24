@@ -30,3 +30,48 @@ Aspectos a incluir
   - Implementar una vista nueva en handlebars llamada chat.handlebars, la cual permita implementar un chat como el visto en clase. Los mensajes deberán guardarse en una colección “messages” en mongo (no es necesario implementarlo en FileSystem). El formato es:  {user:correoDelUsuario, message: mensaje del usuario}
 
   - Corroborar la integridad del proyecto para que todo funcione como lo ha hecho hasta ahora.
+
+Importante!!
+
+❗ Falta implementar el metodo Post /:cid/product/:pid para el endpoint de Carts
+
+
+"RESUMEN PREENTREGA 2"
+
+  1) Verificar funcionamiento persistencia
+  MongoDB
+
+
+  2) Migrar interacción a través del modelo a la clase manager.
+
+
+  3) Habilitar paginado (paginate) y ordenamiento (sort) en endpoint GET / de products.
+
+  Recibir parámetros por req.query:
+
+  -limit (items por página, por defecto 10).
+  -page (la página a recuperar con paginate, por defecto 1).
+  -query (el filtro a utilizar, por ej por category, por defecto todo). 
+  -sort (1 ascendente, -1 descendente).
+
+
+  4) Habilitar nuevo endpoint GET para obtener datos de un carrito en particular, por ej GET /one/icid.
+
+
+  5) Agregar métodos para gestión de array products
+
+  -"DELETE /:cid/products" Vacía el array del carrito cid
+  -"DELETE /:cid/products/:pid" Quita el producto pid del array del carrito cid
+  -"PUT /:cid/products/pid" Agrega x cantidad del producto pid al array del carrito cid (la cantidad se debe pasar por req.body)
+  
+  Alternativa:
+  -"PUT /:cid/products/:pid/:aty" Agrega la cantidad aty del producto pid al array del carrito cid
+
+
+  6) Agregar ref a products en modelo carrito y habilitar populate (sea en modelo o en la propia consulta) para recibir detalle completo.
+
+
+  7) Crear view de products con paginación. (pasar directamente al render la info de Mongoose Paginate para utilizar esos datos en la plantilla y armar los botones de paginado).
+
+
+  8) Activar botón "Agregar a carrito" para cada producto en lista.
