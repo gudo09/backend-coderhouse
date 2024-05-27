@@ -1,5 +1,5 @@
 import express from "express";
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 import config from "./config.js";
 import productRoutes from "./routes/products.routes.js";
 import cartRoutes from "./routes/carts.routes.js";

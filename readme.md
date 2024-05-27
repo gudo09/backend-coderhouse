@@ -35,43 +35,36 @@ Importante!!
 
 ❗ Falta implementar el metodo Post /:cid/product/:pid para el endpoint de Carts
 
+<br>
 
-"RESUMEN PREENTREGA 2"
+#### "RESUMEN PREENTREGA 2"
 
-  1) Verificar funcionamiento persistencia
-  MongoDB
-
-
+  1) ✅ Verificar funcionamiento persistencia MongoDB.
+  <br>
   2) Migrar interacción a través del modelo a la clase manager.
-
-
+  <br>
   3) Habilitar paginado (paginate) y ordenamiento (sort) en endpoint GET / de products.
 
-  Recibir parámetros por req.query:
+      ##### Recibir parámetros por req.query:
 
-  -limit (items por página, por defecto 10).
-  -page (la página a recuperar con paginate, por defecto 1).
-  -query (el filtro a utilizar, por ej por category, por defecto todo). 
-  -sort (1 ascendente, -1 descendente).
-
-
+      -limit (items por página, por defecto 10).
+      -page (la página a recuperar con paginate, por defecto 1).
+      -query (el filtro a utilizar, por ej por category, por defecto todo). 
+      -sort (1 ascendente, -1 descendente).
+  <br>
   4) Habilitar nuevo endpoint GET para obtener datos de un carrito en particular, por ej GET /one/icid.
-
-
+  <br>
   5) Agregar métodos para gestión de array products
 
-  -"DELETE /:cid/products" Vacía el array del carrito cid
-  -"DELETE /:cid/products/:pid" Quita el producto pid del array del carrito cid
-  -"PUT /:cid/products/pid" Agrega x cantidad del producto pid al array del carrito cid (la cantidad se debe pasar por req.body)
+      -"DELETE /:cid/products" Vacía el array del carrito cid
+      -"DELETE /:cid/products/:pid" Quita el producto pid del array del carrito cid
+      -"PUT /:cid/products/pid" Agrega x cantidad del producto pid al array del carrito cid (la cantidad se debe pasar por req.body)
   
-  Alternativa:
-  -"PUT /:cid/products/:pid/:aty" Agrega la cantidad aty del producto pid al array del carrito cid
-
-
-  6) Agregar ref a products en modelo carrito y habilitar populate (sea en modelo o en la propia consulta) para recibir detalle completo.
-
-
+      ##### Alternativa:
+      -"PUT /:cid/products/:pid/:aty" Agrega la cantidad aty del producto pid al array del carrito cid
+      <br>
+  6) ✅ Agregar ref a products en modelo carrito y habilitar populate (sea en modelo o en la propia consulta) para recibir detalle completo.
+  <br>
   7) Crear view de products con paginación. (pasar directamente al render la info de Mongoose Paginate para utilizar esos datos en la plantilla y armar los botones de paginado).
-
-
+  <br>
   8) Activar botón "Agregar a carrito" para cada producto en lista.
