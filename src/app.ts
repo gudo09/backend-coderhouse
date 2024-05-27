@@ -1,11 +1,11 @@
 import express from "express";
 import mongoose from "mongoose"
-import config from "./config.js";
-import productRoutes from "./routes/products.routes.js";
-import cartRoutes from "./routes/carts.routes.js";
-import viewsRoutes from "./routes/views.routes.js";
+import config from "@/config.js";
+import productRoutes from "@routes/products.routes.js";
+import cartRoutes from "@routes/carts.routes.js";
+import viewsRoutes from "@routes/views.routes.js";
 import handlebars from "express-handlebars";
-import initSocket from "./socket.js";
+import initSocket from "@/socket.js";
 
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();

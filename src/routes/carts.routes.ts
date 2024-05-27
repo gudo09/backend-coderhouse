@@ -1,9 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import mongoose from "mongoose";
-import cartModel from "../dao/models/carts.model.js";
-import productModel from "../dao/models/products.model.js";
-//import cartsManager from "../dao/managers/cartsManager.js";
-//import { manager as productManager } from "./products.routes.js";
+import cartModel from "@models/carts.model.js";
+import productModel from "@models/products.model.js";
 
 const router = Router();
 //const manager = new cartsManager();

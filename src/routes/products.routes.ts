@@ -1,6 +1,5 @@
 import { NextFunction, Router, Request, Response } from "express";
-//import ProductManager from "../dao/managers/productManager.js";
-import productModel from "../dao/models/products.model.js";
+import productModel from "@models/products.model.js";
 import mongoose from "mongoose";
 
 const router = Router();
