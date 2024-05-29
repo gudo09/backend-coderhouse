@@ -1,4 +1,6 @@
-class CollectionManager {
+import cartModel from "@models/carts.model.js";
+
+class cartsManager {
   constructor() {}
 
   getAll = async (_limit: any) => {
@@ -37,4 +39,4 @@ class CollectionManager {
   };
 }
 
-export default CollectionManager;
+export default cartsManager;

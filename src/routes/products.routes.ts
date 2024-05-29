@@ -1,9 +1,10 @@
 import { NextFunction, Router, Request, Response } from "express";
 import productModel from "@models/products.model.js";
 import mongoose from "mongoose";
+import productsManager from "@managers/productsManager.mdb.js";
 
 const router = Router();
-//export const manager = new ProductManager();
+const manager = new productsManager();
 
 // middleware para validar el id
 const validateId = async (req: Request, res: Response, next: NextFunction) => {
@@ -62,134 +63,89 @@ const validateBody = async (
 };
 // el callback es async porque espera las respuestas de mongoose
 router.get("/", async (req, res) => {
-  //Valido si el limite es string y lo parseo con el operador + a number, en caso contrario le asigno 0
-  const limit = req.query.limit;
-  const limitNumber: number = typeof limit === "string" ? +limit : 0;
-  const products = await productModel.find().limit(limitNumber).lean();
-  res.status(200).send({ status: "OK", payload: products });
+  try {
+    const limit = req.query.limit;
+    const sort = req.query.sort;
+    const page = req.query.page;
+    const query = req.query.query;
+    const products = await manager.getAll(limit, sort, query, page);
+    res.status(200).send({ status: "OK", payload: products });
+  } catch (error) {
+    res.status(400).send({ status: "OK", payload: {}, error: error });
+  }
 });
 
 router.post("/", validateBody, async (req, res) => {
-  /*
-    La ruta raíz POST / deberá agregar un nuevo producto con los campos:
-    - id: Number/String (A tu elección, el id NO se manda desde body, se autogenera como lo hemos visto desde los primeros entregables, asegurando que NUNCA se repetirán los ids en el archivo.
-    - title:String,
-    - description:String
-    - code:String
-    - price:Number
-    - status:Boolean
-    - stock:Number
-    - category:String
-    - thumbnails:Array de Strings que contenga las rutas donde están almacenadas las imágenes referentes a dicho producto
-    Status es true por defecto.
-    Todos los campos son obligatorios, a excepción de thumbnails
-  */
-  const body = req.body;
-  // valido si el código del producto a agregar está repetido
-  const isDuplicateCode = await productModel.exists({ code: body.code });
-
-  // verifico que el codigo a agregar ya existe
-  if (isDuplicateCode) {
-    res.status(400).send({
-      status: "ERROR",
-      payload: {},
-      error: "El código del elemento que se intenta agregar está duplicado.",
+  try {
+    const body = req.body;
+    const productAdded = await manager.add(body);
+    res.status(200).send({
+      status: "OK",
+      payload: productAdded,
+      message: "Se ha agregado un nuevo producto.",
     });
-    return;
+  } catch (err) {
+    res.status(400).send({
+      status: "OK",
+      payload: {},
+      message: (err as Error).message,
+    });
   }
-
-  // procedo con el alta del producto
-  const lastProductAdded = await productModel.create(body);
-  res.status(200).send({
-    status: "OK",
-    payload: lastProductAdded,
-    message: "Se ha agregado un nuevo producto.",
-  });
 });
 
 router.get("/:pid", validateId, async (req, res) => {
-  const id = req.params.pid;
-
-  const product = await productModel.findById(id);
-
-  if (product === null) {
+  try {
+    const id = req.params.pid;
+    const product = await manager.getById(id);
+    res.status(200).send({ status: "OK", payload: product });
+  } catch (error) {
     res.status(400).send({
       status: "Error",
       payload: {},
-      message: "No se ha encontrado el producto.",
+      message: (error as Error).message,
     });
-    return;
   }
-
-  res.status(200).send({ status: "OK", payload: product });
 });
 
 router.put("/:pid", validateId, async (req, res) => {
-  /*
-  La ruta PUT /:pid deberá tomar un producto y actualizarlo por los campos enviados
-  desde body. NUNCA se debe actualizar o eliminar el id al momento de hacer dicha 
-  actualización.
-  */
-  const id = req.params.pid;
-  const code = req.body.code;
+  try {
+    const id = req.params.pid;
 
-  const body = req.body;
-  
-  //valido que el codigo nuevo no sea repetido con el de otro producto
-  const productToUpdate = await productModel.findById(id)
-  const productWithCode = await productModel.find({code: code})
+    const body = req.body;
 
-  let duplicateCode = false
+    const updatedProduct = await manager.update(id, body);
 
-  productWithCode.forEach(product => {
-    if (productToUpdate !== product){
-      duplicateCode = true;
-    }
-  });
-  
-  if (duplicateCode){
-    res.status(400).send({
-      status: "Error",
-      message: `Ya existe otro producto con ese código. No se pudo actualizar.`,
+    res.status(200).send({
+      status: "OK",
+      message: `Se ha modificado el producto con el id ${id}`,
+      payload: updatedProduct,
     });
-    return
-  }
-  
-  // procedo con la actualización del producto
-  const updatedProduct = await productModel.findByIdAndUpdate(id, body, {
-    new: true,
-  });
-
-  res.status(200).send({
-    status: "OK",
-    message: `Se ha modificado el producto con el id ${id}`,
-    payload: updatedProduct,
-  });
-});
-
-router.delete("/:pid", validateId, async (req, res) => {
-  /*
-    La ruta DELETE /:pid deberá eliminar el producto con el pid indicado. 
-  */
-  const id = req.params.pid;
-
-  const product = await productModel.findById(id);
-  if (product === null) {
+  } catch (error) {
     res.status(400).send({
       status: "Error",
       payload: {},
-      message: "No se ha encontrado el producto para eliminar.",
+      message: (error as Error).message,
     });
-    return;
   }
+});
 
-  // procedo con la eliminación del producto
-  const productDeleted = await productModel.findByIdAndDelete(id);
-  res.status(200).send({
-    status: "OK",
-    payload: productDeleted,
-    message: "Producto eliminado.",
-  });
+router.delete("/:pid", validateId, async (req, res) => {
+  try {
+    const id = req.params.pid;
+
+    const productDeleted = await manager.delete(id);
+    res.status(200).send({
+      status: "OK",
+      payload: productDeleted,
+      message: "Producto eliminado.",
+    });
+  } catch (error) {
+    res.status(400).send({
+      status: "Error",
+      payload: {},
+      message: (error as Error).message,
+    });
+  }
 });
 
 export default router;

@@ -122,9 +122,6 @@ class cartsManager {
         return cart;
       }
     });
-    //console.log(JSON.stringify(this.carts, null,2))
-
-    //this.carts.push(updatedProducts as unknown as CartWithId);
     this.updateJson();
   }
 }

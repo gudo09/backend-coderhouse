@@ -1,10 +1,10 @@
 import { NextFunction, Router, Request, Response } from "express";
 import mongoose from "mongoose";
 import cartModel from "@models/carts.model.js";
+import cartsManager from "@managers/cartManager.mdb.js";
 import productModel from "@models/products.model.js";
 
 const router = Router();
-//const manager = new cartsManager();
 
 // middleware para validar el id
 const validateIdCart = async (
@@ -74,6 +74,8 @@ const validateIdProduct = async (
   next();
 };
 
+router.get("/", async (req, res) => {});
+
 router.get("/:cid", validateIdCart, async (req, res) => {
   /*
     La ruta GET /:cid deberá listar los productos que pertenezcan al carrito con el parámetro cid proporcionados.
@@ -131,7 +133,7 @@ router.post("/", async (req, res) => {
 });
 
 router.post(
-  "/:cid/product/:pid",
+  "/:cid/products/:pid",
   validateIdCart,
   validateIdProduct,
   async (req, res) => {
@@ -160,7 +162,7 @@ router.post(
     // Si el producto no estaba en el carrito, agregarlo con cantidad 1
     if (!updatedCart) {
       await cartModel.findOneAndUpdate(
-        { _id: cartId },// Filtro para encontrar sólo el carrito
+        { _id: cartId }, // Filtro para encontrar sólo el carrito
         {
           $push: { products: { _id: productId, quantity: 1 } }, // Inserto el nuevo elemento con cantidad 1
         },
@@ -179,4 +181,23 @@ router.post(
   }
 );
 
+router.put("/:cid", validateIdCart, validateIdProduct, async (req, res) => {});
+
+router.put(
+  "/:cid/products/:pid",
+  validateIdCart,
+  validateIdProduct,
+  async (req, res) => {}
+);
+
+router.delete("/:cid", validateIdCart, async (req, res) => {
+
+});
+
+router.delete(
+  "/:cid/products/:pid",
+  validateIdCart,
+  validateIdProduct,
+  async (req, res) => {}
+);
 export default router;

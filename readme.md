@@ -23,17 +23,14 @@ Aspectos a incluir
 
   ✅ Contener todos los Managers (FileSystem y DB) en una carpeta llamada “Dao”
 
-  ❕ Reajustar los servicios con el fin de que puedan funcionar con Mongoose en lugar de FileSystem
+  ✅ Reajustar los servicios con el fin de que puedan funcionar con Mongoose en lugar de FileSystem
 
   ✅ NO ELIMINAR FileSystem de tu proyecto.
 
   - Implementar una vista nueva en handlebars llamada chat.handlebars, la cual permita implementar un chat como el visto en clase. Los mensajes deberán guardarse en una colección “messages” en mongo (no es necesario implementarlo en FileSystem). El formato es:  {user:correoDelUsuario, message: mensaje del usuario}
 
-  - Corroborar la integridad del proyecto para que todo funcione como lo ha hecho hasta ahora.
+  ✅ Corroborar la integridad del proyecto para que todo funcione como lo ha hecho hasta ahora.
 
-Importante!!
-
-❗ Falta implementar el metodo Post /:cid/product/:pid para el endpoint de Carts
 
 <br>
 
@@ -41,9 +38,9 @@ Importante!!
 
   1) ✅ Verificar funcionamiento persistencia MongoDB.
   <br>
-  2) Migrar interacción a través del modelo a la clase manager.
+  2) ✅ Migrar interacción a través del modelo a la clase manager.
   <br>
-  3) Habilitar paginado (paginate) y ordenamiento (sort) en endpoint GET / de products.
+  3) ✅ Habilitar paginado (paginate) y ordenamiento (sort) en endpoint GET / de products.
 
       ##### Recibir parámetros por req.query:
 
@@ -52,7 +49,7 @@ Importante!!
       -query (el filtro a utilizar, por ej por category, por defecto todo). 
       -sort (1 ascendente, -1 descendente).
   <br>
-  4) Habilitar nuevo endpoint GET para obtener datos de un carrito en particular, por ej GET /one/icid.
+  4) Habilitar nuevo endpoint GET para obtener datos de un carrito en particular, por ej GET /one/:cid.
   <br>
   5) Agregar métodos para gestión de array products
 
