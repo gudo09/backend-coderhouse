@@ -70,8 +70,12 @@ router.get("/", async (req, res) => {
     const query = req.query.query;
     const products = await manager.getAll(limit, sort, query, page);
     res.status(200).send({ status: "OK", payload: products });
-  } catch (error) {
-    res.status(400).send({ status: "OK", payload: {}, error: error });
+  } catch (err) {
+    res.status(400).send({
+      status: "OK",
+      payload: {},
+      message: (err as Error).message,
+    });
   }
 });
 

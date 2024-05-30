@@ -14,7 +14,6 @@ export const schema = new Schema({
   stock: { type: Number, required: true },
   status: { type: Boolean, default: true, required: false },
   category: { type: String, required: true },
-  quantity: { type: Number },
 });
 
 schema.plugin(mongoosePaginate);
@@ -28,7 +27,6 @@ interface ProductDocument extends Document {
   stock: number;
   status: boolean;
   category: string;
-  quantity?: number;
 }
 
 const model = mongoose.model<ProductDocument, PaginateModel<ProductDocument>>(collection, schema);

@@ -5,6 +5,7 @@ import cartsManager from "@managers/cartManager.mdb.js";
 import productModel from "@models/products.model.js";
 
 const router = Router();
+const manager = new cartsManager();
 
 // middleware para validar el id
 const validateIdCart = async (
@@ -74,39 +75,33 @@ const validateIdProduct = async (
   next();
 };
 
-router.get("/", async (req, res) => {});
+router.get("/", async (req, res) => {
+  try {
+    const limit = req.query.limit;
+    const page = req.query.page;
+    const products = await manager.getAll(limit, page);
+    res.status(200).send({ status: "OK", payload: products });
+  } catch (error) {
+    res.status(400).send({ status: "Error", payload: {}, error: error });
+  }
+});
 
-router.get("/:cid", validateIdCart, async (req, res) => {
+router.get("/one/:cid", validateIdCart, async (req, res) => {
   /*
     La ruta GET /:cid deberá listar los productos que pertenezcan al carrito con el parámetro cid proporcionados.
   */
+  try {
+    const id = req.params.cid;
+    const cart = await manager.getOne(id);
 
-  const id = req.params.cid;
-
-  const cart = await cartModel
-    .findById(id)
-    .populate({ path: "products._id", model: "products" })
-    .lean();
-
-  if (!cart) {
+    res.status(200).send({ status: "OK", payload: cart });
+  } catch (err) {
     res.status(400).send({
-      status: "Error",
-      payload: cart,
-      messagge: "No se encuenta el carrito.",
+      status: "OK",
+      payload: {},
+      message: (err as Error).message,
     });
-    return;
   }
-
-  // Mapeo el array de productos para quitar la propiedad _id del objeto product
-  const productsArray = cart.products.map((product) => {
-    const { _id, ...rest } = product._id;
-    return { ...rest, quantity: product.quantity };
-  });
-
-  const { products, ...rest } = cart;
-
-  const newCart = { ...rest, products: productsArray };
-  res.status(200).send({ status: "OK", payload: newCart });
 });
 
 router.post("/", async (req, res) => {
@@ -120,14 +115,19 @@ router.post("/", async (req, res) => {
 
   //agrego el campo quantity a cada producto
   const newProducts = products.map((element) => {
-    return { ...element, quantity: 0 };
+    return { product: element._id, quantity: 0 };
   });
   console.log(newProducts);
-  const cart = await cartModel.create({ products: newProducts });
+
+
+  const cart = await cartModel.create({ products: newProducts })
+  
+  // Eliminar temporalmente los _id de los productos en la respuesta
+  const cartWithoutIds = { products: cart.products.map(product => ({ product: product.product, quantity: product.quantity })) };
 
   res.status(200).send({
     status: "OK",
-    payload: cart,
+    payload: cartWithoutIds,
     message: "El carrito se ha agregado correctamente.",
   });
 });
@@ -190,9 +190,7 @@ router.put(
   async (req, res) => {}
 );
 
-router.delete("/:cid", validateIdCart, async (req, res) => {
-
-});
+router.delete("/:cid", validateIdCart, async (req, res) => {});
 
 router.delete(
   "/:cid/products/:pid",
