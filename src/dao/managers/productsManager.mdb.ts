@@ -10,24 +10,30 @@ class productsManager {
       const limit: number = typeof _limit === "string" ? +_limit : 50;
       const page: number = typeof _page === "string" ? +_page : 1;
       const sort: number = +(_sort === "1" || _sort === "-1" ? _sort : 1);
-      const query: string = typeof _limit === "string" ? _query : "_id";
+      const query: Record<string, any> =
+        typeof _query === "string" ? JSON.parse(_query) : _query; // Utilizo el generico Record de Typescript para tipar query
 
       const options = {
         limit: limit,
-        sort: { [query]: sort },
+        sort: { price: sort },
         page: page,
       };
 
-      const paginatedProducts = await productModel.paginate({}, options);
+      const paginatedProducts = await productModel.paginate(query, options);
 
       // Construyo los enlaces para la página previa y siguiente
-      const prevLink = paginatedProducts.hasPrevPage
-        ? `/?limit=${limit}&page=${page - 1}&sort=${sort}`
-        : null;
-      const nextLink = paginatedProducts.hasNextPage
-        ? `/?limit=${limit}&page=${page + 1}&sort=${sort}`
-        : null;
-
+      let prevLink = null;
+      let nextLink = null;
+      if (paginatedProducts.hasPrevPage) {
+        prevLink = `/?limit=${limit}&page=${page - 1}&sort=${sort}`;
+        if (_query)
+          prevLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añadir query si está definido
+      }
+      if (paginatedProducts.hasNextPage) {
+        nextLink = `/?limit=${limit}&page=${page + 1}&sort=${sort}`;
+        if (_query)
+          nextLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añadir query si está definido
+      }
       return { ...paginatedProducts, prevLink, nextLink };
     } catch (err) {
       throw new Error((err as Error).message);
