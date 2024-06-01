@@ -72,7 +72,7 @@ router.get("/", async (req, res) => {
     res.status(200).send({ status: "OK", payload: products });
   } catch (err) {
     res.status(400).send({
-      status: "OK",
+      status: "ERROR",
       payload: {},
       message: (err as Error).message,
     });
@@ -90,7 +90,7 @@ router.post("/", validateBody, async (req, res) => {
     });
   } catch (err) {
     res.status(400).send({
-      status: "OK",
+      status: "ERROR",
       payload: {},
       message: (err as Error).message,
     });
@@ -104,7 +104,7 @@ router.get("/:pid", validateId, async (req, res) => {
     res.status(200).send({ status: "OK", payload: product });
   } catch (error) {
     res.status(400).send({
-      status: "Error",
+      status: "ERROR",
       payload: {},
       message: (error as Error).message,
     });
@@ -126,7 +126,7 @@ router.put("/:pid", validateId, async (req, res) => {
     });
   } catch (error) {
     res.status(400).send({
-      status: "Error",
+      status: "ERROR",
       payload: {},
       message: (error as Error).message,
     });
@@ -145,7 +145,7 @@ router.delete("/:pid", validateId, async (req, res) => {
     });
   } catch (error) {
     res.status(400).send({
-      status: "Error",
+      status: "ERROR",
       payload: {},
       message: (error as Error).message,
     });

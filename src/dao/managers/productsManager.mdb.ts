@@ -18,7 +18,17 @@ class productsManager {
         page: page,
       };
 
-      return await productModel.paginate({}, options);
+      const paginatedProducts = await productModel.paginate({}, options);
+
+      // Construyo los enlaces para la página previa y siguiente
+      const prevLink = paginatedProducts.hasPrevPage
+        ? `/?limit=${limit}&page=${page - 1}&sort=${sort}`
+        : null;
+      const nextLink = paginatedProducts.hasNextPage
+        ? `/?limit=${limit}&page=${page + 1}&sort=${sort}`
+        : null;
+
+      return { ...paginatedProducts, prevLink, nextLink };
     } catch (err) {
       throw new Error((err as Error).message);
     }

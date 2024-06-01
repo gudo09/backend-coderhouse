@@ -1,6 +1,5 @@
 import { NextFunction, Router, Request, Response } from "express";
 import mongoose from "mongoose";
-import cartModel from "@models/carts.model.js";
 import cartsManager from "@managers/cartManager.mdb.js";
 import productModel from "@models/products.model.js";
 
@@ -81,8 +80,12 @@ router.get("/", async (req, res) => {
     const page = req.query.page;
     const products = await manager.getAll(limit, page);
     res.status(200).send({ status: "OK", payload: products });
-  } catch (error) {
-    res.status(400).send({ status: "Error", payload: {}, error: error });
+  } catch (err) {
+    res.status(400).send({
+      status: "Error",
+      payload: {},
+      message: (err as Error).message,
+    });
   }
 });
 
@@ -97,7 +100,7 @@ router.get("/one/:cid", validateIdCart, async (req, res) => {
     res.status(200).send({ status: "OK", payload: cart });
   } catch (err) {
     res.status(400).send({
-      status: "OK",
+      status: "Error",
       payload: {},
       message: (err as Error).message,
     });
@@ -110,26 +113,22 @@ router.post("/", async (req, res) => {
     - Id:Number/String (A tu elección, de igual manera como con los productos, debes asegurar que nunca se dupliquen los ids y que este se autogenere).
     - products: Array que contendrá objetos que representen cada producto
   */
+  try {
+    const cart = await manager.create();
 
-  const products = await productModel.find({}, { _id: 1 }).lean();
-
-  //agrego el campo quantity a cada producto
-  const newProducts = products.map((element) => {
-    return { product: element._id, quantity: 0 };
-  });
-  console.log(newProducts);
-
-
-  const cart = await cartModel.create({ products: newProducts })
-  
-  // Eliminar temporalmente los _id de los productos en la respuesta
-  const cartWithoutIds = { products: cart.products.map(product => ({ product: product.product, quantity: product.quantity })) };
-
-  res.status(200).send({
-    status: "OK",
-    payload: cartWithoutIds,
-    message: "El carrito se ha agregado correctamente.",
-  });
+    res.status(200).send({
+      status: "OK",
+      payload: cart,
+      message:
+        "Se ha creado un nuevo carrito con todos los prductos con cantidad 0.",
+    });
+  } catch (err) {
+    res.status(400).send({
+      status: "Error",
+      payload: {},
+      message: (err as Error).message,
+    });
+  }
 });
 
 router.post(
@@ -145,43 +144,47 @@ router.post(
     Además, si un producto ya existente intenta agregarse al producto, incrementar el campo quantity de dicho producto. 
   */
 
-    const cartId = req.params.cid;
+    try {
+      const cartId = req.params.cid;
 
-    const productId = req.params.pid;
+      const productId = req.params.pid;
 
-    const updatedCart = await cartModel.findOneAndUpdate(
-      { _id: cartId, "products._id": productId }, // Filtro para encontrar el carrito y el producto especifico
-      {
-        $inc: { "products.$.quantity": 1 }, // Incremento la cantidad del producto existente
-      },
-      {
-        new: true, // Devuelvo el documento actualizado
-      }
-    );
+      const updatedCart = await manager.add(cartId, productId);
 
-    // Si el producto no estaba en el carrito, agregarlo con cantidad 1
-    if (!updatedCart) {
-      await cartModel.findOneAndUpdate(
-        { _id: cartId }, // Filtro para encontrar sólo el carrito
-        {
-          $push: { products: { _id: productId, quantity: 1 } }, // Inserto el nuevo elemento con cantidad 1
-        },
-        {
-          new: true,
-          upsert: true,
-        }
-      );
+      res.status(200).send({
+        status: "OK",
+        payload: updatedCart,
+        message: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
+      });
+    } catch (err) {
+      res.status(400).send({
+        status: "Error",
+        payload: {},
+        message: (err as Error).message,
+      });
     }
-
-    res.status(200).send({
-      status: "OK",
-      payload: updatedCart,
-      message: `Se ha agregado una undidad del producto con el id ${productId} al carrito ${cartId}.`,
-    });
   }
 );
 
-router.put("/:cid", validateIdCart, validateIdProduct, async (req, res) => {});
+router.put("/:cid", validateIdCart, validateIdProduct, async (req, res) => {
+  /*PUT api/carts/:cid deberá actualizar el carrito con un arreglo de productos con el siguiente formato:
+  
+  {
+	  status:success/error
+    payload: Resultado de los productos solicitados
+    totalPages: Total de páginas
+    prevPage: Página anterior
+    nextPage: Página siguiente
+    page: Página actual
+    hasPrevPage: Indicador para saber si la página previa existe
+    hasNextPage: Indicador para saber si la página siguiente existe.
+    prevLink: Link directo a la página previa (null si hasPrevPage=false)
+    nextLink: Link directo a la página siguiente (null si hasNextPage=false)
+  }
+
+
+  */
+});
 
 router.put(
   "/:cid/products/:pid",
@@ -190,12 +193,48 @@ router.put(
   async (req, res) => {}
 );
 
-router.delete("/:cid", validateIdCart, async (req, res) => {});
+router.delete("/:cid", validateIdCart, async (req, res) => {
+  try {
+    //"DELETE /:cid/products" Vacía el array del carrito cid
+    const id = req.params.cid;
+
+    const emptiedCart = await manager.emptyCart(id);
+    res.status(200).send({
+      status: "OK",
+      payload: emptiedCart,
+    });
+  } catch (err) {
+    res.status(400).send({
+      status: "Error",
+      payload: {},
+      message: (err as Error).message,
+    });
+  }
+});
 
 router.delete(
   "/:cid/products/:pid",
   validateIdCart,
   validateIdProduct,
-  async (req, res) => {}
+  async (req, res) => {
+    try {
+      //"DELETE /:cid/products/:pid" Quita el producto pid del array del carrito cid
+      const cartId = req.params.cid;
+      const productId = req.params.pid;
+
+      const deletedProduct = await manager.deleteOneProduct(productId, cartId);
+
+      res.status(200).send({
+        status: "OK",
+        payload: deletedProduct,
+      });
+    } catch (err) {
+      res.status(400).send({
+        status: "Error",
+        payload: {},
+        message: (err as Error).message,
+      });
+    }
+  }
 );
 export default router;
