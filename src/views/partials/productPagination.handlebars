@@ -1,15 +1,34 @@
-<p>Product pagination{{nextPage}}</p>
-
 <div>
 
-
-  <a href="{{prevLink}}" class="pagination-button {{#unless prevLink}}disabled{{/unless}}">Página anterior</a>
+  {{#if prevLink}}
+  <button id="prev-button" data-link="{{prevLink}}">Página Anterior</button>
+  {{else}}
+  <button id="prev-button" disabled>Página Anterior</button>
+  {{/if}}
   <span>Página {{page}} de {{totalPages}}</span>
-  <a href="{{nextLink}}" class="pagination-button {{#unless nextLink}}disabled{{/unless}}">Página siguiente</a>
+
+  {{#if nextLink}}
+  <button id="next-button" data-link="{{nextLink}}">Página Siguiente</button>
+  {{else}}
+  <button id="next-button" disabled>Página Siguiente</button>
+  {{/if}}
+
 
 </div>
 
 <script>
 
+  document.getElementById('prev-button').addEventListener('click', function() {
+      const link = this.getAttribute('data-link');
+      if (link) {
+        window.location.href = link;
+      }
+    });
 
+    document.getElementById('next-button').addEventListener('click', function() {
+      const link = this.getAttribute('data-link');
+      if (link) {
+        window.location.href = link;
+      }
+    });
 </script>

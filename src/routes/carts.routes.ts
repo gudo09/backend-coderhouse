@@ -166,9 +166,9 @@ router.post(
   }
 );
 
+// No implementado
 router.put("/:cid", validateIdCart, validateIdProduct, async (req, res) => {
   /*PUT api/carts/:cid deberá actualizar el carrito con un arreglo de productos con el siguiente formato:
-  
   {
 	  status:success/error
     payload: Resultado de los productos solicitados
@@ -181,11 +181,10 @@ router.put("/:cid", validateIdCart, validateIdProduct, async (req, res) => {
     prevLink: Link directo a la página previa (null si hasPrevPage=false)
     nextLink: Link directo a la página siguiente (null si hasNextPage=false)
   }
-
-
   */
 });
 
+// No implementado
 router.put(
   "/:cid/products/:pid",
   validateIdCart,

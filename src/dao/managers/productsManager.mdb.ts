@@ -6,8 +6,8 @@ class productsManager {
 
   getAll = async (_limit: any, _sort: any, _query: any, _page: any) => {
     try {
-      //valido los parametros y les pongo valores por defecto en caso de no recibirlos
-      const limit: number = typeof _limit === "string" ? +_limit : 50;
+      //Valido los parametros y les pongo valores por defecto en caso de no recibirlos
+      const limit: number = typeof _limit === "string" ? +_limit : 10;
       const page: number = typeof _page === "string" ? +_page : 1;
       const sort: number = +(_sort === "1" || _sort === "-1" ? _sort : 1);
       const query: Record<string, any> =
@@ -22,18 +22,21 @@ class productsManager {
       const paginatedProducts = await productModel.paginate(query, options);
 
       // Construyo los enlaces para la página previa y siguiente
+      // Uso encodeURIComponent para encriptar el query
       let prevLink = null;
       let nextLink = null;
       if (paginatedProducts.hasPrevPage) {
-        prevLink = `/?limit=${limit}&page=${page - 1}&sort=${sort}`;
+        prevLink = `/views/products/?limit=${limit}&page=${page - 1}&sort=${sort}`;
         if (_query)
-          prevLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añadir query si está definido
+          prevLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añado query si no es undefined
       }
       if (paginatedProducts.hasNextPage) {
-        nextLink = `/?limit=${limit}&page=${page + 1}&sort=${sort}`;
+        nextLink = `/views/products?limit=${limit}&page=${page + 1}&sort=${sort}`;
         if (_query)
-          nextLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añadir query si está definido
+          nextLink += `&query=${encodeURIComponent(JSON.stringify(query))}`;
       }
+
+      // Respuesta
       return { ...paginatedProducts, prevLink, nextLink };
     } catch (err) {
       throw new Error((err as Error).message);
