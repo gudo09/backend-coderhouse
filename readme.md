@@ -9,10 +9,6 @@
 - "build": Compila todos los archivos .ts en .js.
 - "dev": (levanta el servidor) watch para desarrollar sólo en ts sin compilar a js
 
-Resumen primera practica integradora:
-
-Continuar sobre el proyecto que has trabajado para tu ecommerce y configurar los siguientes elementos:
-
 Aspectos a incluir
 
 ❕ Crear una base de datos llamada “ecommerce” dentro de tu Atlas, crear sus colecciones “carts”, “messages”, “products” y sus respectivos schemas.
@@ -53,6 +49,6 @@ Aspectos a incluir
 
 6.  ✅ Agregar ref a products en modelo carrito y habilitar populate (sea en modelo o en la propia consulta) para recibir detalle completo.
     <br>
-7.  Crear view de products con paginación. (pasar directamente al render la info de Mongoose Paginate para utilizar esos datos en la plantilla y armar los botones de paginado).
+7.  ✅ Crear view de products con paginación. (pasar directamente al render la info de Mongoose Paginate para utilizar esos datos en la plantilla y armar los botones de paginado).
     <br>
 8.  Activar botón "Agregar a carrito" para cada producto en lista.

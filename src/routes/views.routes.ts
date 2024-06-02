@@ -23,7 +23,6 @@ router.get("/realtimeproducts", async (req, res) => {
   res.render("realtimeproducts", { products });
 });
 
-// se debe hacer un get con axios CORREGIR !!!
 router.get("/products", async (req, res) => {
   
   try {
@@ -41,7 +40,7 @@ router.get("/products", async (req, res) => {
     const queryParam = query ? `&query=${query}` : '';
 
     
-    console.log(`${config.BASE_URL}/?${queryParams.toString()}`)
+    //console.log(`${config.BASE_URL}/?${queryParams.toString()}`)
 
     // Obtengo los datos de la consulta con axios
     const { data } = await axios.get(
@@ -72,10 +71,12 @@ router.get("/products", async (req, res) => {
 
 //se debe hacer un get con axios CORREGIR !!!
 router.get("/carts/:cid", async (req, res) => {
-  const data = await axios.get(
-    `${config.BASE_URL}/api/carts/${req.params.cid}`
+  const {data} = await axios.get(
+    `${config.BASE_URL}/api/carts/one/${req.params.cid}`
   );
-  res.render("cart", { data });
+  const {payload} = data;
+  console.log(payload);
+  res.render("cart", { ...payload });
 });
 
 export default router;
