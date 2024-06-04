@@ -24,10 +24,19 @@ router.get("/realtimeproducts", async (req, res) => {
 });
 
 router.get("/products", async (req, res) => {
-  
   try {
     // Valores por defecto
-    const { limit = 10, sort = 1, query, page = 1 }: { limit?: number, sort?: number, query?: Record<string, any>, page?: number } = req.query;
+    const {
+      limit = 10,
+      sort = 1,
+      query,
+      page = 1,
+    }: {
+      limit?: number;
+      sort?: number;
+      query?: Record<string, any>;
+      page?: number;
+    } = req.query;
 
     // Armo el query params con todos los datos enviados en la url
     const queryParams = new URLSearchParams({
@@ -37,14 +46,13 @@ router.get("/products", async (req, res) => {
     });
 
     // Si query no es undefined, lo agrego (para evitar errores)
-    const queryParam = query ? `&query=${query}` : '';
+    const queryParam = query ? `&query=${query}` : "";
 
-    
     //console.log(`${config.BASE_URL}/?${queryParams.toString()}`)
 
     // Obtengo los datos de la consulta con axios
     const { data } = await axios.get(
-      `${config.BASE_URL}/?${queryParams.toString()}${queryParam}`
+      `${config.BASE_URL}/api/products?${queryParams.toString()}${queryParam}`
     );
     const { payload } = data;
 
@@ -55,7 +63,7 @@ router.get("/products", async (req, res) => {
     console.log(err);
   }
 
-/*
+  /*
   try {
     const {data} = await axios.get(`${config.BASE_URL}`)
     const {payload} = data
@@ -71,12 +79,27 @@ router.get("/products", async (req, res) => {
 
 //se debe hacer un get con axios CORREGIR !!!
 router.get("/carts/:cid", async (req, res) => {
-  const {data} = await axios.get(
+  const { data } = await axios.get(
     `${config.BASE_URL}/api/carts/one/${req.params.cid}`
   );
-  const {payload} = data;
+  const { payload } = data;
   console.log(payload);
   res.render("cart", { ...payload });
+});
+
+router.get("/register", async (req, res) => {
+  res.render("register", {});
+});
+
+router.get("/login", async (req, res) => {
+  if (req.session.user) return res.redirect("/profile");
+  res.render("login", {});
+});
+
+router.get("/profile", async (req, res) => {
+  if (!req.session.user) return res.redirect("/login");
+
+  res.render("profile", { user: req.session.user });
 });
 
 export default router;

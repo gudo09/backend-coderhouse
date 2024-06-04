@@ -1,16 +1,16 @@
 import express from "express";
 import mongoose from "mongoose";
+import handlebars from "express-handlebars";
+
 import config from "@/config.js";
 import productRoutes from "@routes/products.routes.js";
 import cartRoutes from "@routes/carts.routes.js";
 import viewsRoutes from "@routes/views.routes.js";
-import handlebars from "express-handlebars";
+import sessionRouter from "@routes/sessions.routes.js";
 import initSocket from "@/socket.js";
 
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
-
-app.use("/views", viewsRoutes);
 
 //ruta para archivos estaticos
 app.use("/static", express.static(`${config.DIRNAME}/public`));
@@ -33,8 +33,10 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.set("view engine", "handlebars");
 
   // hago uso de las rutas
-  app.use("/", productRoutes);
+  app.use("/", viewsRoutes);
+  app.use("/api/products", productRoutes);
   app.use("/api/carts", cartRoutes);
+  app.use("/api/sessions", sessionRouter);
 
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);
