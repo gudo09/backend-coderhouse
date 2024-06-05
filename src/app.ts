@@ -1,6 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import handlebars from "express-handlebars";
+import MongoStore from "connect-mongo";
+import session from "express-session";
 
 import config from "@/config.js";
 import productRoutes from "@routes/products.routes.js";
@@ -26,6 +28,14 @@ const expressInstance = app.listen(config.PORT, async () => {
   //configuraciones de express
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  // configuraciones de session
+  app.use(session({
+    store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 600 }),
+    secret: config.SECRET,
+    resave: true,
+    saveUninitialized: true
+  }));
 
   // configuraciones Handlebars
   app.engine("handlebars", handlebars.engine());
