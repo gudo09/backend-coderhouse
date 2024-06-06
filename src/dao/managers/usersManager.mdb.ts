@@ -1,5 +1,7 @@
 import usersModel from "@models/users.model.js";
 import { PaginateOptions } from "mongoose";
+import { ParsedQs } from "qs";
+import { User } from "@/types/user.interface.js";
 
 class usersManager {
   constructor() {}
@@ -53,4 +55,24 @@ class usersManager {
       return (err as Error).message;
     }
   };
+
+  login = async (
+    _email: string | string[] | ParsedQs | ParsedQs[] | undefined,
+    _password: string | string[] | ParsedQs | ParsedQs[] | undefined
+  ): Promise<User|null> => {
+    try {
+      const user = await usersModel.findOne({
+        email: _email,
+        password: _password,
+      });
+
+      if (!user) return null;
+
+      return user;
+    } catch (err) {
+      throw (err as Error).message;
+    }
+  };
 }
+
+export default usersManager;

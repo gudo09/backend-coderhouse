@@ -1,5 +1,5 @@
 import productModel from "@models/products.model.js";
-import { Product } from "@/types/productTypes.js";
+import { Product } from "@customTypes/productTypes.js";
 
 class productsManager {
   constructor() {}

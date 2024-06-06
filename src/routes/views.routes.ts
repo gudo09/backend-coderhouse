@@ -98,7 +98,6 @@ router.get("/login", async (req, res) => {
 
 router.get("/profile", async (req, res) => {
   if (!req.session.user) return res.redirect("/login");
-
   res.render("profile", { user: req.session.user });
 });
 

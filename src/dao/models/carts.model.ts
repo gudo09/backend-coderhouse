@@ -18,6 +18,7 @@ const productSchema = new Schema({
 });
 
 const schema = new Schema({
+  _user_id: { type: Schema.Types.ObjectId, required: true, ref: "users" },
   products: [productSchema],
 });
 

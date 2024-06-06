@@ -5,6 +5,7 @@ import MongoStore from "connect-mongo";
 import session from "express-session";
 
 import config from "@/config.js";
+import userRoutes from "@routes/users.routes.js";
 import productRoutes from "@routes/products.routes.js";
 import cartRoutes from "@routes/carts.routes.js";
 import viewsRoutes from "@routes/views.routes.js";
@@ -31,7 +32,7 @@ const expressInstance = app.listen(config.PORT, async () => {
 
   // configuraciones de session
   app.use(session({
-    store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 600 }),
+    store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300 }),
     secret: config.SECRET,
     resave: true,
     saveUninitialized: true
@@ -44,6 +45,7 @@ const expressInstance = app.listen(config.PORT, async () => {
 
   // hago uso de las rutas
   app.use("/", viewsRoutes);
+  app.use("/api/users", userRoutes);
   app.use("/api/products", productRoutes);
   app.use("/api/carts", cartRoutes);
   app.use("/api/sessions", sessionRouter);
