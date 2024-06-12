@@ -9,9 +9,7 @@ class usersManager {
 
   getAll = async (limit = 0) => {
     try {
-      return limit === 0
-        ? await usersModel.find().lean()
-        : await usersModel.find().limit(limit).lean();
+      return limit === 0 ? await usersModel.find().lean() : await usersModel.find().limit(limit).lean();
     } catch (err) {
       return (err as Error).message;
     }
@@ -25,7 +23,7 @@ class usersManager {
     }
   };
 
-  getOne = async (filter: {}) => {
+  getOne = async (filter: {}): Promise<User | null | string> => {
     try {
       return await usersModel.findOne(filter).lean();
     } catch (err) {

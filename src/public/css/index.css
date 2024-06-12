@@ -7,7 +7,7 @@
 body {
   min-height: 100dvh;
   background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  color: #FAF7F0;
+  color: #faf7f0;
 }
 
 h1,
@@ -25,15 +25,16 @@ p {
 
 .card {
   padding: 2rem;
-  background-color: #1E0342;
-  color: #FAF7F0;
+  background-color: #1e0342;
+  color: #faf7f0;
   margin: 2rem auto;
   border-radius: 10px;
   max-width: 500px;
 }
 
-.form-title, .profile-title {
-  color: #9AC8CD;
+.form-title,
+.profile-title {
+  color: #9ac8cd;
 }
 
 .card > ul {
@@ -42,13 +43,13 @@ p {
 }
 
 .card-item {
-  background-color: #9AC8CD;
+  background-color: #9ac8cd;
 }
 
 .list-group-item {
   background-color: transparent;
   border: none;
-  color: #FAF7F0;
+  color: #faf7f0;
 }
 
 .list-group-item > span {
@@ -70,8 +71,6 @@ p {
   border-color: #138496;
 }
 
-
-
 .btn-link {
   color: #17a2b8;
 }
@@ -81,27 +80,26 @@ p {
   text-decoration: none;
 }
 
-
 /* Estilos para container-products */
 .container-products {
-  background-color: #1E0342; /* Fondo oscuro */
+  background-color: #1e0342; /* Fondo oscuro */
   padding: 2rem; /* Espaciado interno */
   border-radius: 10px; /* Bordes redondeados */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra sutil */
-  color: #FAF7F0; /* Color del texto claro */
+  color: #faf7f0; /* Color del texto claro */
 }
 
 .container-products h1 {
-  color: #FAF7F0; /* Color del texto claro */
+  color: #faf7f0; /* Color del texto claro */
   margin-bottom: 1.5rem; /* Espaciado inferior */
   font-size: 2rem; /* Tamaño de la fuente */
   text-align: center; /* Centrar el título */
 }
 
 .container-products .list-group-item {
-  background-color: #4B0082; /* Fondo oscuro para los ítems */
-  color: #FAF7F0; /* Color del texto claro */
-  border: 1px solid #6A0DAD; /* Borde sutil */
+  background-color: #4b0082; /* Fondo oscuro para los ítems */
+  color: #faf7f0; /* Color del texto claro */
+  border: 1px solid #6a0dad; /* Borde sutil */
   border-radius: 5px; /* Bordes redondeados */
   margin-bottom: 0.5rem; /* Espaciado inferior */
   padding: 0.75rem; /* Espaciado interno */
@@ -109,13 +107,13 @@ p {
 
 .container-products .list-group-item span {
   font-weight: bold; /* Texto en negrita */
-  color: #FAF7F0; /* Color del texto */
+  color: #faf7f0; /* Color del texto */
 }
 
 .container-products .btn {
-  background-color: #9AC8CD; /* Color de fondo del botón */
+  background-color: #9ac8cd; /* Color de fondo del botón */
   border: none; /* Sin borde */
-  color: #1E0342; /* Color del texto del botón */
+  color: #1e0342; /* Color del texto del botón */
   transition: background-color 0.3s; /* Transición suave */
 }
 
@@ -125,8 +123,17 @@ p {
 
 .container-products .card-item {
   background-color: #3a0a5e; /* Fondo oscuro para la tarjeta */
-  border: 1px solid #6A0DAD; /* Borde sutil */
+  border: 1px solid #6a0dad; /* Borde sutil */
   border-radius: 10px; /* Bordes redondeados */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra sutil */
   padding: 1rem; /* Espaciado interno */
+}
+
+.error-message {
+  background-color: #f5a8a8;
+  color: #e62222;
+  border: 1px solid #ff4c4c; /* Borde sutil */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 10px;
+  margin: 16px 0 16px 0;
 }
