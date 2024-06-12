@@ -15,7 +15,13 @@
               <label for="password" class="form-label">Password</label>
               <input type="password" id="password" name="password" class="form-control" required>
             </div>
+          
+            <div>
             <button type="submit" class="btn btn-primary w-100" onclick="">Login</button>
+            <br>
+            <button class="btn btn-primary w-100" onclick=window.location.replace("api/sessions/ghlogin")>Login con Github</button>
+            </div>
+
           </form>
         </div>
         <div class="card-footer text-center">

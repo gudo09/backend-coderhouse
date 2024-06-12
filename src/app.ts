@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import handlebars from "express-handlebars";
 import MongoStore from "connect-mongo";
 import session from "express-session";
+import passport from "passport";
 
 import config from "@/config.js";
 import userRoutes from "@routes/users.routes.js";
@@ -31,12 +32,16 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.use(express.urlencoded({ extended: true }));
 
   // configuraciones de session
-  app.use(session({
-    store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300 }),
-    secret: config.SECRET,
-    resave: true,
-    saveUninitialized: true
-  }));
+  app.use(
+    session({
+      store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300 }),
+      secret: config.SECRET,
+      resave: true,
+      saveUninitialized: true,
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   // configuraciones Handlebars
   app.engine("handlebars", handlebars.engine());

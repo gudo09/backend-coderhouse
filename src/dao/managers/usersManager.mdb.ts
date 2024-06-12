@@ -2,6 +2,7 @@ import usersModel from "@models/users.model.js";
 import { PaginateOptions } from "mongoose";
 import { ParsedQs } from "qs";
 import { User } from "@/types/user.interface.js";
+import { isValidPassword } from "@/utils.js";
 
 class usersManager {
   constructor() {}
@@ -19,6 +20,14 @@ class usersManager {
   getById = async (id: any) => {
     try {
       return await usersModel.findById(id).lean();
+    } catch (err) {
+      return (err as Error).message;
+    }
+  };
+
+  getOne = async (filter: {}) => {
+    try {
+      return await usersModel.findOne(filter).lean();
     } catch (err) {
       return (err as Error).message;
     }
@@ -56,17 +65,13 @@ class usersManager {
     }
   };
 
-  login = async (
-    _email: string | string[] | ParsedQs | ParsedQs[] | undefined,
-    _password: string | string[] | ParsedQs | ParsedQs[] | undefined
-  ): Promise<User|null> => {
+  login = async (_email: string, _password: string): Promise<User | null> => {
     try {
       const user = await usersModel.findOne({
         email: _email,
-        password: _password,
       });
 
-      if (!user) return null;
+      if (!user || !isValidPassword(_password, user.password)) return null;
 
       return user;
     } catch (err) {

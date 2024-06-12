@@ -1,16 +1,16 @@
-<div>
+<div align="center">
 
   {{#if prevLink}}
-  <button id="prev-button" data-link="{{prevLink}}">Página Anterior</button>
+  <button id="prev-button" class="btn-primary btn" data-link="{{prevLink}}">Página Anterior</button>
   {{else}}
-  <button id="prev-button" disabled>Página Anterior</button>
+  <button id="prev-button" class="btn-primary btn" disabled>Página Anterior</button>
   {{/if}}
   <span>Página {{page}} de {{totalPages}}</span>
 
   {{#if nextLink}}
-  <button id="next-button" data-link="{{nextLink}}">Página Siguiente</button>
+  <button id="next-button" class="btn-primary btn" data-link="{{nextLink}}">Página Siguiente</button>
   {{else}}
-  <button id="next-button" disabled>Página Siguiente</button>
+  <button id="next-button" class="btn-primary btn" disabled>Página Siguiente</button>
   {{/if}}
 
 

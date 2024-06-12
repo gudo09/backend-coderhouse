@@ -70,6 +70,8 @@ p {
   border-color: #138496;
 }
 
+
+
 .btn-link {
   color: #17a2b8;
 }
@@ -77,4 +79,54 @@ p {
 .btn-link:hover {
   color: #138496;
   text-decoration: none;
+}
+
+
+/* Estilos para container-products */
+.container-products {
+  background-color: #1E0342; /* Fondo oscuro */
+  padding: 2rem; /* Espaciado interno */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra sutil */
+  color: #FAF7F0; /* Color del texto claro */
+}
+
+.container-products h1 {
+  color: #FAF7F0; /* Color del texto claro */
+  margin-bottom: 1.5rem; /* Espaciado inferior */
+  font-size: 2rem; /* Tamaño de la fuente */
+  text-align: center; /* Centrar el título */
+}
+
+.container-products .list-group-item {
+  background-color: #4B0082; /* Fondo oscuro para los ítems */
+  color: #FAF7F0; /* Color del texto claro */
+  border: 1px solid #6A0DAD; /* Borde sutil */
+  border-radius: 5px; /* Bordes redondeados */
+  margin-bottom: 0.5rem; /* Espaciado inferior */
+  padding: 0.75rem; /* Espaciado interno */
+}
+
+.container-products .list-group-item span {
+  font-weight: bold; /* Texto en negrita */
+  color: #FAF7F0; /* Color del texto */
+}
+
+.container-products .btn {
+  background-color: #9AC8CD; /* Color de fondo del botón */
+  border: none; /* Sin borde */
+  color: #1E0342; /* Color del texto del botón */
+  transition: background-color 0.3s; /* Transición suave */
+}
+
+.container-products .btn:hover {
+  background-color: #82b3b6; /* Color de fondo del botón al pasar el mouse */
+}
+
+.container-products .card-item {
+  background-color: #3a0a5e; /* Fondo oscuro para la tarjeta */
+  border: 1px solid #6A0DAD; /* Borde sutil */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra sutil */
+  padding: 1rem; /* Espaciado interno */
 }

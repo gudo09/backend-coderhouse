@@ -52,3 +52,15 @@ Aspectos a incluir
 7.  ✅ Crear view de products con paginación. (pasar directamente al render la info de Mongoose Paginate para utilizar esos datos en la plantilla y armar los botones de paginado).
     <br>
 8.  Activar botón "Agregar a carrito" para cada producto en lista.
+
+
+
+Desafío 5 - Refactor a nuestro login
+
+codigos de errores
+
+200 -> todo ok
+400 -> error de solicitud (body)
+401 -> error de AUTENTICACION
+403 -> error de AUTORIZACION
+500 -> error general al procesar
