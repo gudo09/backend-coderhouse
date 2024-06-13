@@ -69,7 +69,7 @@ router.get("/carts/:cid", async (req, res) => {
 });
 
 router.get("/register", async (req, res) => {
-  res.render("register", {});
+  res.render("register", { showError: req.query.error ? true : false, errorMessage: req.query.error });
 });
 
 router.get("/login", async (req, res) => {

@@ -2,15 +2,15 @@ import passport from "passport";
 import local from "passport-local";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import config from "@/config.js";
-import { isValidPassword } from "@/utils.js";
 import usersManager from "@managers/usersManager.mdb.js";
+import { createHash, isValidPassword } from "@/utils.js";
 
 const manager = new usersManager();
 
 const localStrategy = local.Strategy;
 
 const initAuthStrategies = () => {
-  // Estrategia local (cotejamos contra nuestra base de datos)
+  // Estrategia login local (cotejamos contra nuestra base de datos)
   passport.use(
     "login",
     new localStrategy(
@@ -30,6 +30,40 @@ const initAuthStrategies = () => {
           }
         } catch (err) {
           return done(err, false);
+        }
+      }
+    )
+  );
+
+  // Estrategia register local (cotejamos contra nuestra base de datos)
+  passport.use(
+    "register",
+    new localStrategy(
+      {
+        usernameField: "email",
+        passwordField: "password",
+        passReqToCallback: true, // Permite pasar toda la solicitud a la callback
+      },
+      async (req, email, password, done) => {
+        try {
+          const existingUser = await manager.getOne({ email });
+          if (existingUser) {
+            return done(null, false, { message: "Email already in use" });
+          }
+
+          const hashedPassword = createHash(password);
+          const newUser = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: email,
+            password: hashedPassword,
+            role: req.body.role ? req.body.role : "user",
+          };
+
+          const createdUser = await manager.add(newUser);
+          return done(null, createdUser);
+        } catch (error) {
+          return done(error);
         }
       }
     )

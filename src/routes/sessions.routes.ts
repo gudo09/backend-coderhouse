@@ -62,7 +62,6 @@ router.get("/counter", async (req, res) => {
 
 router.post("/pplogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req, res) => {
   try {
-    //toda la logica
     const { email, password: _password } = req.body;
     const login = await usersManager.login(email, _password);
 
@@ -71,15 +70,14 @@ router.post("/pplogin", verifyRequiredBody(["email", "password"]), passport.auth
       res.redirect(`/login?error=${encodeURI("Usuario o contraseña no válidos.")}`);
       return;
     }
-    console.log(JSON.stringify(login,null, 2))
 
     const { password, ...filteredUser } = login.toJSON(); // toJSON() para evitar el formateo de mongoose
 
     req.session.user = filteredUser;
-  
+
     // Uso req.session.save para mantener la asincronía
     req.session.save((err) => {
-      if (err) res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message })
+      if (err) res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
       res.redirect("/profile");
     });
   } catch (err) {
@@ -114,5 +112,28 @@ router.get("/logout", async (req, res) => {
 });
 
 //falta implementar
-router.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), async (req, res) => {});
+router.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), passport.authenticate("register", { failureRedirect: `/register?error=${encodeURI("Error al registrar usuario.")}` }), async (req, res) => {
+  try {
+    const { email, password: _password } = req.body;
+    const login = await usersManager.login(email, _password);
+
+    if (!login) {
+      console.log("Error al registrar usuario.");
+      res.redirect(`/register?error=${encodeURI("Error al registrar usuario.")}`);
+      return;
+    }
+
+    const { password, ...filteredUser } = login.toJSON(); // toJSON() para evitar el formateo de mongoose
+
+    req.session.user = filteredUser;
+
+    // Uso req.session.save para mantener la asincronía
+    req.session.save((err) => {
+      if (err) res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+      res.redirect("/profile");
+    });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+  }
+});
 export default router;
