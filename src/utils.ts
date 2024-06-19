@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import config from "@/config.js";
 
@@ -25,4 +26,22 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
     // Si todas las verificaciones pasan, continuamos con el siguiente middleware
     next();
   };
+};
+
+export const createToken = (payload: {}, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
+
+export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+  // el header tiene el formato "Bearer <Token>" así que con split(' ')[1] elimino el bearer 
+  const headerToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
+
+  if (!headerToken) return res.status(401).send({ origin: config.SERVER, payload: 'Se requiere token para poder acceder' })
+
+  jwt.verify(headerToken, config.SECRET, (err, credetnials) => {
+    if (err) return  res.status(403).send({origin: config.SERVER, payload: 'Token no válido'})
+    
+    // si el token pasa la varificacion, asignamos las credenciales al req.user
+    req.user = credetnials
+    next();
+  })
+  
 };
