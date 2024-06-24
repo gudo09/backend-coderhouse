@@ -1,19 +1,31 @@
 import passport from "passport";
 import local from "passport-local";
+import jwt from "passport-jwt";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import config from "@/config.js";
 import usersManager from "@managers/usersManager.mdb.js";
 import { createHash, isValidPassword } from "@/utils.js";
+import { Request } from "express";
 
 const manager = new usersManager();
 
-const localStrategy = local.Strategy;
+const LocalStrategy = local.Strategy;
+const JwtStrategy = jwt.Strategy;
+const JwtExtractor = jwt.ExtractJwt;
+
+// toma la cookie del req y la devuelve sólo el token que se llame "codercookietoken" de esa cookie
+const cookieExtractor = (req: Request) => {
+  let token = null;
+  if (req && req.cookies) token = req.cookies["codercookietoken"];
+
+  return token;
+};
 
 const initAuthStrategies = () => {
   // Estrategia login local (cotejamos contra nuestra base de datos)
   passport.use(
     "login",
-    new localStrategy(
+    new LocalStrategy(
       {
         passReqToCallback: true,
         usernameField: "email", // Uso el email como campo principal que se guarda en username
@@ -38,7 +50,7 @@ const initAuthStrategies = () => {
   // Estrategia register local (cotejamos contra nuestra base de datos)
   passport.use(
     "register",
-    new localStrategy(
+    new LocalStrategy(
       {
         usernameField: "email",
         passwordField: "password",
@@ -64,6 +76,23 @@ const initAuthStrategies = () => {
           return done(null, createdUser);
         } catch (error) {
           return done(error);
+        }
+      }
+    )
+  );
+
+  passport.use(
+    "jwtlogin",
+    new JwtStrategy(
+      {
+        jwtFromRequest: JwtExtractor.fromExtractors([cookieExtractor]),
+        secretOrKey: config.SECRET,
+      },
+      async (jwt_payload, done) => {
+        try {
+          return done(null, jwt_payload);
+        } catch (err) {
+          return done(err);
         }
       }
     )

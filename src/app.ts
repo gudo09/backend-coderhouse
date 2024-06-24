@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import cookieParser from 'cookie-parser';
 import handlebars from "express-handlebars";
 import MongoStore from "connect-mongo";
 import session from "express-session";
@@ -42,6 +43,7 @@ const expressInstance = app.listen(config.PORT, async () => {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(cookieParser(config.SECRET));
 
   // configuraciones Handlebars
   app.engine("handlebars", handlebars.engine());

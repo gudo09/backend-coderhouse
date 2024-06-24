@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import config from "@/config.js";
 import UsersManager from "@managers/usersManager.mdb.js";
 import passport from "passport";
-import { createToken, verifyRequiredBody } from "@/utils.js";
+import { createToken, verifyRequiredBody, verifyToken } from "@/utils.js";
 
 import initAuthStrategies from "@/auth/passport.strategies.js";
 
@@ -139,10 +139,28 @@ router.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "
 router.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req, res) => {
   try {
     //req.session.user = req.user;
-    const token = createToken((req.user as Express.User), '1h');
+    const token = createToken(req.user as Express.User, "1h");
+    res.cookie('codercookietoken', token, {maxAge: 60 * 60 * 1000* 24, httpOnly: true});
     res.status(200).send({ origin: config.SERVER, payload: "Usuario autenticado", token: token });
   } catch (err) {
     res.status(500).send({ origin: config.SERVER, payload: {}, message: (err as Error).message });
+  }
+});
+
+router.get("/jwtLocalAdmin", verifyToken, async (req, res) => {
+  try {
+    res.status(200).send({ origin: config.SERVER, payload: "Bienvenido admin." });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+  }
+});
+
+//{session: false} para deshabilitar el uso de sesiones de jwt
+router.get("/jwtppAdmin", passport.authenticate('jwtlogin', {session: false}  ), async (req, res) => {
+  try {
+    res.status(200).send({ origin: config.SERVER, payload: "Bienvenido admin." });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
   }
 });
 export default router;
