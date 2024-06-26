@@ -82,6 +82,7 @@ const initAuthStrategies = () => {
     )
   );
 
+  // Estrategia para login con jwt
   passport.use(
     "jwtlogin",
     new JwtStrategy(

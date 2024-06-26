@@ -7,7 +7,6 @@ import { createToken, verifyRequiredBody, verifyToken } from "@/utils.js";
 import initAuthStrategies, { passportCall } from "@/auth/passport.strategies.js";
 import { User } from "@/types/user.interface.js";
 
-
 const router = Router();
 const usersManager = new UsersManager();
 initAuthStrategies();
@@ -19,6 +18,18 @@ const adminAuth = (req: Request, res: Response, next: NextFunction) => {
   if (req.session.user?.role === "admin") return res.status(200).send({ origin: config.SERVER, payload: "Bienvanido admin" });
 
   next();
+};
+
+const handlePolicies = (policies: string[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    policies = policies.map((policy) => policy.toLowerCase());
+    if (policies[0] === "public") return next();
+
+    // FALTA IMPLEMENTAR EL RESTO DE POLITICAS
+    // DESPUES DE IMPLEMENTAR SE SEBE MOVER A LA CLASE CUSOMROUTES
+
+    next();
+  };
 };
 
 //Middleware para validar que el usuario es admin (solo para cookies y jwt)
@@ -149,8 +160,18 @@ router.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "
   }
 });
 
+router.get("/current", passportCall("jwtlogin"), async (req, res) => {
+  try {
+    const currentUserFirstName = (req.user as User).firstName
+    const currentUserLastName = (req.user as User).lastName
+    res.status(200).send({ origin: config.SERVER, payload: `El usuario actualemte autenticado es ${currentUserFirstName} ${currentUserLastName}` });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+  }
+});
+
 // usa passport base para el login y crea un token en la cookie con jwt
-router.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req: Request, res: Response, ) => {
+router.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req: Request, res: Response) => {
   try {
     if (!req.user) return res.status(500).send({ origin: config.SERVER, payload: {}, message: "Error" });
     //req.session.user = req.user;
@@ -162,10 +183,10 @@ router.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.aut
   }
 });
 
-// verifica el token con jwt para acceder a admin 
-// funciona tanto como por req.query.access_token, header (con prefijo "Bearer") ó 
+// verifica el token con jwt para acceder a admin
+// funciona tanto como por req.query.access_token, header (con prefijo "Bearer") ó
 // con cookies. Todo esto lo gestiona "verifyToken"
-router.get("/jwtLocalAdmin", verifyToken,verifyAuthorization("admin"), async (req, res) => {
+router.get("/jwtLocalAdmin", verifyToken, verifyAuthorization("admin"), async (req, res) => {
   try {
     res.status(200).send({ origin: config.SERVER, payload: "Bienvenido admin." });
   } catch (err) {
@@ -181,5 +202,10 @@ router.get("/jwtppAdmin", passportCall("jwtlogin"), verifyAuthorization("admin")
   } catch (err) {
     res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
   }
+});
+
+//Siempre al último por si no entra a ningún otro endpoint
+router.all("*", async (req, res) => {
+  res.status(404).send({ origin: config.SERVER, payload: {}, error: "No se encuentra la ruta seleccionada" });
 });
 export default router;
