@@ -23,7 +23,7 @@ class usersManager {
     }
   };
 
-  getOne = async (filter: {}): Promise<User | null | string> => {
+  getOne = async (filter: {}) => {
     try {
       return await usersModel.findOne(filter).lean();
     } catch (err) {

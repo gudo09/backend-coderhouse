@@ -84,4 +84,9 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+//Siempre al último por si no entra a ningún otro endpoint
+router.all('*', async (req, res) => {
+    res.status(404).send({ origin: config.SERVER, payload:{}, error: "No se encuentra la ruta seleccionada"})
+})
+
 export default router;

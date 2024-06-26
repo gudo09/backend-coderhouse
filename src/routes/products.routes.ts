@@ -1,6 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
-import productModel from "@models/products.model.js";
 import mongoose from "mongoose";
+
+import config from "@/config.js";
 import productsManager from "@managers/productsManager.mdb.js";
 
 const router = Router();
@@ -23,15 +24,10 @@ const validateId = async (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 // middleware para validar el los campos del body
-const validateBody = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const validateBody = async (req: Request, res: Response, next: NextFunction) => {
   //valido todos los campor requeridos en el body
   req.body.status = true;
-  const { id, title, price, description, code, status, stock, category } =
-    req.body;
+  const { id, title, price, description, code, status, stock, category } = req.body;
 
   if (id) {
     res.status(400).json({
@@ -42,15 +38,7 @@ const validateBody = async (
     return;
   }
 
-  if (
-    !title ||
-    !price ||
-    !description ||
-    !code ||
-    !status ||
-    !stock ||
-    !category
-  ) {
+  if (!title || !price || !description || !code || !status || !stock || !category) {
     res.status(400).json({
       status: "ERROR",
       payload: {},
@@ -61,6 +49,16 @@ const validateBody = async (
 
   next();
 };
+
+// middleware propio de express que verifica todas las solicitudes que tengan pid como param
+router.param("pid", async (req, res, next, pid) => {
+  if (!config.MONGODB_ID_REGEX.test(pid)) {
+    return res.status(400).send({ origin: config.SERVER, payload: null, error: "Id no válido" });
+  }
+
+  next();
+});
+
 // el callback es async porque espera las respuestas de mongoose
 router.get("/", async (req, res) => {
   try {
@@ -150,6 +148,11 @@ router.delete("/:pid", validateId, async (req, res) => {
       message: (error as Error).message,
     });
   }
+});
+
+//Siempre al último por si no entra a ningún otro endpoint
+router.all("*", async (req, res) => {
+  res.status(404).send({ origin: config.SERVER, payload: {}, error: "No se encuentra la ruta seleccionada" });
 });
 
 export default router;

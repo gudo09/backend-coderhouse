@@ -5,7 +5,8 @@ import { Strategy as GitHubStrategy } from "passport-github2";
 import config from "@/config.js";
 import usersManager from "@managers/usersManager.mdb.js";
 import { createHash, isValidPassword } from "@/utils.js";
-import { Request } from "express";
+import { NextFunction, Request, Response } from "express";
+import { User } from "@/types/user.interface.js";
 
 const manager = new usersManager();
 
@@ -16,7 +17,7 @@ const JwtExtractor = jwt.ExtractJwt;
 // toma la cookie del req y la devuelve sólo el token que se llame "codercookietoken" de esa cookie
 const cookieExtractor = (req: Request) => {
   let token = null;
-  if (req && req.cookies) token = req.cookies["codercookietoken"];
+  if (req && req.cookies) token = req.cookies[config.COOKIE_NAME];
 
   return token;
 };
@@ -35,8 +36,8 @@ const initAuthStrategies = () => {
           const foundUser = await manager.getOne({ email: username });
 
           if (foundUser && typeof foundUser !== "string" && isValidPassword(password, foundUser.password)) {
-            const { password, ...filteredFoundUser } = foundUser;
-            return done(null, filteredFoundUser);
+            const { password, role, ...filteredFoundUser } = foundUser;
+            return done(null, {...filteredFoundUser, role: role});
           } else {
             return done(null, false);
           }
@@ -143,11 +144,24 @@ const initAuthStrategies = () => {
   );
 };
 
+export const passportCall = (strategy: string) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    //{session: false} para deshabilitar el uso de sesiones de express-session
+    passport.authenticate(strategy, { session: false }, function (err: Error, user: Express.User, info: { message: string } | string) {
+      if (err) return next(err);
+      if (!user) return res.status(401).send({ origin: config.SERVER, payload: null, error: "Usuario no autenticado" });
+
+      req.user = user;
+      next();
+    })(req, res, next);
+  };
+};
+
 passport.serializeUser((user, done) => {
   done(null, user);
 });
 
-passport.deserializeUser((user: any, done) => {
+passport.deserializeUser((user: Express.User, done) => {
   done(null, user);
 });
 

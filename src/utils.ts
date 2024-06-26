@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import config from "@/config.js";
 
@@ -28,20 +28,24 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
   };
 };
 
-export const createToken = (payload: {}, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
+export const createToken = (payload: Express.User, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  // el header tiene el formato "Bearer <Token>" así que con split(' ')[1] elimino el bearer 
-  const headerToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
+  // el header tiene el formato "Bearer <Token>" así que con split(' ')[1] elimino el bearer
+  const headerToken = req.headers.authorization ? req.headers.authorization.split(" ")[1] : undefined;
+  const cookieToken = req.cookies && req.cookies[config.COOKIE_NAME] ? req.cookies[config.COOKIE_NAME] : undefined;
+  const queryToken = req.query.access_token ? req.query.access_token : undefined;
 
-  if (!headerToken) return res.status(401).send({ origin: config.SERVER, payload: 'Se requiere token para poder acceder' })
+  // el token puede venir por header, coockie
+  const recivedToken = headerToken || cookieToken || queryToken;
 
-  jwt.verify(headerToken, config.SECRET, (err, credetnials) => {
-    if (err) return  res.status(403).send({origin: config.SERVER, payload: 'Token no válido'})
-    
+  if (!recivedToken) return res.status(401).send({ origin: config.SERVER, payload: "Se requiere token para poder acceder" });
+
+  jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
+    if (err) return res.status(403).send({ origin: config.SERVER, payload: "Token no válido" });
+
     // si el token pasa la varificacion, asignamos las credenciales al req.user
-    req.user = credetnials
+    req.user = payload;
     next();
-  })
-  
+  });
 };

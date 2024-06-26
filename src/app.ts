@@ -14,6 +14,8 @@ import viewsRoutes from "@routes/views.routes.js";
 import sessionRouter from "@routes/sessions.routes.js";
 import initSocket from "@/socket.js";
 
+import TestCustomRouter from "@routes/testCustom.routes.js";
+
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
 
@@ -56,6 +58,10 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.use("/api/products", productRoutes);
   app.use("/api/carts", cartRoutes);
   app.use("/api/sessions", sessionRouter);
+
+  // Instancio un objeto de TestCustomRouter 
+  // y llamo al getRouter para que me devuelva un tipo express.Router
+  app.use("/api/test", new TestCustomRouter().getRouter());
 
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);

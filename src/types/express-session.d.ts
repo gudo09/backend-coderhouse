@@ -1,9 +1,10 @@
 // tipado para usar session en params
-import session from 'express-session';
+import session from "express-session";
+import { User } from "./user.interface";
 
-declare module 'express-session' {
+declare module "express-session" {
   interface SessionData {
-    user: { [key: string]: any }; // ajusta el tipo de 'user' según tu esquema
+    user: User;
     counter?: number;
   }
 }
