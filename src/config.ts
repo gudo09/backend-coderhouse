@@ -1,31 +1,37 @@
 import * as url from "url";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const config = {
   APP_NAME: "coder_53160_FG",
   SERVER: "AtlasServer coder_53160",
-  PORT: 8080,
+  PORT: process.env.PORT as string || 8080,
   DIRNAME: url.fileURLToPath(new URL(".", import.meta.url)), //direccion absoluta del src
-  MONGOBD_URI: `mongodb+srv://gudo09-dev:JMUcYFKhiisSIKKg@clustergudo09-dev.kxymklh.mongodb.net/coder_53160`,
-  SECRET: "coder_53160_secret",
-  GITHUB_CLIENT_ID: "Iv23liJcpxmaLMJXZOZv",
-  GITHUB_CLIENT_SECRET: "04810b3ce536dc41248c0eae1dfdd0121a16bf05",
+  MONGOBD_URI: process.env.MONGOBD_URI as string,
+  SECRET: process.env.SECRET as string,
+  GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID as string,
+  GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET as string,
   MONGODB_ID_REGEX: /^[a-fA-F0-9]{24}$/,
-
+  GITHUB_CALLBACK_PATH:process.env.GITHUB_CALLBACK_PATH as string,
+  
   get COOKIE_NAME() {
     return `${this.APP_NAME}_cookie`;
   },
-
+  
   get UPLOAD_DIR() {
-    return `${this.DIRNAME}/public/images}`;
+    return `${this.DIRNAME}/public/images`;
   }, //src/public/images
-
+  
   get BASE_URL() {
-    return `http://localhost:${this.PORT}`;
+    return `${process.env.BASE_URL}:${this.PORT}`;
   }, // Base URL para el servidor
-
+  
   get GITHUB_CALLBACK_URL() {
-    return `http://localhost:${this.PORT}/api/sessions/ghlogincallback`;
+    return `${this.BASE_URL}${this.GITHUB_CALLBACK_PATH}`;
   },
 };
+
+console.log(config.GITHUB_CALLBACK_URL)
 
 export default config;
