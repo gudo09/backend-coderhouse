@@ -1,7 +1,7 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-import config from '../config.js';
-import UsersManager from '@managers/usersManager.mdb.js';
+import config from "../config.js";
+import UsersManager from "@controllers/users.controller.mdb.js";
 
 const router = Router();
 const manager = new UsersManager();
@@ -37,56 +37,55 @@ router.get('/aggregate/:role', async (req, res) => {
 });
 */
 
-router.get('/paginate/:page/:limit', async (req, res) => {
-    try {
-        const filter = { role: 'admin' };
-        const options = { page: parseInt(req.params.page), limit: parseInt(req.params.limit), sort: { lastName: 1 } };
-        const process = await manager.getPaginated(filter, options);
+router.get("/paginate/:page/:limit", async (req, res) => {
+  try {
+    const filter = { role: "admin" };
+    const options = { page: parseInt(req.params.page), limit: parseInt(req.params.limit), sort: { lastName: 1 } };
+    const process = await manager.getPaginated(filter, options);
 
-        res.status(200).send({ origin: config.SERVER, payload: process });
-    } catch (err) {
-        res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
-    }
+    res.status(200).send({ origin: config.SERVER, payload: process });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+  }
 });
 
+router.post("/", async (req, res) => {
+  try {
+    const process = await manager.add(req.body);
 
-router.post('/', async (req, res) => {
-    try {
-        const process = await manager.add(req.body);
-        
-        res.status(200).send({ origin: config.SERVER, payload: process });
-    } catch (err) {
-        res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
-    }
+    res.status(200).send({ origin: config.SERVER, payload: process });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+  }
 });
 
-router.put('/:id', async (req, res) => {
-    try {
-        const filter = { _id: req.params.id };
-        const update = req.body;
-        const options = { new: true };
-        const process = await manager.update(filter, update, options);
-        
-        res.status(200).send({ origin: config.SERVER, payload: process });
-    } catch (err) {
-        res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
-    }
+router.put("/:id", async (req, res) => {
+  try {
+    const filter = { _id: req.params.id };
+    const update = req.body;
+    const options = { new: true };
+    const process = await manager.update(filter, update, options);
+
+    res.status(200).send({ origin: config.SERVER, payload: process });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+  }
 });
 
-router.delete('/:id', async (req, res) => {
-    try {
-        const filter = { _id: req.params.id };
-        const process = await manager.delete(filter);
+router.delete("/:id", async (req, res) => {
+  try {
+    const filter = { _id: req.params.id };
+    const process = await manager.delete(filter);
 
-        res.status(200).send({ origin: config.SERVER, payload: process });
-    } catch (err) {
-        res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
-    }
+    res.status(200).send({ origin: config.SERVER, payload: process });
+  } catch (err) {
+    res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
+  }
 });
 
 //Siempre al último por si no entra a ningún otro endpoint
-router.all('*', async (req, res) => {
-    res.status(404).send({ origin: config.SERVER, payload:{}, error: "No se encuentra la ruta seleccionada"})
-})
+router.all("*", async (req, res) => {
+  res.status(404).send({ origin: config.SERVER, payload: {}, error: "No se encuentra la ruta seleccionada" });
+});
 
 export default router;

@@ -14,6 +14,7 @@ const config = {
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET as string,
   MONGODB_ID_REGEX: /^[a-fA-F0-9]{24}$/,
   GITHUB_CALLBACK_PATH:process.env.GITHUB_CALLBACK_PATH as string,
+  PERSISTENCE: "mongo",
   
   get COOKIE_NAME() {
     return `${this.APP_NAME}_cookie`;

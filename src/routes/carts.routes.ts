@@ -2,7 +2,7 @@ import { NextFunction, Router, Request, Response } from "express";
 import mongoose from "mongoose";
 
 import config from "@/config.js";
-import cartsManager from "@managers/cartManager.mdb.js";
+import cartsManager from "@controllers/carts.controller.mdb.js";
 import productModel from "@models/products.model.js";
 
 const router = Router();

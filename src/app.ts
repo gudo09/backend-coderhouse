@@ -1,18 +1,19 @@
 import express from "express";
 import mongoose from "mongoose";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import handlebars from "express-handlebars";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import passport from "passport";
+import cors from "cors";
 
 import config from "@/config.js";
 import userRoutes from "@routes/users.routes.js";
 import productRoutes from "@routes/products.routes.js";
 import cartRoutes from "@routes/carts.routes.js";
-import viewsRoutes from "@routes/views.routes.js";
-import sessionRouter from "@routes/sessions.routes.js";
-import initSocket from "@/socket.js";
+import sessionRouter from "@routes/auth.routes.js";
+import initSocket from "@services/socket.js";
+import MongoSingleton from "./services/mongodb.singleton.js";
 
 import TestCustomRouter from "@routes/testCustom.routes.js";
 import ViewsCustomRouter from "./routes/viewsCustom.routes.js";
@@ -25,7 +26,8 @@ app.use("/static", express.static(`${config.DIRNAME}/public`));
 
 const expressInstance = app.listen(config.PORT, async () => {
   // conecto mongoose con la base de datos en Atlas
-  await mongoose.connect(config.MONGOBD_URI);
+  //await mongoose.connect(config.MONGOBD_URI);
+  MongoSingleton.getInstance();
 
   //inicializo el server de socket.io desde el archivo socket.js
   const socketServer = initSocket(expressInstance);
@@ -34,6 +36,9 @@ const expressInstance = app.listen(config.PORT, async () => {
   //configuraciones de express
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  //configuraciones de cors
+  app.use(cors({ origin: "*" }));
 
   // configuraciones de session
   app.use(
@@ -58,15 +63,13 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.use("/api/products", productRoutes);
   app.use("/api/carts", cartRoutes);
   app.use("/api/sessions", sessionRouter);
-  
-  // Instancio un objeto de TestCustomRouter 
+
+  // Instancio un objeto de TestCustomRouter
   // y llamo al getRouter para que me devuelva un tipo express.Router
   app.use("/api/test", new TestCustomRouter().getRouter());
   app.use("/", new ViewsCustomRouter().getRouter());
 
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);
-  console.log(
-    `Puedes acceder desde http://localhost:${config.PORT}/views/realtimeproducts`
-  );
+  console.log(`Puedes acceder desde http://localhost:${config.PORT}/views/realtimeproducts`);
 });

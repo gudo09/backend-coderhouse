@@ -1,11 +1,11 @@
 import { Router, Request, Response, NextFunction } from "express";
-import config from "@/config.js";
-import UsersManager from "@managers/usersManager.mdb.js";
 import passport from "passport";
-import { createToken, verifyRequiredBody, verifyToken } from "@/utils.js";
 
-import initAuthStrategies, { passportCall } from "@/auth/passport.strategies.js";
+import config from "@/config.js";
 import { User } from "@/types/user.interface.js";
+import UsersManager from "@controllers/users.controller.mdb.js";
+import { createToken, verifyRequiredBody, verifyToken } from "@services/utils.js";
+import initAuthStrategies, { passportCall } from "@auth/passport.strategies.js";
 
 const router = Router();
 const usersManager = new UsersManager();
@@ -162,8 +162,8 @@ router.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "
 
 router.get("/current", passportCall("jwtlogin"), async (req, res) => {
   try {
-    const currentUserFirstName = (req.user as User).firstName
-    const currentUserLastName = (req.user as User).lastName
+    const currentUserFirstName = (req.user as User).firstName;
+    const currentUserLastName = (req.user as User).lastName;
     res.status(200).send({ origin: config.SERVER, payload: `El usuario actualemte autenticado es ${currentUserFirstName} ${currentUserLastName}` });
   } catch (err) {
     res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });

@@ -161,11 +161,7 @@ class cartsManager {
   deleteOneProduct = async (_idCart: any, _idProduct: any) => {
     try {
       // Elimino el producto del carrito
-      const result = await cartModel.findByIdAndUpdate(
-        _idCart,
-        { $pull: { products: { product: _idProduct } } },
-        { new: true }
-      );
+      const result = await cartModel.findByIdAndUpdate(_idCart, { $pull: { products: { product: _idProduct } } }, { new: true });
 
       if (!result) {
         throw new Error("No se ha encontrado el carrito o el producto no está en el carrito.");

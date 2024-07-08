@@ -3,8 +3,8 @@ import local from "passport-local";
 import jwt from "passport-jwt";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import config from "@/config.js";
-import usersManager from "@managers/usersManager.mdb.js";
-import { createHash, isValidPassword } from "@/utils.js";
+import usersManager from "@controllers/users.controller.mdb.js";
+import { createHash, isValidPassword } from "@services/utils.js";
 import { NextFunction, Request, Response } from "express";
 import { User } from "@/types/user.interface.js";
 
@@ -37,7 +37,7 @@ const initAuthStrategies = () => {
 
           if (foundUser && typeof foundUser !== "string" && isValidPassword(password, foundUser.password)) {
             const { password, role, ...filteredFoundUser } = foundUser;
-            return done(null, {...filteredFoundUser, role: role});
+            return done(null, { ...filteredFoundUser, role: role });
           } else {
             return done(null, false);
           }

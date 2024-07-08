@@ -2,7 +2,7 @@ import usersModel from "@models/users.model.js";
 import { PaginateOptions } from "mongoose";
 import { ParsedQs } from "qs";
 import { User } from "@/types/user.interface.js";
-import { isValidPassword } from "@/utils.js";
+import { isValidPassword } from "@services/utils.js";
 
 class usersManager {
   constructor() {}

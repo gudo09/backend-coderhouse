@@ -10,8 +10,7 @@ class productsManager {
       const limit: number = typeof _limit === "string" ? +_limit : 10;
       const page: number = typeof _page === "string" ? +_page : 1;
       const sort: number = +(_sort === "1" || _sort === "-1" ? _sort : 1);
-      const query: Record<string, any> =
-        typeof _query === "string" ? JSON.parse(_query) : _query; // Utilizo el generico Record de Typescript para tipar query
+      const query: Record<string, any> = typeof _query === "string" ? JSON.parse(_query) : _query; // Utilizo el generico Record de Typescript para tipar query
 
       const options = {
         limit: limit,
@@ -27,13 +26,11 @@ class productsManager {
       let nextLink = null;
       if (paginatedProducts.hasPrevPage) {
         prevLink = `/views/products/?limit=${limit}&page=${page - 1}&sort=${sort}`;
-        if (_query)
-          prevLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añado query si no es undefined
+        if (_query) prevLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añado query si no es undefined
       }
       if (paginatedProducts.hasNextPage) {
         nextLink = `/views/products?limit=${limit}&page=${page + 1}&sort=${sort}`;
-        if (_query)
-          nextLink += `&query=${encodeURIComponent(JSON.stringify(query))}`;
+        if (_query) nextLink += `&query=${encodeURIComponent(JSON.stringify(query))}`;
       }
 
       // Respuesta
@@ -50,9 +47,7 @@ class productsManager {
 
       // verifico que el codigo a agregar ya existe
       if (isDuplicateCode) {
-        throw new Error(
-          `El código ${newData.code} ya existe en otro producto.`
-        );
+        throw new Error(`El código ${newData.code} ya existe en otro producto.`);
       }
       return await productModel.create(newData);
     } catch (err) {
@@ -81,9 +76,7 @@ class productsManager {
       const productWithCode = await productModel.find({ code: code });
       productWithCode.forEach((product) => {
         if (productToUpdate !== product) {
-          throw new Error(
-            "Ya existe otro producto con ese código. No se pudo actualizar."
-          );
+          throw new Error("Ya existe otro producto con ese código. No se pudo actualizar.");
         }
       });
 
