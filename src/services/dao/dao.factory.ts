@@ -4,7 +4,7 @@ let factoryProductService = {};
 
 switch (config.PERSISTENCE) {
   case "ram":
-    const RamService = await import("@dao/old/productManager.js");
+    const RamService = await import("@/services/dao/fs/productManager.js");
     factoryProductService = RamService.default;
     break;
 

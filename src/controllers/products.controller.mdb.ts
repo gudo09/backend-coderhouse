@@ -1,7 +1,9 @@
-import productModel from "@models/products.model.js";
 import { Product } from "@customTypes/productTypes.js";
+import ProductsService from "@services/dao/mdb/products.dao.mdb.js";
 
-class productsManager {
+const service = new ProductsService();
+
+class ProductsManager {
   constructor() {}
 
   getAll = async (_limit: any, _sort: any, _query: any, _page: any) => {
@@ -18,7 +20,7 @@ class productsManager {
         page: page,
       };
 
-      const paginatedProducts = await productModel.paginate(query, options);
+      const paginatedProducts = await service.getPaginated(query, options);
 
       // Construyo los enlaces para la página previa y siguiente
       // Uso encodeURIComponent para encriptar el query
@@ -43,13 +45,13 @@ class productsManager {
   add = async (newData: Product) => {
     try {
       // valido si el código del producto a agregar está repetido
-      const isDuplicateCode = await productModel.exists({ code: newData.code });
+      const isDuplicateCode = await service.exists({code: newData.code});
 
       // verifico que el codigo a agregar ya existe
       if (isDuplicateCode) {
         throw new Error(`El código ${newData.code} ya existe en otro producto.`);
       }
-      return await productModel.create(newData);
+      return await service.add(newData);
     } catch (err) {
       throw new Error((err as Error).message);
     }
@@ -57,7 +59,7 @@ class productsManager {
 
   getById = async (id: string) => {
     try {
-      const product = await productModel.findById(id);
+      const product = await  service.getById(id);
       if (!product) {
         throw new Error("Producto no encontrado");
       }
@@ -70,19 +72,17 @@ class productsManager {
   update = async (id: any, body: any) => {
     try {
       const code = body.code;
-      const productToUpdate = await productModel.findById(id);
+      const productToUpdate = await service.getById(id);
 
       //valido que el codigo nuevo no sea repetido con el de otro producto
-      const productWithCode = await productModel.find({ code: code });
+      const productWithCode = await service.find({ code: code });
       productWithCode.forEach((product) => {
         if (productToUpdate !== product) {
           throw new Error("Ya existe otro producto con ese código. No se pudo actualizar.");
         }
       });
 
-      const updatedProduct = await productModel.findByIdAndUpdate(id, body, {
-        new: true,
-      });
+      const updatedProduct = await service.findByIdAndUpdate(id, body);
 
       return updatedProduct;
     } catch (err) {
@@ -92,7 +92,7 @@ class productsManager {
 
   delete = async (id: string) => {
     try {
-      const product = await productModel.findByIdAndDelete(id);
+      const product = await service.findByIdAndDelete(id);
 
       if (product === null) {
         throw new Error("No se ha encontrado el producto para eliminar.");
@@ -105,4 +105,4 @@ class productsManager {
   };
 }
 
-export default productsManager;
+export default ProductsManager;

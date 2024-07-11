@@ -2,10 +2,10 @@ import { NextFunction, Router, Request, Response } from "express";
 import mongoose from "mongoose";
 
 import config from "@/config.js";
-import productsManager from "@controllers/products.controller.mdb.js";
+import ProductsManager from "@controllers/products.controller.mdb.js";
 
 const router = Router();
-const manager = new productsManager();
+const manager = new ProductsManager();
 
 // middleware para validar el id
 const validateId = async (req: Request, res: Response, next: NextFunction) => {

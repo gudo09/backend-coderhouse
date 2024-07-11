@@ -18,7 +18,13 @@ export const schema = new Schema({
 
 schema.plugin(mongoosePaginate);
 
-interface ProductDocument extends Document {
+/*
+// A implementar para eliminar el type productTypes.ts
+export type Product = InferSchemaType<typeof schema>;
+const model = mongoose.model<Product, PaginateModel<Product>>(collection, schema);
+*/
+
+export interface ProductDocument extends Document {
   title: string;
   description: string;
   price: number;
