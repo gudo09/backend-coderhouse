@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import passport from "passport";
 
 import config from "@/config.js";
-import { User } from "@/types/user.interface.js";
+import { User, UserSession } from "@models/users.model.js";
 import UsersManager from "@controllers/users.controller.mdb.js";
 import { createToken, verifyRequiredBody, verifyToken } from "@services/utils.js";
 import initAuthStrategies, { passportCall } from "@auth/passport.strategies.js";
@@ -95,7 +95,7 @@ router.post("/pplogin", verifyRequiredBody(["email", "password"]), passport.auth
       return;
     }
 
-    const { password, ...filteredUser } = login.toJSON(); // toJSON() para evitar el formateo de mongoose
+    const { password, ...filteredUser } = login//.toJSON(); // toJSON() para evitar el formateo de mongoose
 
     req.session.user = filteredUser;
 
@@ -113,7 +113,7 @@ router.get("/ghlogin", passport.authenticate("ghlogin", { scope: ["user"] }), as
 
 router.get("/ghlogincallback", passport.authenticate("ghlogin", { failureRedirect: `/login?error=${encodeURI("Error al identificar con Github.")}` }), async (req, res) => {
   try {
-    req.session.user = req.user;
+    req.session.user = req.user as UserSession;
     req.session.save((err) => {
       if (err) return res.status(500).send({ origin: config.SERVER, payload: {}, message: (err as Error).message });
       res.redirect("/profile");
@@ -146,7 +146,7 @@ router.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "
       return;
     }
 
-    const { password, ...filteredUser } = login.toJSON(); // toJSON() para evitar el formateo de mongoose
+    const { password, ...filteredUser } = login//.toJSON(); // toJSON() para evitar el formateo de mongoose
 
     req.session.user = filteredUser;
 

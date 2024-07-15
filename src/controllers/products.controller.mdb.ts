@@ -3,6 +3,14 @@ import ProductsService from "@services/dao/mdb/products.dao.mdb.js";
 
 const service = new ProductsService();
 
+class ProductDTO {
+  product: Product;
+  constructor(product: Product) {
+    this.product= product;
+    this.product.title = this.product.title.toUpperCase();
+  }
+}
+
 class ProductsManager {
   constructor() {}
 
@@ -51,7 +59,8 @@ class ProductsManager {
       if (isDuplicateCode) {
         throw new Error(`El código ${newData.code} ya existe en otro producto.`);
       }
-      return await service.add(newData);
+      const normalizedNewData = new ProductDTO(newData);
+      return await service.add(normalizedNewData.product);
     } catch (err) {
       throw new Error((err as Error).message);
     }

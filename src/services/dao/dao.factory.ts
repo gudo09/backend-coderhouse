@@ -10,7 +10,7 @@ switch (config.PERSISTENCE) {
 
   case "mongo":
     const { default: MongoSingleton } = await import("@services/mongodb.singleton.js");
-    await MongoSingleton.getInstance();
+    MongoSingleton.getInstance();
 
     const MongoService = await import("@controllers/products.controller.mdb.js");
     factoryProductService = MongoService.default;

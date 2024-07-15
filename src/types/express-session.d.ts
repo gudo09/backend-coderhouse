@@ -1,10 +1,10 @@
 // tipado para usar session en params
 import session from "express-session";
-import { User } from "./user.interface";
+import { UserSessions } from "@models/users.model.ts";
 
 declare module "express-session" {
   interface SessionData {
-    user: User;
+    user: UserSessions;
     counter?: number;
   }
 }

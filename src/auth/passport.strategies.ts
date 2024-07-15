@@ -6,7 +6,6 @@ import config from "@/config.js";
 import usersManager from "@controllers/users.controller.mdb.js";
 import { createHash, isValidPassword } from "@services/utils.js";
 import { NextFunction, Request, Response } from "express";
-import { User } from "@/types/user.interface.js";
 
 const manager = new usersManager();
 

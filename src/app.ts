@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import handlebars from "express-handlebars";
 import MongoStore from "connect-mongo";
@@ -38,7 +37,7 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.use(express.urlencoded({ extended: true }));
 
   //configuraciones de cors
-  app.use(cors({ origin: "*" }));
+  app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE"] }));
 
   // configuraciones de session
   app.use(
