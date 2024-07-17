@@ -18,7 +18,7 @@ const productSchema = new Schema({
 });
 
 const ticketSchema = new Schema({
-  code: { type: Schema.Types.ObjectId, required: true , unique: true},
+  code: { type: Schema.Types.ObjectId, required: true, unique: true },
   purchaser: { type: String, required: true },
   products: [productSchema],
   purchase_datetime: { type: Date, default: Date.now },
@@ -26,5 +26,7 @@ const ticketSchema = new Schema({
 });
 
 // Creo el tipo Order con el schema
-export type Ticket = InferSchemaType<typeof ticketSchema>;
-const usersModel = mongoose.model<Ticket, PaginateModel<Ticket>>(collection, ticketSchema);
+export interface Ticket extends InferSchemaType<typeof ticketSchema> {}
+const model = mongoose.model<Ticket, PaginateModel<Ticket>>(collection, ticketSchema);
+
+export default model;

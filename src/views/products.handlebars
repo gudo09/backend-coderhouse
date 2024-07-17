@@ -2,7 +2,7 @@
   <h1 class="mb-4">Listado de Productos:</h1>
   <ul class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="product-list">
     {{#each docs}}
-    <div class="col" id="product-card-{{id}}">
+    <div class="col" id="product-card-{{_id}}">
       <ul class="list-group h-100 card-item d-flex flex-column">
         <li class="list-group-item"><span>id: </span>{{_id}}</li>
         <li class="list-group-item"><span>title: </span>{{title}}</li>
@@ -21,7 +21,11 @@
     {{/each}}
   </ul>
   {{> productPagination}}
+
+  <div class="container-fluid row row-cols-3 gap-4">
+
+    {{> formAddProduct}}
+    {{> formDeleteProduct}}
+
+  </div>
 </div>
-<script>
-  
-</script>

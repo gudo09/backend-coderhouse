@@ -1,3 +1,8 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socketClient = io();
+</script>
+
 <div align="center">
 
   {{#if prevLink}}
@@ -13,22 +18,20 @@
   <button id="next-button" class="btn-primary btn" disabled>Página Siguiente</button>
   {{/if}}
 
-
 </div>
 
 <script>
+  document.getElementById('prev-button').addEventListener('click', function () {
+    const link = this.getAttribute('data-link');
+    if (link) {
+      window.location.href = link;
+    }
+  });
 
-  document.getElementById('prev-button').addEventListener('click', function() {
-      const link = this.getAttribute('data-link');
-      if (link) {
-        window.location.href = link;
-      }
-    });
-
-    document.getElementById('next-button').addEventListener('click', function() {
-      const link = this.getAttribute('data-link');
-      if (link) {
-        window.location.href = link;
-      }
-    });
+  document.getElementById('next-button').addEventListener('click', function () {
+    const link = this.getAttribute('data-link');
+    if (link) {
+      window.location.href = link;
+    }
+  });
 </script>

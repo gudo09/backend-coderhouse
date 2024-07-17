@@ -1,4 +1,4 @@
-import mongoose, { PaginateModel, Schema } from "mongoose";
+import mongoose, { InferSchemaType, PaginateModel, Schema } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 mongoose.pluralize(null);
@@ -18,22 +18,17 @@ const productSchema = new Schema({
 });
 
 const schema = new Schema({
-  _user_id: { type: Schema.Types.ObjectId, required: true, ref: "users" },
+  _user_id: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "users",
+  },
   products: [productSchema],
 });
 
-interface CartDocument extends Document {
-  products: {
-    product: mongoose.Schema.Types.ObjectId;
-    quantity: number;
-  }[];
-}
-
 schema.plugin(mongoosePaginate);
 
-const model = mongoose.model<CartDocument, PaginateModel<CartDocument>>(
-  collection,
-  schema
-);
+export interface Cart extends InferSchemaType<typeof schema> {}
+const model = mongoose.model<Cart, PaginateModel<Cart>>(collection, schema);
 
 export default model;

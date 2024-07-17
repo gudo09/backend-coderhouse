@@ -12,10 +12,10 @@ import productRoutes from "@routes/products.routes.js";
 import cartRoutes from "@routes/carts.routes.js";
 import sessionRouter from "@routes/auth.routes.js";
 import initSocket from "@services/socket.js";
-import MongoSingleton from "./services/mongodb.singleton.js";
+import MongoSingleton from "@services/mongodb.singleton.js";
 
 import TestCustomRouter from "@routes/testCustom.routes.js";
-import ViewsCustomRouter from "./routes/viewsCustom.routes.js";
+import ViewsCustomRouter from "@routes/viewsCustom.routes.js";
 
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
@@ -70,5 +70,5 @@ const expressInstance = app.listen(config.PORT, async () => {
 
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);
-  console.log(`Puedes acceder desde http://localhost:${config.PORT}/views/realtimeproducts`);
+  console.log(`Puedes acceder desde http://localhost:${config.PORT}/login`);
 });

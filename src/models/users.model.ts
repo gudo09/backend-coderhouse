@@ -29,7 +29,7 @@ export type UserSession = Omit<User, "password"> & {
   password?: string;
 };
 
-const usersModel = mongoose.model<User, PaginateModel<User>>(collection, userSchema);
+const model = mongoose.model<User, PaginateModel<User>>(collection, userSchema);
 
 /*
 const usersModel = mongoose.model<User, PaginateModel<User>>(
@@ -38,4 +38,4 @@ const usersModel = mongoose.model<User, PaginateModel<User>>(
 );
 */
 
-export default usersModel;
+export default model;

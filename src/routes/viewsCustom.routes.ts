@@ -3,6 +3,7 @@ import CustomRouter from "@routes/custom.routes.js";
 import axios from "axios";
 import config from "@/config.js";
 import productModel from "@models/products.model.js";
+import { verifyToken } from "@services/utils.js";
 
 export default class ViewsCustomRouter extends CustomRouter {
   init() {
@@ -52,7 +53,6 @@ export default class ViewsCustomRouter extends CustomRouter {
       try {
         const { data } = await axios.get(`${config.BASE_URL}/api/carts/one/${req.params.cid}`);
         const { payload } = data;
-        console.log(payload);
         res.render("cart", { ...payload });
       } catch (err) {
         res.sendServerError?.(err as Error);

@@ -1,8 +1,9 @@
-import productModel, { ProductDocument } from "@models/products.model.js";
-import { Product } from "@/types/productTypes.js";
-import { FilterQuery, PaginateOptions } from "mongoose";
+import productModel, { Product } from "@models/products.model.js";
 
-class ProductsService {
+import { FilterQuery, PaginateOptions } from "mongoose";
+import { IProductService } from "../interfaces.js";
+
+class ProductsService implements IProductService{
   constructor() {}
 
   getById = async (id: string) => {
@@ -13,7 +14,7 @@ class ProductsService {
     }
   };
 
-  find = async (filter: FilterQuery<ProductDocument>) => {
+  find = async (filter: FilterQuery<Product>) => {
     try {
       return await productModel.find(filter);
     } catch (err) {
@@ -21,7 +22,7 @@ class ProductsService {
     }
   }
 
-  getPaginated = async (query: FilterQuery<ProductDocument>, options: PaginateOptions) => {
+  getPaginated = async (query: FilterQuery<Product>, options: PaginateOptions) => {
     try {
       return await productModel.paginate(query, options);
     } catch (err) {
@@ -29,7 +30,7 @@ class ProductsService {
     }
   }
 
-  exists = async (filter: FilterQuery<ProductDocument>) => {
+  exists = async (filter: FilterQuery<Product>) =>  {
     try {
       return await productModel.exists(filter);
     } catch (err) {

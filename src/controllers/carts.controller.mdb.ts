@@ -115,7 +115,6 @@ class cartsManager {
       const newProducts = products.map((element) => {
         return { product: element._id, quantity: 0 };
       });
-      console.log(newProducts);
 
       const cart = await cartModel.create({ products: newProducts });
 

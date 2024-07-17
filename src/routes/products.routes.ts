@@ -2,10 +2,10 @@ import { NextFunction, Router, Request, Response } from "express";
 import mongoose from "mongoose";
 
 import config from "@/config.js";
-import ProductsManager from "@controllers/products.controller.mdb.js";
+import ProductController from "@controllers/products.controller.mdb.js";
 
 const router = Router();
-const manager = new ProductsManager();
+const controller = new ProductController();
 
 // middleware para validar el id
 const validateId = async (req: Request, res: Response, next: NextFunction) => {
@@ -66,7 +66,7 @@ router.get("/", async (req, res) => {
     const sort = req.query.sort;
     const page = req.query.page;
     const query = req.query.query;
-    const products = await manager.getAll(limit, sort, query, page);
+    const products = await controller.getAll(limit, sort, query, page);
     res.status(200).send({ status: "OK", payload: products });
   } catch (err) {
     res.status(400).send({
@@ -80,7 +80,7 @@ router.get("/", async (req, res) => {
 router.post("/", validateBody, async (req, res) => {
   try {
     const body = req.body;
-    const productAdded = await manager.add(body);
+    const productAdded = await controller.add(body);
     res.status(200).send({
       status: "OK",
       payload: productAdded,
@@ -98,7 +98,7 @@ router.post("/", validateBody, async (req, res) => {
 router.get("/:pid", validateId, async (req, res) => {
   try {
     const id = req.params.pid;
-    const product = await manager.getById(id);
+    const product = await controller.getById(id);
     res.status(200).send({ status: "OK", payload: product });
   } catch (error) {
     res.status(400).send({
@@ -115,7 +115,7 @@ router.put("/:pid", validateId, async (req, res) => {
 
     const body = req.body;
 
-    const updatedProduct = await manager.update(id, body);
+    const updatedProduct = await controller.update(id, body);
 
     res.status(200).send({
       status: "OK",
@@ -135,7 +135,7 @@ router.delete("/:pid", validateId, async (req, res) => {
   try {
     const id = req.params.pid;
 
-    const productDeleted = await manager.delete(id);
+    const productDeleted = await controller.delete(id);
     res.status(200).send({
       status: "OK",
       payload: productDeleted,

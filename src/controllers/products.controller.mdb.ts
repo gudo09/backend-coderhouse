@@ -1,7 +1,7 @@
-import { Product } from "@customTypes/productTypes.js";
-import ProductsService from "@services/dao/mdb/products.dao.mdb.js";
+import { Product } from "@models/products.model.js";
+import { factoryProductService } from "@services/dao/dao.factory.js";
 
-const service = new ProductsService();
+const service = factoryProductService;
 
 class ProductDTO {
   product: Product;
@@ -35,11 +35,11 @@ class ProductsManager {
       let prevLink = null;
       let nextLink = null;
       if (paginatedProducts.hasPrevPage) {
-        prevLink = `/views/products/?limit=${limit}&page=${page - 1}&sort=${sort}`;
+        prevLink = `/products/?limit=${limit}&page=${page - 1}&sort=${sort}`;
         if (_query) prevLink += `&query=${encodeURIComponent(JSON.stringify(query))}`; // Solo añado query si no es undefined
       }
       if (paginatedProducts.hasNextPage) {
-        nextLink = `/views/products?limit=${limit}&page=${page + 1}&sort=${sort}`;
+        nextLink = `/products?limit=${limit}&page=${page + 1}&sort=${sort}`;
         if (_query) nextLink += `&query=${encodeURIComponent(JSON.stringify(query))}`;
       }
 
@@ -85,7 +85,7 @@ class ProductsManager {
 
       //valido que el codigo nuevo no sea repetido con el de otro producto
       const productWithCode = await service.find({ code: code });
-      productWithCode.forEach((product) => {
+      productWithCode.forEach((product: Product) => {
         if (productToUpdate !== product) {
           throw new Error("Ya existe otro producto con ese código. No se pudo actualizar.");
         }

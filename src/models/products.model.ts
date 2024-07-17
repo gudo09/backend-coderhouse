@@ -1,4 +1,4 @@
-import mongoose, { PaginateModel, Schema } from "mongoose";
+import mongoose, { InferSchemaType, PaginateModel, Schema } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 mongoose.pluralize(null);
@@ -18,12 +18,12 @@ export const schema = new Schema({
 
 schema.plugin(mongoosePaginate);
 
-/*
-// A implementar para eliminar el type productTypes.ts
-export type Product = InferSchemaType<typeof schema>;
-const model = mongoose.model<Product, PaginateModel<Product>>(collection, schema);
-*/
 
+
+export interface Product extends InferSchemaType<typeof schema> {}
+const model = mongoose.model<Product, PaginateModel<Product>>(collection, schema);
+
+/*
 export interface ProductDocument extends Document {
   title: string;
   description: string;
@@ -36,5 +36,5 @@ export interface ProductDocument extends Document {
 }
 
 const model = mongoose.model<ProductDocument, PaginateModel<ProductDocument>>(collection, schema);
-
+*/
 export default model;

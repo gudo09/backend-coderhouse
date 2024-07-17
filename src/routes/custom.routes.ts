@@ -31,7 +31,6 @@ export default class CustomRouter {
         //se usa this para referenciar el contexto de la instancia
         await callBack.apply(this, params);
       } catch (err) {
-        console.log(err as Error);
         //params[1] hace referecia al parametro res del callback
         params[1].status(500).send({ origin: config.SERVER, payload: null, message: (err as Error).message });
       }

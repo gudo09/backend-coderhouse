@@ -13,7 +13,6 @@ initAuthStrategies();
 
 // Middleware para validar que el usuario es admin (solo para session)
 const adminAuth = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.session.user);
   //if (req.session.user && req.session.user.role === "admin")
   if (req.session.user?.role === "admin") return res.status(200).send({ origin: config.SERVER, payload: "Bienvanido admin" });
 
@@ -164,7 +163,7 @@ router.get("/current", passportCall("jwtlogin"), async (req, res) => {
   try {
     const currentUserFirstName = (req.user as User).firstName;
     const currentUserLastName = (req.user as User).lastName;
-    res.status(200).send({ origin: config.SERVER, payload: `El usuario actualemte autenticado es ${currentUserFirstName} ${currentUserLastName}` });
+    res.status(200).send({ origin: config.SERVER, payload: `El usuario actualmente autenticado es ${currentUserFirstName} ${currentUserLastName}` });
   } catch (err) {
     res.status(500).send({ origin: config.SERVER, payload: null, error: (err as Error).message });
   }
@@ -174,7 +173,7 @@ router.get("/current", passportCall("jwtlogin"), async (req, res) => {
 router.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req: Request, res: Response) => {
   try {
     if (!req.user) return res.status(500).send({ origin: config.SERVER, payload: {}, message: "Error" });
-    //req.session.user = req.user;
+    req.session.user = req.user;
     const token = createToken(req.user as User, "1h");
     res.cookie(config.COOKIE_NAME, token, { maxAge: 60 * 60 * 1000 * 24, httpOnly: true });
     res.status(200).send({ origin: config.SERVER, payload: "Usuario autenticado", token: token });

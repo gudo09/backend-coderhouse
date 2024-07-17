@@ -1,5 +1,5 @@
 import { Server as HttpServer } from 'http';
-import { Server, ServerOptions } from 'socket.io';
+import { Server } from 'socket.io';
 import axios from 'axios';
 import config from '@/config.js';
 
@@ -15,10 +15,9 @@ const initSocket = (httpServer: HttpServer) => {
 
   // Suscripcion al topico deleteProduct
   client.on("deleteProduct", (data) => {
-    const pid = +data;
-
+    const pid = data;
     axios
-      .delete(`${config.BASE_URL}/${pid}`)
+      .delete(`${config.BASE_URL}/api/products/${pid}`)
       .then((resp) => {
         const okMessage = resp.data.message;
         io.emit("productDeleted", { productId: pid });
@@ -32,8 +31,6 @@ const initSocket = (httpServer: HttpServer) => {
 
   // Suscripcion al topico addProduct
   client.on("addProduct", (data) => {
-    console.log(data);
-
     axios
       .post(`${config.BASE_URL}/`, data)
       .then((resp) => {
@@ -44,7 +41,6 @@ const initSocket = (httpServer: HttpServer) => {
       })
       .catch((err) => {
         const erorMessage = err.response.data.error;
-        console.log(erorMessage);
         client.emit("AddProduct_ErrorMessage", erorMessage);
       });
   });

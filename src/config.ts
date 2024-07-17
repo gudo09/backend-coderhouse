@@ -33,6 +33,4 @@ const config = {
   },
 };
 
-console.log(config.GITHUB_CALLBACK_URL)
-
 export default config;

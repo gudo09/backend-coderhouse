@@ -1,14 +1,16 @@
-import usersModel from "@models/users.model.js";
-import { PaginateOptions } from "mongoose";
-import { User } from "@models/users.model.js";
+import { factoryUserService } from "@/services/dao/dao.factory.js";
+import { FilterQuery, PaginateOptions } from "mongoose";
 import { isValidPassword } from "@services/utils.js";
+import { User } from "@/models/users.model.js";
+
+const service = factoryUserService;
 
 class usersManager {
   constructor() {}
 
   getAll = async (limit = 0) => {
     try {
-      return limit === 0 ? await usersModel.find().lean() : await usersModel.find().limit(limit).lean();
+      return await service.getAll(limit);
     } catch (err) {
       return (err as Error).message;
     }
@@ -16,47 +18,47 @@ class usersManager {
 
   getById = async (id: any) => {
     try {
-      return await usersModel.findById(id).lean();
+      return await service.getById(id);
     } catch (err) {
       return (err as Error).message;
     }
   };
 
-  getOne = async (filter: {}) => {
+  getOne = async (filter: FilterQuery<User>) => {
     try {
-      return await usersModel.findOne(filter).lean();
+      return await service.getOne(filter);
     } catch (err) {
       return (err as Error).message;
     }
   };
 
-  getPaginated = async (filter: any, options: PaginateOptions | undefined) => {
+  getPaginated = async (filter: FilterQuery<User>, options: PaginateOptions) => {
     try {
-      return await usersModel.paginate(filter, options);
+      return await service.getPaginated(filter, options);
     } catch (err) {
       return (err as Error).message;
     }
   };
 
-  add = async (newData: any) => {
+  add = async (newData: Partial<User>) => {
     try {
-      return await usersModel.create(newData);
+      return await service.add(newData);
     } catch (err) {
       return (err as Error).message;
     }
   };
 
-  update = async (filter: any, update: any, options: any) => {
+  update = async (filter: FilterQuery<User>, update: any, options: any) => {
     try {
-      return await usersModel.findOneAndUpdate(filter, update, options);
+      return await service.update(filter, update, options);
     } catch (err) {
       return (err as Error).message;
     }
   };
 
-  delete = async (filter: any) => {
+  delete = async (filter: FilterQuery<User>) => {
     try {
-      return await usersModel.findOneAndDelete(filter);
+      return await service.delete(filter);
     } catch (err) {
       return (err as Error).message;
     }
@@ -64,9 +66,7 @@ class usersManager {
 
   login = async (_email: string, _password: string): Promise<User | null> => {
     try {
-      const user = await usersModel.findOne({
-        email: _email,
-      });
+      const user = await service.getOne({ email: _email });
 
       if (!user || !isValidPassword(_password, user.password)) return null;
 
