@@ -1,10 +1,10 @@
 import { Router } from "express";
 
 import config from "../config.js";
-import UsersManager from "@controllers/users.controller.mdb.js";
+import UsersController from "@controllers/users.controller.mdb.js";
 
 const router = Router();
-const manager = new UsersManager();
+const controller = new UsersController();
 
 /*
 **
@@ -25,7 +25,7 @@ router.get('/aggregate/:role', async (req, res) => {
             const match = { role: req.params.role };
             const group = { _id: '$region', totalGrade: {$sum: '$grade'} };
             const sort = { totalGrade: -1 };
-            const process = await manager.getAggregated(match, group, sort);
+            const process = await controller.getAggregated(match, group, sort);
 
             res.status(200).send({ origin: config.SERVER, payload: process });
         } else {
@@ -41,7 +41,7 @@ router.get("/paginate/:page/:limit", async (req, res) => {
   try {
     const filter = { role: "admin" };
     const options = { page: parseInt(req.params.page), limit: parseInt(req.params.limit), sort: { lastName: 1 } };
-    const process = await manager.getPaginated(filter, options);
+    const process = await controller.getPaginated(filter, options);
 
     res.status(200).send({ origin: config.SERVER, payload: process });
   } catch (err) {
@@ -51,7 +51,7 @@ router.get("/paginate/:page/:limit", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const process = await manager.add(req.body);
+    const process = await controller.add(req.body);
 
     res.status(200).send({ origin: config.SERVER, payload: process });
   } catch (err) {
@@ -64,7 +64,7 @@ router.put("/:id", async (req, res) => {
     const filter = { _id: req.params.id };
     const update = req.body;
     const options = { new: true };
-    const process = await manager.update(filter, update, options);
+    const process = await controller.update(filter, update, options);
 
     res.status(200).send({ origin: config.SERVER, payload: process });
   } catch (err) {
@@ -75,7 +75,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const filter = { _id: req.params.id };
-    const process = await manager.delete(filter);
+    const process = await controller.delete(filter);
 
     res.status(200).send({ origin: config.SERVER, payload: process });
   } catch (err) {

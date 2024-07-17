@@ -165,7 +165,7 @@ router.all("*", async (req, res) => {
   res.status(404).send({ origin: config.SERVER, payload: {}, error: "No se encuentra la ruta seleccionada" });
 });
 
-router.post("/:cid/products/:pid", async (req, res) => {
+router.post("/:cid/purchase", async (req, res) => {
   /*
   Implementar, en el router de carts, la ruta /:cid/purchase, la cual permitirá finalizar el proceso de compra de dicho carrito.
   

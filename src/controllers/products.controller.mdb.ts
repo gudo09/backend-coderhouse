@@ -11,7 +11,7 @@ class ProductDTO {
   }
 }
 
-class ProductsManager {
+class ProductsController {
   constructor() {}
 
   getAll = async (_limit: any, _sort: any, _query: any, _page: any) => {
@@ -114,4 +114,4 @@ class ProductsManager {
   };
 }
 
-export default ProductsManager;
+export default ProductsController;

@@ -2,8 +2,6 @@ import CustomRouter from "@routes/custom.routes.js";
 
 import axios from "axios";
 import config from "@/config.js";
-import productModel from "@models/products.model.js";
-import { verifyToken } from "@services/utils.js";
 
 export default class ViewsCustomRouter extends CustomRouter {
   init() {
@@ -12,20 +10,10 @@ export default class ViewsCustomRouter extends CustomRouter {
         const user = { name: "Franco" };
         res.render("index", user);
       } catch (err) {
-        res.sendServerError?.(err as Error);
+        res.sendServerError(err as Error);
       }
     });
 
-    this.get("/home", async (req, res) => {
-      try {
-        const products = await productModel.find().lean();
-        res.render("home", { products });
-      } catch (err) {
-        res.sendServerError?.(err as Error);
-      }
-    });
-
-    // debería poder hacerse sin usar axios
     this.get("/products", async (req, res) => {
       try {
         // Valores por defecto
@@ -44,18 +32,17 @@ export default class ViewsCustomRouter extends CustomRouter {
         // Renderizo la vista
         res.render("products", { ...payload });
       } catch (err) {
-        res.sendServerError?.(err as Error);
+        res.sendServerError(err as Error);
       }
     });
 
-    // debería poder hacerse sin usar axios
     this.get("/carts/:cid", async (req, res) => {
       try {
         const { data } = await axios.get(`${config.BASE_URL}/api/carts/one/${req.params.cid}`);
         const { payload } = data;
         res.render("cart", { ...payload });
       } catch (err) {
-        res.sendServerError?.(err as Error);
+        res.sendServerError(err as Error);
       }
     });
 
@@ -63,16 +50,16 @@ export default class ViewsCustomRouter extends CustomRouter {
       try {
         res.render("register", { showError: req.query.error ? true : false, errorMessage: req.query.error });
       } catch (err) {
-        res.sendServerError?.(err as Error);
+        res.sendServerError(err as Error);
       }
     });
 
     this.get("/login", async (req, res) => {
       try {
-        if (req.session.user) return res.redirect("/profile");
+        if (req.user) return res.redirect("/profile");
         res.render("login", { showError: req.query.error ? true : false, errorMessage: req.query.error });
       } catch (err) {
-        res.sendServerError?.(err as Error);
+        res.sendServerError(err as Error);
       }
     });
 
@@ -81,7 +68,19 @@ export default class ViewsCustomRouter extends CustomRouter {
         if (!req.session.user) return res.redirect("/login");
         res.render("profile", { user: req.session.user });
       } catch (err) {
-        res.sendServerError?.(err as Error);
+        res.sendServerError(err as Error);
+      }
+    });
+
+    this.get("/current", async (req, res) => {
+      try {
+        if (!req.session.user) res.sendUserError(new Error("Actualmente no hay usuario loggeado"));
+
+        const currentUserFirstName = req.session.user.firstName;
+        const currentUserLastName = req.session.user.lastName;
+        res.sendSuccess(`El usuario actualmente autenticado es ${currentUserFirstName} ${currentUserLastName}`);
+      } catch (err) {
+        res.sendServerError(err as Error);
       }
     });
   }

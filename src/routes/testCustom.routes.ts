@@ -6,7 +6,7 @@ export default class TestCustomRouter extends CustomRouter {
       try {
         throw new Error("Error de usuario personalizado")
       } catch (err) {
-        res.sendUserError?.(err as Error);
+        res.sendUserError(err as Error);
       }
     });
   }

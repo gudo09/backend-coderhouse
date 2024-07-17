@@ -1,10 +1,9 @@
-import { Response } from 'express';
+import { User as UserModel } from "@models/users.model.js";
 
-declare module 'express' {
-  interface Response {
-    // respuestas personalizadas para custom.routes
-    sendSuccess?: (payload: any) => Response;
-    sendUserError?: (err: Error) => Response;
-    sendServerError?: (err: Error) => Response;
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserModel; // Usa el alias aquí
+    }
   }
 }

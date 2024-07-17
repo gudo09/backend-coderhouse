@@ -6,6 +6,7 @@ import config from "@/config.js";
 import usersManager from "@controllers/users.controller.mdb.js";
 import { createHash, isValidPassword } from "@services/utils.js";
 import { NextFunction, Request, Response } from "express";
+import { User } from "@models/users.model.js";
 
 const manager = new usersManager();
 
@@ -147,7 +148,7 @@ const initAuthStrategies = () => {
 export const passportCall = (strategy: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     //{session: false} para deshabilitar el uso de sesiones de express-session
-    passport.authenticate(strategy, { session: false }, function (err: Error, user: Express.User, info: { message: string } | string) {
+    passport.authenticate(strategy, { session: false }, function (err: Error, user: User, info: { message: string } | string) {
       if (err) return next(err);
       if (!user) return res.status(401).send({ origin: config.SERVER, payload: null, error: "Usuario no autenticado" });
 
@@ -161,7 +162,7 @@ passport.serializeUser((user, done) => {
   done(null, user);
 });
 
-passport.deserializeUser((user: Express.User, done) => {
+passport.deserializeUser((user: User, done) => {
   done(null, user);
 });
 

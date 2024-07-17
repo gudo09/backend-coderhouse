@@ -7,6 +7,7 @@ import UsersManager from "@controllers/users.controller.mdb.js";
 import { createToken, verifyRequiredBody, verifyToken } from "@services/utils.js";
 import initAuthStrategies, { passportCall } from "@auth/passport.strategies.js";
 
+
 const router = Router();
 const usersManager = new UsersManager();
 initAuthStrategies();
@@ -22,11 +23,20 @@ const adminAuth = (req: Request, res: Response, next: NextFunction) => {
 const handlePolicies = (policies: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     policies = policies.map((policy) => policy.toLowerCase());
-    if (policies[0] === "public") return next();
 
+    // si es de acceso publico, no hace validaciones
+    if (policies.includes("public")) return next();
+
+    // so no está autenticado mando un a respuesta de error
+    if (!req.user) return res.status(401).send({ origin: config.SERVER, payload: 'El usuario no estáautenticado' });
+
+
+    if (policies.includes(req.user.role)) return next(); 
     // FALTA IMPLEMENTAR EL RESTO DE POLITICAS
     // DESPUES DE IMPLEMENTAR SE SEBE MOVER A LA CLASE CUSOMROUTES
 
+
+    return res.status(403).send({ origin: config.SERVER, payload: 'No tiene permisos para acceder al recurso' });
     next();
   };
 };

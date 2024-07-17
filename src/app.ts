@@ -16,6 +16,7 @@ import MongoSingleton from "@services/mongodb.singleton.js";
 
 import TestCustomRouter from "@routes/testCustom.routes.js";
 import ViewsCustomRouter from "@routes/viewsCustom.routes.js";
+import TicketsCustomRouter from "@routes/ticketsCustom.routes.js";
 
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
@@ -67,6 +68,7 @@ const expressInstance = app.listen(config.PORT, async () => {
   // y llamo al getRouter para que me devuelva un tipo express.Router
   app.use("/api/test", new TestCustomRouter().getRouter());
   app.use("/", new ViewsCustomRouter().getRouter());
+  app.use("/api/tickets", new TicketsCustomRouter().getRouter());
 
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);
