@@ -1,12 +1,14 @@
 // services/interfaces.ts
 
+import { Cart } from "@models/carts.model.js";
 import { Product } from "@models/products.model.js";
 import { User } from "@models/users.model.js";
-import { FilterQuery, ModifyResult, PaginateOptions, PaginateResult, Types } from "mongoose";
+import { FilterQuery, ModifyResult, ObjectId, PaginateOptions, PaginateResult, Types } from "mongoose";
 
 export interface IProductService {
   // Métodos y propiedades del servicio de productos
   getById(id: string): Promise<Product | null>;
+  getOnlyIds(): Promise<[{ _id: ObjectId }]>;
   find(filter: FilterQuery<Product>): Promise<Product[]>;
   getPaginated(query: FilterQuery<Product>, options: PaginateOptions): Promise<PaginateResult<Product>>;
   exists(filter: FilterQuery<Product>): Promise<{ _id: Types.ObjectId } | null>;
@@ -29,7 +31,12 @@ export interface IUserService {
 
 export interface ICartService {
   // Métodos y propiedades del servicio de carritos
-  //getCartById(id: string): Promise<Cart>;
+  getById(id: string): Promise<Cart | null>;
+  getPaginated(query: FilterQuery<Cart>, options: PaginateOptions): Promise<PaginateResult<Cart>>;
+  add(cid: string, pid: string): Promise<Cart | null>;
+  clearCart(id: string): Promise<Cart | null>;
+  //getOne(filter: FilterQuery<Cart>): Promise<Cart | null>;
+
   // Otros métodos...
 }
 

@@ -1,5 +1,9 @@
-import cartModel from "@models/carts.model.js";
-import productModel from "@models/products.model.js";
+import CartsService from "@dao/mdb/carts.dao.mdb.js";
+import ProductsController from "./products.controller.mdb.js";
+
+const service = new CartsService();
+
+const productsController = new ProductsController();
 
 class cartsManager {
   constructor() {}
@@ -42,7 +46,7 @@ class cartsManager {
         },
       };
 
-      const paginatedCart = await cartModel.paginate({}, options);
+      const paginatedCart = await service.getPaginated({}, options);
 
       return paginatedCart;
     } catch (err) {
@@ -56,13 +60,7 @@ class cartsManager {
         console.log("Debe ingresar el id.");
         throw new Error("Debe ingresar el id.");
       }
-      const cart = await cartModel
-        .findById(id)
-        .populate({
-          path: "products.product",
-          model: "products",
-        })
-        .lean();
+      const cart = await service.getById(id);
 
       if (!cart) {
         throw new Error("No se encuenta el carrito.");
@@ -76,29 +74,7 @@ class cartsManager {
 
   add = async (cartId: string, productId: string) => {
     try {
-      const updatedCart = await cartModel.findOneAndUpdate(
-        { _id: cartId, "products._id": productId }, // Filtro para encontrar el carrito y el producto especifico
-        {
-          $inc: { "products.$.quantity": 1 }, // Incremento la cantidad del producto existente
-        },
-        {
-          new: true, // Devuelvo el documento actualizado
-        }
-      );
-
-      // Si el producto no estaba en el carrito, agregarlo con cantidad 1
-      if (!updatedCart) {
-        await cartModel.findOneAndUpdate(
-          { _id: cartId }, // Filtro para encontrar sólo el carrito
-          {
-            $push: { products: { _id: productId, quantity: 1 } }, // Inserto el nuevo elemento con cantidad 1
-          },
-          {
-            new: true,
-            upsert: true,
-          }
-        );
-      }
+      const updatedCart = await service.add(cartId, productId);
 
       return updatedCart;
     } catch (err) {
@@ -109,18 +85,18 @@ class cartsManager {
   create = async () => {
     // Crea un carrito con todos los productos con cantidad 0
     try {
-      const products = await productModel.find({}, { _id: 1 }).lean();
+      const products = await productsController.getOnlyIds()
 
       //agrego el campo quantity a cada producto
       const newProducts = products.map((element) => {
         return { product: element._id, quantity: 0 };
       });
 
-      const cart = await cartModel.create({ products: newProducts });
+      const cart = await service.createCart( newProducts );
 
       // Eliminar temporalmente los _id de los productos en la respuesta
       const cartWithoutIds = {
-        products: cart.products.map((product) => ({
+        products: cart?.products.map((product) => ({
           product: product.product,
           quantity: product.quantity,
         })),
@@ -132,6 +108,7 @@ class cartsManager {
     }
   };
 
+  // no implementado
   update = async (_id: any, _updProd: any) => {
     try {
     } catch (err) {
@@ -141,11 +118,7 @@ class cartsManager {
 
   emptyCart = async (_id: any) => {
     try {
-      const result = await cartModel.findByIdAndUpdate(
-        _id,
-        { products: [] }, // Actualizo el campo products a un array vacío
-        { new: true } // Devuelvo el documento actualizado, en este caso un [] vacío
-      );
+      const result = await service.clearCart(_id);
 
       if (!result) {
         throw new Error("No se ha encontrado carrito para vaciar.");
@@ -159,8 +132,7 @@ class cartsManager {
 
   deleteOneProduct = async (_idCart: any, _idProduct: any) => {
     try {
-      // Elimino el producto del carrito
-      const result = await cartModel.findByIdAndUpdate(_idCart, { $pull: { products: { product: _idProduct } } }, { new: true });
+      const result = await service.deleteOneProduct(_idCart, _idProduct);
 
       if (!result) {
         throw new Error("No se ha encontrado el carrito o el producto no está en el carrito.");

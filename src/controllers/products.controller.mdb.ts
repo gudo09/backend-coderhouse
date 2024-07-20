@@ -50,6 +50,14 @@ class ProductsController {
     }
   };
 
+  getOnlyIds = async() => {
+    try {
+      return await service.getOnlyIds();
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
+  }
+
   add = async (newData: Product) => {
     try {
       // valido si el código del producto a agregar está repetido

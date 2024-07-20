@@ -1,6 +1,6 @@
 import productModel, { Product } from "@models/products.model.js";
 
-import { FilterQuery, PaginateOptions } from "mongoose";
+import { FilterQuery, ObjectId, PaginateOptions } from "mongoose";
 import { IProductService } from "../interfaces.js";
 
 class ProductsService implements IProductService{
@@ -13,6 +13,14 @@ class ProductsService implements IProductService{
       throw new Error((err as Error).message);
     }
   };
+
+  getOnlyIds = async(): Promise<[{_id: ObjectId}]> => {
+    try {
+      return await productModel.find({}, { _id: 1 }).lean();
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
+  }
 
   find = async (filter: FilterQuery<Product>) => {
     try {
