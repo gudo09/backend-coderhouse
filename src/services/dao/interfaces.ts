@@ -35,8 +35,8 @@ export interface ICartService {
   getPaginated(query: FilterQuery<Cart>, options: PaginateOptions): Promise<PaginateResult<Cart>>;
   add(cid: string, pid: string): Promise<Cart | null>;
   clearCart(id: string): Promise<Cart | null>;
-  //getOne(filter: FilterQuery<Cart>): Promise<Cart | null>;
-
+  deleteOneProduct(cid: any, pid: any): Promise<Cart | null>;
+  createCart(newProducts: { product: ObjectId; quantity: number }[]): Promise<Cart | null>;
   // Otros métodos...
 }
 

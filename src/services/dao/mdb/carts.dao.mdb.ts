@@ -78,7 +78,7 @@ class CartsService implements ICartService {
     }
   }
 
-  deleteOneProduct = async (cid: any, pid: any) => {
+  deleteOneProduct = async (cid: any, pid: any): Promise<Cart|null> => {
     try {
       // Elimino el producto del carrito
       return await cartModel.findByIdAndUpdate(
