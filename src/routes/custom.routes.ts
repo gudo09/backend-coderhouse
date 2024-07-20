@@ -39,7 +39,7 @@ export default class CustomRouter {
 
   //respuestas personalizadas
   generateCustomResponses(req: Request, res: Response, next: NextFunction) {
-    res.sendSuccess = (payload) => res.status(200).send({ origin: config.SERVER, payload: payload });
+    res.sendSuccess = (payload, message) => res.status(200).send({ origin: config.SERVER, payload: payload, message: message });
     res.sendUserError = (err) => res.status(400).send({ origin: config.SERVER, payload: null, message: err.message });
     res.sendServerError = (err) => res.status(500).send({ origin: config.SERVER, payload: null, message: err.message });
     next();

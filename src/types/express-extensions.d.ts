@@ -4,7 +4,7 @@ import { User as UserModel } from "@models/users.model.ts";
 declare module "express-serve-static-core" {
   interface Response {
     // respuestas personalizadas para custom.routes
-    sendSuccess: (payload: any) => this;
+    sendSuccess: (payload: any, msessage?: string) => this;
     sendUserError: (err: Error) => this;
     sendServerError: (err: Error) => this;
   }
