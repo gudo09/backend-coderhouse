@@ -8,7 +8,6 @@ import cors from "cors";
 
 import config from "@/config.js";
 import userRoutes from "@routes/users.routes.js";
-import productRoutes from "@routes/products.routes.js";
 import cartRoutes from "@routes/carts.routes.js";
 import sessionRouter from "@routes/auth.routes.js";
 import initSocket from "@services/socket.js";
@@ -17,6 +16,7 @@ import MongoSingleton from "@services/mongodb.singleton.js";
 import TestCustomRouter from "@routes/testCustom.routes.js";
 import ViewsCustomRouter from "@routes/viewsCustom.routes.js";
 import TicketsCustomRouter from "@routes/ticketsCustom.routes.js";
+import ProductsCustomRouter from "./routes/productsCustom.routes.js";
 
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
@@ -60,7 +60,6 @@ const expressInstance = app.listen(config.PORT, async () => {
 
   // hago uso de las rutas
   app.use("/api/users", userRoutes);
-  app.use("/api/products", productRoutes);
   app.use("/api/carts", cartRoutes);
   app.use("/api/sessions", sessionRouter);
 
@@ -69,6 +68,7 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.use("/api/test", new TestCustomRouter().getRouter());
   app.use("/", new ViewsCustomRouter().getRouter());
   app.use("/api/tickets", new TicketsCustomRouter().getRouter());
+  app.use("/api/products", new ProductsCustomRouter().getRouter());
 
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);

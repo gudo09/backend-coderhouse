@@ -4,26 +4,26 @@ import config from "@/config.js";
 
 //tipado para params y callbacks
 //Request y Response son requeridos, el resto opcionales
-type ExpressParams = [Request, Response, NextFunction?, ...any[]];
+type ExpressParams = [Request, Response, NextFunction, ...any[]];
 type ExpressCallBacks = (...params: ExpressParams) => any;
 
 export default class CustomRouter {
   router: Router;
 
   //llama al metodo generateCustomResponses() para hacer el codigo más limpio
-  customResponseHandler = (req: Request, res: Response, next: NextFunction) => this.generateCustomResponses(req, res, next)
-  
+  customResponseHandler = (req: Request, res: Response, next: NextFunction) => this.generateCustomResponses(req, res, next);
+
   constructor() {
     this.router = Router();
     this.init();
   }
-  
+
   init() {}
-  
+
   getRouter() {
     return this.router;
   }
-  
+
   applyCallbacks(callBacks: ExpressCallBacks[]) {
     return callBacks.map((callBack) => async (...params: ExpressParams) => {
       try {
@@ -36,7 +36,7 @@ export default class CustomRouter {
       }
     });
   }
-  
+
   //respuestas personalizadas
   generateCustomResponses(req: Request, res: Response, next: NextFunction) {
     res.sendSuccess = (payload) => res.status(200).send({ origin: config.SERVER, payload: payload });
@@ -61,4 +61,17 @@ export default class CustomRouter {
   delete(path: string, ...callBacks: ExpressCallBacks[]) {
     this.router.delete(path, this.customResponseHandler, ...this.applyCallbacks(callBacks));
   }
+  /*
+  param(param: string,  ...callBacks: ExpressCallBacks[]) {
+    callBacks.forEach((callBack) => {
+      this.router.param(param, async (req: Request, res: Response, next: NextFunction, value: any) => {
+        try {
+          await callBack(req, res, next, value);
+        } catch (err) {
+          res.status(500).send({ origin: config.SERVER, payload: null, message: (err as Error).message });
+        }
+      });
+    });
+  }
+  */
 }

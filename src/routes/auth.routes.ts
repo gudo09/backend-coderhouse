@@ -20,26 +20,7 @@ const adminAuth = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-const handlePolicies = (policies: string[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    policies = policies.map((policy) => policy.toLowerCase());
 
-    // si es de acceso publico, no hace validaciones
-    if (policies.includes("public")) return next();
-
-    // so no está autenticado mando un a respuesta de error
-    if (!req.user) return res.status(401).send({ origin: config.SERVER, payload: 'El usuario no estáautenticado' });
-
-
-    if (policies.includes(req.user.role)) return next(); 
-    // FALTA IMPLEMENTAR EL RESTO DE POLITICAS
-    // DESPUES DE IMPLEMENTAR SE SEBE MOVER A LA CLASE CUSOMROUTES
-
-
-    return res.status(403).send({ origin: config.SERVER, payload: 'No tiene permisos para acceder al recurso' });
-    next();
-  };
-};
 
 //Middleware para validar que el usuario es admin (solo para cookies y jwt)
 const verifyAuthorization = (role: "user" | "admin" | "premium") => {

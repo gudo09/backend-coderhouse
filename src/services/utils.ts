@@ -3,6 +3,7 @@ import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import config from "@/config.js";
 import { User } from "@models/users.model.js";
+import mongoose from "mongoose";
 
 export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
@@ -42,14 +43,65 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
 
   if (!recivedToken) return res.status(401).send({ origin: config.SERVER, payload: "Se requiere token para poder acceder" });
 
-  jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined ) => {
+  jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
     if (err) return res.status(403).send({ origin: config.SERVER, payload: "Token no válido" });
 
     // si el token pasa la varificacion, asignamos las credenciales al req.user
 
-    console.log(payload)
+    console.log(payload);
     req.user = payload as User;
-    console.log(req.user)
+    console.log(req.user);
     next();
   });
+};
+
+export const handlePolicies = (policies: string[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    policies = policies.map((policy) => policy.toLowerCase());
+
+    // si es de acceso publico, no hace validaciones
+    if (policies.includes("public")) return next();
+
+    // so no está autenticado mando un a respuesta de error
+    if (!req.user) return res.status(401).send({ origin: config.SERVER, payload: "El usuario no estáautenticado" });
+
+    if (policies.includes(req.user.role)) return next();
+    // FALTA IMPLEMENTAR EL RESTO DE POLITICAS
+    // DESPUES DE IMPLEMENTAR SE SEBE MOVER A LA CLASE CUSOMROUTES
+
+    return res.status(403).send({ origin: config.SERVER, payload: "No tiene permisos para acceder al recurso" });
+    next();
+  };
+};
+
+// middleware para validar el id
+export const validateId = async (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.pid;
+
+  // verifico que el id sea valido para mongoose
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).send({ status: "ERROR", payload: {}, error: "En id ingresado no es válido." });
+    return;
+  }
+
+  next();
+};
+
+// middleware para validar el los campos del body
+export const validateBody = async (req: Request, res: Response, next: NextFunction) => {
+  //valido todos los campor requeridos en el body
+  req.body.status = true;
+  const { id, title, price, description, code, status, stock, category } = req.body;
+
+  if (id) {
+    res.status(400).json({ status: "ERROR", payload: {}, error: "No se debe enviar el id." });
+    return;
+  }
+
+  if (!title || !price || !description || !code || !status || !stock || !category) {
+    res.status(400).json({ status: "ERROR", payload: {}, error: "Faltan datos en el cuerpo de la solicitud" });
+    return;
+  }
+
+  next();
 };

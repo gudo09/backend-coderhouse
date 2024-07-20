@@ -17,7 +17,7 @@ const transport = nodemailer.createTransport({
 
 export default class TicketsCustomRouter extends CustomRouter {
   init() {
-    this.get("/mail", async (req, res) => {
+    this.get("/mail",async (req, res) => {
       try {
         const mail = await transport.sendMail({
           from: `Sistema Coder <${config.GMAIL_APP_USER}>`,
