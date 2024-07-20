@@ -9,7 +9,7 @@ export default class ProductsCustomRouter extends CustomRouter {
   init() {
     this.router.param("pid", async (req, res, next, pid) => {
       if (!config.MONGODB_ID_REGEX.test(pid)) {
-        return res.status(400).send({ origin: config.SERVER, payload: null, error: "Id no válido" });
+        return res.sendServerError(new Error("Id no válido"));
       }
 
       next();
@@ -76,7 +76,7 @@ export default class ProductsCustomRouter extends CustomRouter {
 
     //Siempre al último por si no entra a ningún otro endpoint
     this.router.all("*", async (req, res) => {
-      res.status(404).send({ origin: config.SERVER, payload: {}, error: "No se encuentra la ruta seleccionada" });
+      res.sendServerError(new Error("No se encuentra la ruta seleccionada"));
     });
   }
 }
