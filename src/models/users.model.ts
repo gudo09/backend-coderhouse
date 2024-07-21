@@ -17,6 +17,7 @@ export const userSchema = new Schema({
       ref: "tickets",
     },
   ],
+  cart_id: { type: Schema.Types.ObjectId, required: true}
 });
 
 userSchema.plugin(mongoosePaginate);

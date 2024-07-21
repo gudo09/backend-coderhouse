@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import CustomRouter from "./custom.routes.js";
 import CartsController from "@controllers/carts.controller.mdb.js";
 import ProductsController from "@controllers/products.controller.mdb.js";
+import { handlePolicies } from "@/services/utils.js";
 
 const controller = new CartsController();
 const productsController = new ProductsController();
@@ -15,7 +16,7 @@ export default class CartsCustomRouter extends CustomRouter {
 
       // verifico que el id sea valido para mongoose
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        res.sendServerError(new Error("En id ingresado no corresponde a un carrito válido." ));
+        res.sendServerError(new Error("En id ingresado no corresponde a un carrito válido."));
         return;
       }
 
@@ -88,7 +89,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/:cid/products/:pid", async (req, res) => {
+    this.post("/:cid/products/:pid", handlePolicies(["self"]), async (req, res) => {
       /*
         La ruta POST  /:cid/product/:pid deberá agregar el producto al arreglo “products” del carrito seleccionado, agregándose como un objeto bajo el siguiente formato:
         - product: SÓLO DEBE CONTENER EL ID DEL PRODUCTO (Es crucial que no agregues el producto completo)

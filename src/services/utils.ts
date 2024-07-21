@@ -65,6 +65,9 @@ export const handlePolicies = (policies: string[]) => {
     // so no está autenticado mando un a respuesta de error
     if (!req.user) return res.status(401).send({ origin: config.SERVER, payload: "El usuario no estáautenticado" });
 
+    // si el usuario asociado al carrito es el mismo, procede
+    if (policies.includes("self") && req.user.cart_id.toString() === req.params.cid) return next();
+
     if (policies.includes(req.user.role)) return next();
     // FALTA IMPLEMENTAR EL RESTO DE POLITICAS
     // DESPUES DE IMPLEMENTAR SE SEBE MOVER A LA CLASE CUSOMROUTES
