@@ -5,6 +5,9 @@ import config from "@/config.js";
 import { User } from "@models/users.model.js";
 import mongoose from "mongoose";
 
+import { errorsDictionary } from "@/config.js";
+import CustomError from "./customError.class.js";
+
 export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
 export const isValidPassword = (enteredPassword: string, savedPassword: string) => bcrypt.compareSync(enteredPassword, savedPassword);
@@ -102,8 +105,10 @@ export const validateBody = async (req: Request, res: Response, next: NextFuncti
   }
 
   if (!title || !price || !description || !code || !status || !stock || !category) {
-    res.status(400).json({ status: "ERROR", payload: {}, error: "Faltan datos en el cuerpo de la solicitud" });
-    return;
+    //return res.status(400).json({ status: "ERROR", payload: {}, error: "Faltan datos en el cuerpo de la solicitud" });
+
+    // uso error personalizado
+    throw new CustomError(errorsDictionary.FEW_PARAMETERS)
   }
 
   next();

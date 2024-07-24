@@ -9,6 +9,7 @@ import cors from "cors";
 import config from "@/config.js";
 import initSocket from "@services/socket.js";
 import MongoSingleton from "@services/mongodb.singleton.js";
+import errorsHandler from "@services/errors.handler.js";
 
 import TestCustomRouter from "@routes/testCustom.routes.js";
 import ViewsCustomRouter from "@routes/viewsCustom.routes.js";
@@ -68,6 +69,8 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.use("/api/carts", new CartsCustomRouter().getRouter());
   app.use("/api/sessions", new AuthCustomRouter().getRouter());
   app.use("/api/tickets", new TicketsCustomRouter().getRouter());
+
+  app.use(errorsHandler);
 
   console.log(`Servidor iniciado en el puerto ${config.PORT}`);
   console.log(`Ruta raíz: ${config.DIRNAME}`);

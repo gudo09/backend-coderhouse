@@ -35,11 +35,12 @@ const config = {
   },
 };
 
+// diccionario para manejar errores
 export const errorsDictionary = {
   UNHANDLED_ERROR: { code: 0, status: 500, message: "Error no identificado" },
   ROUTING_ERROR: { code: 1, status: 404, message: "No se encuentra el endpoint solicitado" },
-  FEW_PARAMETERS: { code: 2, status: 400, message: "Falta parámetros obligatorios o se enviaron" },
-  INVALID_MONGOID_FORMAT: { code: 3, status: 400, message: "El ID no contiene un formato válido" },
+  FEW_PARAMETERS: { code: 2, status: 400, message: "Falta parámetros obligatorios o se enviaron vacíos" },
+  INVALID_MONGOID_FORMAT: { code: 3, status: 400, message: "El ID no contiene un formato válido de MongoDB" },
   INVALID_PARMETER: { code: 4, status: 400, message: "El paámetro ingresado no es válido" },
   INVALID_TYPE_ERROR: { code: 5, status: 400, message: "No corresponde el tipo de dato" },
   ID_NOT_FOUND: { code: 6, status: 400, message: "No existe registro con ese ID" },
