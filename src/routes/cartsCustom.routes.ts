@@ -147,6 +147,15 @@ export default class CartsCustomRouter extends CustomRouter {
       Una vez finalizada la compra, el carrito asociado al usuario que compró deberá contener sólo los productos que no pudieron comprarse. 
       Es decir, se filtran los que sí se compraron y se quedan aquellos que no tenían disponibilidad.
       */
+
+      try {
+        // 1- traer los datos del carrito 
+        // 2- recorrerlo comparando el quantity con el stock de cada producto
+        // 3- generar el ticket
+        // 4- actualizar el stock de los productos
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
     });
 
     // Falta implementar
