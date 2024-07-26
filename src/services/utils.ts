@@ -58,6 +58,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
   });
 };
 
+
 export const handlePolicies = (policies: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     policies = policies.map((policy) => policy.toLowerCase());

@@ -1,7 +1,10 @@
+import { Request, Response, NextFunction } from "express";
+
 import CustomRouter from "@routes/custom.routes.js";
 import ProductsController from "@controllers/products.controller.mdb.js";
 import config from "@/config.js";
 import { validateBody, verifyToken, handlePolicies } from "@services/utils.js";
+import { faker } from "@faker-js/faker";
 
 const controller = new ProductsController();
 
@@ -26,6 +29,38 @@ export default class ProductsCustomRouter extends CustomRouter {
         const products = await controller.getAll(limit, sort, query, page);
 
         res.sendSuccess(products);
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
+    });
+
+    // genera datos mock para products
+    this.get("/fakeProducts/:qty?", async (req, res) => {
+      try {
+        const quantity = +req.params.qty || 100;
+        const CATEGORIES = ["category1", "category2", "category3", "category4"];
+        const data = [];
+
+        for (let i = 0; i < quantity; i++) {
+          const title = faker.commerce.productName();
+          const description = faker.commerce.productDescription();
+          const price: number = +faker.commerce.price();
+          const thumbnails = [];
+          const thumbnailsQty: number = +faker.number.int({ min: 1, max: 4 });
+          const code = faker.database.mongodbObjectId();
+          const stock: number = +faker.number.int({ min: 0, max: 200 });
+          const status: boolean = faker.datatype.boolean();
+          const category = CATEGORIES[+faker.number.int({ max: CATEGORIES.length })];
+
+          for (let j = 0; j < thumbnailsQty; j++) {
+            const element = faker.image.url({ width: 320, height: 240 });
+            thumbnails.push(element);
+          }
+
+          data.push({title, description, price, thumbnails, code, stock, status, category})
+        }
+
+        res.sendSuccess(data);
       } catch (err) {
         res.sendServerError(err as Error);
       }
