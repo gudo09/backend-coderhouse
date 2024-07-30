@@ -124,11 +124,12 @@ export default class AuthCustomRouter extends CustomRouter {
     // usa passport base para el login y crea un token en la cookie con jwt
     this.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req, res) => {
       try {
-        if (!req.user) return res.status(500).send({ origin: config.SERVER, payload: {}, message: "Error" });
+        if (!req.user) return res.sendUserError(new Error("Usuario no encontrado."));
         req.session.user = req.user;
         const token = createToken(req.user as User, "1h");
         res.cookie(config.COOKIE_NAME, token, { maxAge: 60 * 60 * 1000 * 24, httpOnly: true });
-        res.sendSuccess({ message: "Usuario autenticado", token: token });
+        req.logger.debug(`${new Date().toString()} Usuario autenticado. Token: ${token} ${req.method} ${req.url}`);
+        res.redirect("/profile")
       } catch (err) {
         res.sendServerError(err as Error);
       }

@@ -10,6 +10,7 @@ import config from "@/config.js";
 import initSocket from "@services/socket.js";
 import MongoSingleton from "@services/mongodb.singleton.js";
 import errorsHandler from "@services/errors.handler.js";
+import addLogger from "@services/logger.js";
 
 import TestCustomRouter from "@routes/testCustom.routes.js";
 import ViewsCustomRouter from "@routes/viewsCustom.routes.js";
@@ -58,6 +59,10 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.engine("handlebars", handlebars.engine());
   app.set("views", `${config.DIRNAME}/views`);
   app.set("view engine", "handlebars");
+
+
+  // uso el Logger para registros 
+  app.use(addLogger)
 
   // hago uso de las rutas
   // Instancio un objeto de TestCustomRouter

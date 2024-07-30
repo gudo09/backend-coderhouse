@@ -2,6 +2,7 @@ import CustomRouter from "@routes/custom.routes.js";
 
 import axios from "axios";
 import config from "@/config.js";
+import { Request } from "express";
 
 export default class ViewsCustomRouter extends CustomRouter {
   init() {
@@ -63,10 +64,11 @@ export default class ViewsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/profile", async (req, res) => {
+    this.get("/profile", async (req:Request, res) => {
       try {
         if (!req.session.user) return res.redirect("/login");
         res.render("profile", { user: req.session.user });
+        req.logger.info(`${new Date().toString()} El usuario ${req.user?.firstName} ${req.user?.lastName} inició sesión ${req.method} ${req.url}`);
       } catch (err) {
         res.sendServerError(err as Error);
       }

@@ -17,6 +17,7 @@ const config = {
   GMAIL_APP_USER: process.env.GMAIL_APP_USER as string,
   GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD as string,
   PERSISTENCE: "mongo",
+  MODE: "dev",
 
   get COOKIE_NAME() {
     return `${this.APP_NAME}_cookie`;
