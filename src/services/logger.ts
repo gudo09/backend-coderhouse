@@ -42,7 +42,7 @@ const prodLogger = winston.createLogger({
     // Muestra por consola en modo prod
     new winston.transports.Console({
       // nivel minimo de registros
-      level: "debug",
+      level: "info",
       // colores personalizados
       format: winston.format.combine(winston.format.colorize({ colors: customLevelsOptions.colors }), winston.format.simple()),
     }),
