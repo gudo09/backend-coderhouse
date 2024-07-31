@@ -68,7 +68,7 @@ export default class ViewsCustomRouter extends CustomRouter {
       try {
         if (!req.session.user) return res.redirect("/login");
         res.render("profile", { user: req.session.user });
-        req.logger.info(`${new Date().toString()} El usuario ${req.user?.firstName} ${req.user?.lastName} inició sesión ${req.method} ${req.url}`);
+        req.logger.debug(`${new Date().toString()} El usuario ${req.user?.firstName} ${req.user?.lastName} inició sesión ${req.method} ${req.url}`);
       } catch (err) {
         res.sendServerError(err as Error);
       }
