@@ -15,9 +15,9 @@ const customLevelsOptions = {
   },
   colors: {
     fatal: "red",
-    error: "orange",
+    error: "magenta",
     warning: "yellow",
-    info: "magenta",
+    info: "blue",
     http: "cyan",
     debug: "gray",
   },
@@ -46,7 +46,7 @@ const prodLogger = winston.createLogger({
       // colores personalizados
       format: winston.format.combine(winston.format.colorize({ colors: customLevelsOptions.colors }), winston.format.simple()),
     }),
-    
+
     // Guarda un archivo .log para los registros en modo prod
     new winston.transports.File({ level: "info", filename: `${config.DIRNAME}/logs/errors.log` }),
   ],
@@ -55,8 +55,7 @@ const prodLogger = winston.createLogger({
 // middleware para uso general en app.ts
 const addLogger = (req: Request, res: Response, next: NextFunction) => {
   // Uso dinamicamente el logger
-  if (config.MODE === "dev") req.logger = devLogger;
-  if (config.MODE === "prod") req.logger = prodLogger;
+  config.MODE === "dev" ? (req.logger = devLogger) : (req.logger = prodLogger);
 
   req.logger.http(`${new Date().toString()} ${req.method} ${req.url}`);
   next();

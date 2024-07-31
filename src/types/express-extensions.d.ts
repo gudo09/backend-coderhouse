@@ -11,7 +11,7 @@ declare module "express-serve-static-core" {
   }
 
   interface Request {
-    user?: UserModel; // Usa el alias aquí
-    logger: Logger;
+    user?: UserModel;
+    logger: Logger; 
   }
 }

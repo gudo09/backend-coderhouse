@@ -19,6 +19,7 @@ import UsersCustomRouter from "@routes/usersCustom.routes.js";
 import CartsCustomRouter from "@routes/cartsCustom.routes.js";
 import TicketsCustomRouter from "@routes/ticketsCustom.routes.js";
 import AuthCustomRouter from "./routes/authCustom.routes.js";
+import LoggingCustomRouter from "./routes/loggingCuston.routes.js";
 
 //Creo un a instancia del servidor de express, determino el puerto donde va a iniciar y una instancia del ProductManager
 const app = express();
@@ -74,6 +75,7 @@ const expressInstance = app.listen(config.PORT, async () => {
   app.use("/api/carts", new CartsCustomRouter().getRouter());
   app.use("/api/sessions", new AuthCustomRouter().getRouter());
   app.use("/api/tickets", new TicketsCustomRouter().getRouter());
+  app.use("/api/log", new LoggingCustomRouter().getRouter());
 
   app.use(errorsHandler);
 
