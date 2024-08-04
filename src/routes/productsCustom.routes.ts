@@ -66,7 +66,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/", verifyToken, validateBody, handlePolicies(["admin"]), async (req, res) => {
+    this.post("/", verifyToken, validateBody, handlePolicies(["admin, premium"]), async (req, res) => {
       try {
         const body = req.body;
         const productAdded = await controller.add(body);

@@ -35,6 +35,11 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
+    this.put("premium/:uid", async (req, res) => {
+      //Permitirá cambiar el rol de un usuario, de “user” a “premium” y viceversa.
+
+    });
+
     this.put("/:id", async (req, res) => {
       try {
         const filter = { _id: req.params.id };
