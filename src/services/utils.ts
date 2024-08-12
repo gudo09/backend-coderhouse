@@ -1,9 +1,11 @@
-import bcrypt from "bcrypt";
-import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import config from "../config.js";
+
 import { User } from "../models/users.model.js";
 import mongoose from "mongoose";
+
+import bcrypt from "bcrypt";
+import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 
 import { errorsDictionary } from "../config.js";
 import CustomError from "./customError.class.js";
@@ -24,7 +26,7 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
 
     // Si alguna verificación falla, enviamos una respuesta de error
     if (!allOk) {
-      res.status(400).send({ origin: config.SERVER, payload: "Faltan propiedades", requiredFields });
+      res.sendServerError(new CustomError(errorsDictionary.FEW_PARAMETERS), requiredFields);
       return;
     }
 
@@ -44,10 +46,10 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
   // el token puede venir por header, cookie o query
   const recivedToken = headerToken || cookieToken || queryToken;
 
-  if (!recivedToken) return res.status(401).send({ origin: config.SERVER, payload: "Se requiere token para poder acceder" });
+  if (!recivedToken) return res.sendUserError(new Error("Se requiere token para poder acceder"));
 
   jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
-    if (err) return res.status(403).send({ origin: config.SERVER, payload: "Token no válido" });
+    if (err) return res.sendUserError(new Error("Token no válido"));
 
     // si el token pasa la varificacion, asignamos las credenciales al req.user
 
@@ -67,7 +69,7 @@ export const handlePolicies = (policies: string[]) => {
     if (policies.includes("public")) return next();
 
     // so no está autenticado mando un a respuesta de error
-    if (!req.user) return res.status(401).send({ origin: config.SERVER, payload: "El usuario no estáautenticado" });
+    if (!req.user) return res.sendUserError(new Error("El usuario no está autenticado"));
 
     // si el usuario asociado al carrito es el mismo, procede
     if (policies.includes("self") && req.user.cart_id.toString() === req.params.cid) return next();
@@ -76,7 +78,7 @@ export const handlePolicies = (policies: string[]) => {
     // FALTA IMPLEMENTAR EL RESTO DE POLITICAS
     // DESPUES DE IMPLEMENTAR SE SEBE MOVER A LA CLASE CUSOMROUTES
 
-    return res.status(403).send({ origin: config.SERVER, payload: "No tiene permisos para acceder al recurso" });
+    return res.status(403).sendUserError(new Error("No tiene permisos para acceder al recurso"));
     next();
   };
 };
@@ -87,7 +89,7 @@ export const validateId = async (req: Request, res: Response, next: NextFunction
 
   // verifico que el id sea valido para mongoose
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(400).send({ status: "ERROR", payload: {}, error: "En id ingresado no es válido." });
+    res.sendServerError(new Error("En id ingresado no es válido."));
     return;
   }
 
@@ -100,17 +102,10 @@ export const validateBody = async (req: Request, res: Response, next: NextFuncti
   req.body.status = true;
   const { id, title, price, description, code, status, stock, category } = req.body;
 
-  if (id) {
-    res.status(400).json({ status: "ERROR", payload: {}, error: "No se debe enviar el id." });
-    return;
-  }
+  if (id) return res.sendServerError(new Error("No se debe enviar el id."));
 
-  if (!title || !price || !description || !code || !status || !stock || !category) {
-    //return res.status(400).json({ status: "ERROR", payload: {}, error: "Faltan datos en el cuerpo de la solicitud" });
-
-    // uso error personalizado
-    throw new CustomError(errorsDictionary.FEW_PARAMETERS);
-  }
+  // uso error personalizado
+  if (!title || !price || !description || !code || !status || !stock || !category) return res.sendServerError(new CustomError(errorsDictionary.FEW_PARAMETERS));
 
   next();
 };

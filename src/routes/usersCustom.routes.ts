@@ -67,7 +67,6 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    // Falta implementar
     this.get("/restorePassword", async (req, res) => {
       // Le ofrecemos la opcion de restaurar la contraseña al usuario
       // el usuario solo debe ingresar su email
@@ -78,18 +77,17 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    // Falta implementar
     this.post("/sendMailRestorePassword", async (req, res) => {
       // Este endpoint se encarga de enviar el mail para reestablecer la contraseña
       // Se busca el usuario por su email
       // Si existe, se genera el token de corta duracion (5 min)
-      // se genera y se envia el enlace a /restorePassword/:token
+      // se genera y se envia el enlace a /restorePassword con el token en el query
       try {
         const email = req.body.email;
 
         const foundUser = await controller.getOne({ email });
 
-        if (!foundUser) res.redirect(`/api/users/restorePassword?message=${encodeURI("Usuario no encontrado")}`);
+        if (!foundUser) return res.redirect(`/api/users/restorePassword?message=${encodeURI("Usuario no encontrado")}`);
 
         const token = createToken({ email: email }, "10m");
         const resetLink = `${config.BASE_URL}/api/users/restoreConfirmPassword/?token=${token}`;
@@ -181,7 +179,8 @@ export default class UsersCustomRouter extends CustomRouter {
       // Debe incluir un formulario donde debe repetir la nueva contraseña
       // No debe ser igual a la anterior contraseña (verificar que los hash nuevo y anterior sean distintos)
       try {
-        res.sendSuccess("Token contraseña");
+        const token = req.query.token; 
+        res.sendSuccess(`Token: ${token}`);
       } catch (err) {
         res.sendServerError(err as Error);
       }
