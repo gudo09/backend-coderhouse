@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import config from "@/config.js";
-import { User } from "@models/users.model.js";
+import config from "../config.js";
+import { User } from "../models/users.model.js";
 import mongoose from "mongoose";
 
-import { errorsDictionary } from "@/config.js";
+import { errorsDictionary } from "../config.js";
 import CustomError from "./customError.class.js";
 
 export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -33,7 +33,7 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
   };
 };
 
-export const createToken = (payload: User, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
+export const createToken = <T extends Object>(payload: T, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   // el header tiene el formato "Bearer <Token>" así que con split(' ')[1] elimino el bearer
@@ -54,10 +54,10 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     console.log(payload);
     req.user = payload as User;
     console.log(req.user);
+
     next();
   });
 };
-
 
 export const handlePolicies = (policies: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -109,7 +109,7 @@ export const validateBody = async (req: Request, res: Response, next: NextFuncti
     //return res.status(400).json({ status: "ERROR", payload: {}, error: "Faltan datos en el cuerpo de la solicitud" });
 
     // uso error personalizado
-    throw new CustomError(errorsDictionary.FEW_PARAMETERS)
+    throw new CustomError(errorsDictionary.FEW_PARAMETERS);
   }
 
   next();

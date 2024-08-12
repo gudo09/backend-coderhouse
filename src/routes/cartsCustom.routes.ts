@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import CustomRouter from "./custom.routes.js";
-import CartsController from "@controllers/carts.controller.mdb.js";
-import ProductsController from "@controllers/products.controller.mdb.js";
-import { handlePolicies } from "@/services/utils.js";
+import CartsController from "../controllers/carts.controller.mdb.js";
+import ProductsController from "../controllers/products.controller.mdb.js";
+import { handlePolicies } from "../services/utils.js";
 
 const controller = new CartsController();
 const productsController = new ProductsController();

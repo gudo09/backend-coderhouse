@@ -1,7 +1,7 @@
 import { Server as HttpServer } from 'http';
 import { Server } from 'socket.io';
 import axios from 'axios';
-import config from '@/config.js';
+import config from '../config';
 
 const initSocket = (httpServer: HttpServer) => {
   const io = new Server(httpServer);

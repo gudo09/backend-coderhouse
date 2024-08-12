@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import config, { errorsDictionary } from "@/config.js";
-import CustomError from "@services/customError.class.js";
+import config, { errorsDictionary } from "../config.js";
+import CustomError from "../services/customError.class.js";
 
 type ErrorKey =  keyof typeof errorsDictionary;
 

@@ -1,5 +1,5 @@
-import { Product } from "@models/products.model.js";
-import { factoryProductService } from "@services/dao/dao.factory.js";
+import { Product } from "../models/products.model.js";
+import { factoryProductService } from "../services/dao/dao.factory.js";
 
 const service = factoryProductService;
 

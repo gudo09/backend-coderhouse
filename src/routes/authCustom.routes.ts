@@ -1,13 +1,13 @@
-import UsersController from "@controllers/users.controller.mdb.js";
-import config from "@/config.js";
+import UsersController from "../controllers/users.controller.mdb.js";
+import config from "../config.js";
 import passport from "passport";
 
-import { User, UserSession } from "@models/users.model.js";
+import { User, UserSession } from "../models/users.model.js";
 
-import { createToken, handlePolicies, verifyRequiredBody, verifyToken } from "@services/utils.js";
-import CustomRouter from "@routes/custom.routes.js";
+import { createToken, handlePolicies, verifyRequiredBody, verifyToken } from "../services/utils.js";
+import CustomRouter from "../routes/custom.routes.js";
 
-import initAuthStrategies, { passportCall } from "@auth/passport.strategies.js";
+import initAuthStrategies, { passportCall } from "../auth/passport.strategies.js";
 
 const usersController = new UsersController();
 initAuthStrategies();

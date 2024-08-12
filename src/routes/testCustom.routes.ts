@@ -1,4 +1,4 @@
-import CustomRouter from "@routes/custom.routes.js";
+import CustomRouter from "../routes/custom.routes.js";
 
 export default class TestCustomRouter extends CustomRouter {
   init() {

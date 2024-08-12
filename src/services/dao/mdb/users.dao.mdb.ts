@@ -1,4 +1,4 @@
-import usersModel, { User } from "@models/users.model.js";
+import usersModel, { User } from "../../../models/users.model.js";
 import { IUserService } from "../interfaces.js";
 import { FilterQuery, PaginateOptions } from "mongoose";
 

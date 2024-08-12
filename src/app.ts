@@ -6,20 +6,21 @@ import session from "express-session";
 import passport from "passport";
 import cors from "cors";
 
-import config from "@/config.js";
-import initSocket from "@services/socket.js";
-import MongoSingleton from "@services/mongodb.singleton.js";
-import errorsHandler from "@services/errors.handler.js";
-import addLogger from "@services/logger.js";
+import config from "./config.js";
+import initSocket from "./services/socket.js";
+import MongoSingleton from "./services/mongodb.singleton.js";
+import errorsHandler from "./services/errors.handler.js";
+import addLogger from "./services/logger.js";
 
-import TestCustomRouter from "@routes/testCustom.routes.js";
-import ViewsCustomRouter from "@routes/viewsCustom.routes.js";
-import ProductsCustomRouter from "@routes/productsCustom.routes.js";
-import UsersCustomRouter from "@routes/usersCustom.routes.js";
-import CartsCustomRouter from "@routes/cartsCustom.routes.js";
-import TicketsCustomRouter from "@routes/ticketsCustom.routes.js";
+import TestCustomRouter from "./routes/testCustom.routes.js";
+import ViewsCustomRouter from "./routes/viewsCustom.routes.js";
+import ProductsCustomRouter from "./routes/productsCustom.routes.js";
+import UsersCustomRouter from "./routes/usersCustom.routes.js";
+import CartsCustomRouter from "./routes/cartsCustom.routes.js";
+import TicketsCustomRouter from "./routes/ticketsCustom.routes.js";
 import AuthCustomRouter from "./routes/authCustom.routes.js";
 import LoggingCustomRouter from "./routes/loggingCustom.routes.js";
+
 /*
 import cluster from "cluster";
 import { cpus } from "os";
@@ -37,6 +38,7 @@ if (cluster.isPrimary) {
     console.error(`Worker ${worker.process.pid} error: ${err.message}`);
   });
 } else {
+ 
 }
 */
 
@@ -100,7 +102,7 @@ try {
 
     console.log(`Servidor iniciado en el puerto ${config.PORT} (PID ${process.pid})`);
     console.log(`Ruta raíz: ${config.DIRNAME}`);
-    console.log(`Puedes acceder desde http://localhost:${config.PORT}/login`);
+    console.log(`Puedes acceder desde ${config.BASE_URL}/login`);
   });
 } catch (err) {
   console.log((err as Error).message);

@@ -2,11 +2,11 @@ import passport from "passport";
 import local from "passport-local";
 import jwt from "passport-jwt";
 import { Strategy as GitHubStrategy } from "passport-github2";
-import config from "@/config.js";
-import usersManager from "@controllers/users.controller.mdb.js";
-import { createHash, isValidPassword } from "@services/utils.js";
+import config from "../config.js";
+import usersManager from "../controllers/users.controller.mdb.js";
+import { createHash, isValidPassword } from "../services/utils.js";
 import { NextFunction, Request, Response } from "express";
-import { User } from "@models/users.model.js";
+import { User } from "../models/users.model.js";
 
 const manager = new usersManager();
 

@@ -1,5 +1,5 @@
 import { Ticket } from "@models/tickets.model.js";
-import { factoryTicketService } from "@/services/dao/dao.factory.js";
+import { factoryTicketService } from "../services/dao/dao.factory.js";
 
 const service = factoryTicketService;
 

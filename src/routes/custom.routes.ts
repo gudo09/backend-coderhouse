@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
 
-import config from "@/config.js";
+import config from "../config.js";
 
 //tipado para params y callbacks
 //Request y Response son requeridos, el resto opcionales

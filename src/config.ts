@@ -1,7 +1,18 @@
 import * as url from "url";
 import dotenv from "dotenv";
+import { Command } from "commander";
 
-dotenv.config();
+const commandLine =new Command()
+
+commandLine
+  .option("--mode <mode>")
+  .option("--port <port>")
+  .option("--setup <setup>")
+commandLine.parse()
+const clsOptions = commandLine.opts();
+
+
+dotenv.config({ path: clsOptions.mode === "devel" ? ".env.devel" : ".env.prod" });
 
 const config = {
   APP_NAME: "coder_53160_FG",
@@ -42,7 +53,7 @@ export const errorsDictionary = {
   ROUTING_ERROR: { code: 1, status: 404, message: "No se encuentra el endpoint solicitado" },
   FEW_PARAMETERS: { code: 2, status: 400, message: "Falta parámetros obligatorios o se enviaron vacíos" },
   INVALID_MONGOID_FORMAT: { code: 3, status: 400, message: "El ID no contiene un formato válido de MongoDB" },
-  INVALID_PARMETER: { code: 4, status: 400, message: "El paámetro ingresado no es válido" },
+  INVALID_PARMETER: { code: 4, status: 400, message: "El parámetro ingresado no es válido" },
   INVALID_TYPE_ERROR: { code: 5, status: 400, message: "No corresponde el tipo de dato" },
   ID_NOT_FOUND: { code: 6, status: 400, message: "No existe registro con ese ID" },
   PAGE_NOT_FOUND: { code: 7, status: 404, message: "No se encuentra la página solicitada" },
@@ -50,6 +61,8 @@ export const errorsDictionary = {
   INTERNAL_ERROR: { code: 9, status: 500, message: "Error interno de ejecución del servidor" },
   RECORD_CREATION_ERROR: { code: 10, status: 500, message: "Error al intentar crear el registro" },
   RECORD_CREATION_OK: { code: 11, status: 200, message: "Registro creado" },
+  NODEMAILER_SEND_ERROR: { code: 12, status: 500, message:"No se pudo enviar el email"},
+  DATABASE_USER_NOT_FOUND: { code: 13, status: 400, message: "No se encuentra el usuario" },
 };
 
 export default config;

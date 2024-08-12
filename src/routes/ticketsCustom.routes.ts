@@ -1,19 +1,10 @@
-import CustomRouter from "@routes/custom.routes.js";
-import nodemailer from "nodemailer";
-import TicketsController from "@controllers/tickets.controller.mdb.js";
-import config from "@/config.js";
+import CustomRouter from "../routes/custom.routes.js";
+import { transport } from "../services/transportNodemailer.js";
+import TicketsController from "../controllers/tickets.controller.mdb.js";
+import config from "../config.js";
 
 const controller = new TicketsController();
 
-const transport = nodemailer.createTransport({
-  service: "gmail",
-  //pueto 587 es un puerto seguro (cifrado)
-  port: 587,
-  auth: {
-    user: config.GMAIL_APP_USER,
-    pass: config.GMAIL_APP_PASSWORD,
-  },
-});
 
 export default class TicketsCustomRouter extends CustomRouter {
   init() {
@@ -22,7 +13,7 @@ export default class TicketsCustomRouter extends CustomRouter {
         const mail = await transport.sendMail({
           from: `Sistema Coder <${config.GMAIL_APP_USER}>`,
           to: "francogudino12@gmail.com",
-          subject: "Prueba nodemailer",
+          subject: "Solicitud de cambio de contraseña",
           html: `<h1>Prueba</h1>`,
           attachments: [],
         });

@@ -1,7 +1,7 @@
-import CustomRouter from "@routes/custom.routes.js";
+import CustomRouter from "../routes/custom.routes.js";
 
 import axios from "axios";
-import config from "@/config.js";
+import config from "../config.js";
 import { Request } from "express";
 
 export default class ViewsCustomRouter extends CustomRouter {

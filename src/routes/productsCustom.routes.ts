@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
-import CustomRouter from "@routes/custom.routes.js";
-import ProductsController from "@controllers/products.controller.mdb.js";
-import config from "@/config.js";
-import { validateBody, verifyToken, handlePolicies } from "@services/utils.js";
+import CustomRouter from "../routes/custom.routes.js";
+import ProductsController from "../controllers/products.controller.mdb.js";
+import config from "../config.js";
+import { validateBody, verifyToken, handlePolicies } from "../services/utils.js";
 import { faker } from "@faker-js/faker";
 
 const controller = new ProductsController();

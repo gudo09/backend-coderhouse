@@ -1,4 +1,4 @@
-import productModel, { Product } from "@models/products.model.js";
+import productModel, { Product } from "../../../models/products.model.js";
 
 import { FilterQuery, ObjectId, PaginateOptions } from "mongoose";
 import { IProductService } from "../interfaces.js";

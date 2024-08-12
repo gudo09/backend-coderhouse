@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 import winston from "winston";
 
-import config from "@/config.js";
+import config from "../config.js";
 
 const customLevelsOptions = {
   levels: {

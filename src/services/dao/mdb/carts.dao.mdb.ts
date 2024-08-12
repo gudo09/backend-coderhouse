@@ -1,4 +1,4 @@
-import cartModel, { Cart } from "@models/carts.model.js";
+import cartModel, { Cart } from "../../../models/carts.model.js";
 import { ICartService } from "../interfaces.js";
 import { FilterQuery, ObjectId, PaginateOptions, PaginateResult } from "mongoose";
 
