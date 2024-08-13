@@ -138,7 +138,7 @@ export default class AuthCustomRouter extends CustomRouter {
     // verifica el token con jwt para acceder a admin
     // funciona tanto como por req.query.access_token, header (con prefijo "Bearer") ó
     // con cookies. Todo esto lo gestiona "verifyToken"
-    this.get("/jwtLocalAdmin", verifyToken, handlePolicies(["admin"]), async (req, res) => {
+    this.get("/jwtLocalAdmin", verifyToken("auth"), handlePolicies(["admin"]), async (req, res) => {
       try {
         res.sendSuccess("Bienvenido admin.");
       } catch (err) {

@@ -19,7 +19,7 @@ export default class ProductsCustomRouter extends CustomRouter {
     });
 
     // el callback es async porque espera las respuestas de mongoose
-    this.get("/", verifyToken, async (req, res) => {
+    this.get("/", verifyToken("auth"), async (req, res) => {
       try {
         const limit = req.query.limit;
         const sort = req.query.sort;
@@ -66,7 +66,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/", verifyToken, validateBody, handlePolicies(["admin, premium"]), async (req, res) => {
+    this.post("/", verifyToken("auth"), validateBody, handlePolicies(["admin, premium"]), async (req, res) => {
       try {
         const body = req.body;
         const productAdded = await controller.add(body);
@@ -76,7 +76,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/:pid", verifyToken, async (req, res) => {
+    this.get("/:pid", verifyToken("auth"), async (req, res) => {
       try {
         const id = req.params.pid;
         const product = await controller.getById(id);
@@ -86,7 +86,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.put("/:pid", verifyToken, handlePolicies(["admin"]), async (req, res) => {
+    this.put("/:pid", verifyToken("auth"), handlePolicies(["admin"]), async (req, res) => {
       try {
         const id = req.params.pid;
         const body = req.body;
@@ -98,7 +98,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.delete("/:pid", verifyToken, handlePolicies(["admin"]), async (req, res) => {
+    this.delete("/:pid", verifyToken("auth"), handlePolicies(["admin"]), async (req, res) => {
       try {
         const id = req.params.pid;
         const productDeleted = await controller.delete(id);

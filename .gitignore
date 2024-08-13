@@ -2,3 +2,8 @@ node_modules
 dist
 .env.*
 logs
+deploy-1.0.0.yaml
+Dockerfile
+dockerfile
+.dockerignore
+docker-compose.yml

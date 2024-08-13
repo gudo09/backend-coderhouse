@@ -3,7 +3,7 @@ import CustomRouter from "./custom.routes.js";
 import UsersController from "../controllers/users.controller.mdb.js";
 import config from "../config.js";
 import { transport } from "../services/transportNodemailer.js";
-import { createToken } from "../services/utils.js";
+import { createToken, verifyToken } from "../services/utils.js";
 import CustomError from "../services/customError.class.js";
 import { errorsDictionary } from "../config.js";
 
@@ -172,7 +172,7 @@ export default class UsersCustomRouter extends CustomRouter {
     });
 
     // Falta implementar
-    this.get("/restoreConfirmPassword", async (req: Request, res: Response) => {
+    this.get("/restoreConfirmPassword", verifyToken("restorePassword"),async (req: Request, res: Response) => {
       // Este endpoint recibe el token generado para cambiar la contraseña
       // Debe estar protegida por un token de corta duracion
       // Si el token expira, debe redireccionar a /restorePassword

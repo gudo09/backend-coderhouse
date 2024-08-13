@@ -37,28 +37,59 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
 
 export const createToken = <T extends Object>(payload: T, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  // el header tiene el formato "Bearer <Token>" así que con split(' ')[1] elimino el bearer
-  const headerToken = req.headers.authorization ? req.headers.authorization.split(" ")[1] : undefined;
-  const cookieToken = req.cookies && req.cookies[config.COOKIE_NAME] ? req.cookies[config.COOKIE_NAME] : undefined;
-  const queryToken = req.query.access_token ? req.query.access_token : undefined;
+export const verifyToken = (typeToken: "auth" | "restorePassword") => {
+  return async (req: Request, res: Response, next: NextFunction) => {                                        
+    if (!typeToken) return res.sendServerError(new Error("Se requiere indicar el tipo de token"));
 
-  // el token puede venir por header, cookie o query
-  const recivedToken = headerToken || cookieToken || queryToken;
+    let headerToken;
+    let cookieToken;
+    let queryToken;
 
-  if (!recivedToken) return res.sendUserError(new Error("Se requiere token para poder acceder"));
+    switch (typeToken) {
+      case "auth":
+        // el header tiene el formato "Bearer <Token>" así que con split(' ')[1] elimino el bearer
+        headerToken = req.headers.authorization ? req.headers.authorization.split(" ")[1] : undefined;
+        cookieToken = req.cookies && req.cookies[config.COOKIE_NAME] ? req.cookies[config.COOKIE_NAME] : undefined;
+        queryToken = req.query.access_token ? req.query.access_token : undefined;
+        break;
+      case "restorePassword":
+        // El restore password token solo lo recibo por query
+        queryToken = req.query.token || undefined;
+        break;
+    }
 
-  jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
-    if (err) return res.sendUserError(new Error("Token no válido"));
+    // el token puede venir por header, cookie o query
+    const recivedToken = headerToken || cookieToken || queryToken;
 
-    // si el token pasa la varificacion, asignamos las credenciales al req.user
+    // Envio respuesta en caso de que no se reciba un token
+    if (!recivedToken) return res.sendUserError(new Error("Se requiere token para poder acceder"));
 
-    console.log(payload);
-    req.user = payload as User;
-    console.log(req.user);
+    jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
+      //Verificacion del token
+      if (err) {
+        // Respuesta token expirado
+        if (err.name === "TokenExpiredError") {
+          return res.sendServerError(new Error("El token ha expirado"));
+        }
+        // Respuesta token no valido
+        return res.sendServerError(new Error("Token no válido"));
+      }
 
-    next();
-  });
+      if (typeToken === "auth") {
+        req.logger.debug(`Token authentication: ${JSON.stringify(payload, null, 2)}`);
+        // Guardo las credenciales en el req.user
+        req.user = payload as User;
+        req.logger.debug(`req.user: ${JSON.stringify(req.user, null, 2)}`);
+      }
+
+      if (typeToken === "restorePassword") {
+        req.logger.debug(`Token restore password: ${JSON.stringify(payload, null, 2)}`);
+        return res.render("restorePasswordConfirm")
+      }
+
+      next();
+    });
+  };
 };
 
 export const handlePolicies = (policies: string[]) => {
