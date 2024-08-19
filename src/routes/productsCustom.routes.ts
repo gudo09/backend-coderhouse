@@ -20,6 +20,7 @@ export default class ProductsCustomRouter extends CustomRouter {
 
     // el callback es async porque espera las respuestas de mongoose
     this.get("/", verifyToken("auth"), async (req, res) => {
+  
       try {
         const limit = req.query.limit;
         const sort = req.query.sort;

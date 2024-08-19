@@ -1,0 +1,140 @@
+paths:
+  /users/{id}:
+    get:
+      summary: Obtiene un usuario por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario a obtener
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Información del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+        "404":
+          description: Usuario no encontrado
+
+  /users/paginate/{page}/{limit}:
+    get:
+      summary: Obtiene usuarios paginados con rol de administrador
+      parameters:
+        - name: page
+          in: path
+          required: true
+          description: Número de página
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: path
+          required: true
+          description: Límite de usuarios por página
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: Usuarios paginados obtenidos exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  docs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        firstName:
+                          type: string
+                        lastName:
+                          type: string
+                        email:
+                          type: string
+                  totalDocs:
+                    type: integer
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  hasNextPage:
+                    type: boolean
+                  hasPrevPage:
+                    type: boolean
+        "500":
+          description: Error en el servidor
+
+  /users:
+    post:
+      summary: Agrega un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: Nombre del usuario
+                  example: John
+                lastName:
+                  type: string
+                  description: Apellido del usuario
+                  example: Doe
+                email:
+                  type: string
+                  description: Correo electrónico del usuario
+                  example: john.doe@example.com
+                role:
+                  type: string
+                  description: Rol del usuario
+                  example: user
+              required:
+                - firstName
+                - lastName
+                - email
+                - role
+      responses:
+        "201":
+          description: Usuario agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID del usuario creado
+                  firstName:
+                    type: string
+                    description: Nombre del usuario
+                  lastName:
+                    type: string
+                    description: Apellido del usuario
+                  email:
+                    type: string
+                    description: Correo electrónico del usuario
+                  role:
+                    type: string
+                    description: Rol del usuario
+        "400":
+          description: Solicitud inválida (por ejemplo, datos de entrada no válidos)
+        "500":
+          description: Error en el servidor

@@ -1,0 +1,182 @@
+paths:
+  /cart/paginate/{page}/{limit}:
+    get:
+      summary: Obtiene artículos del carrito paginados
+      parameters:
+        - name: page
+          in: path
+          required: true
+          description: Número de la página
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: path
+          required: true
+          description: Número de artículos por página
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: Artículos del carrito paginados obtenidos exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        product:
+                          type: string
+                        quantity:
+                          type: integer
+                  total:
+                    type: integer
+        "500":
+          description: Error en el servidor
+
+  /cart:
+    post:
+      summary: Agrega un artículo al carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                  description: ID del producto
+                  example: "12345"
+                quantity:
+                  type: integer
+                  description: Cantidad del producto
+                  example: 2
+              required:
+                - productId
+                - quantity
+      responses:
+        "201":
+          description: Artículo agregado al carrito exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID del artículo en el carrito
+                  productId:
+                    type: string
+                  quantity:
+                    type: integer
+        "400":
+          description: Solicitud inválida (por ejemplo, datos de entrada no válidos)
+        "500":
+          description: Error en el servidor
+
+  /cart/{id}:
+    put:
+      summary: Actualiza la cantidad de un artículo en el carrito
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del artículo en el carrito
+          schema:
+            type: string
+            pattern: ^[a-f\d]{24}$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: Nueva cantidad del producto
+                  example: 3
+      responses:
+        "200":
+          description: Artículo actualizado exitosamente
+        "400":
+          description: Solicitud inválida
+        "404":
+          description: Artículo no encontrado
+        "500":
+          description: Error en el servidor
+
+    delete:
+      summary: Elimina un artículo del carrito
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del artículo en el carrito
+          schema:
+            type: string
+            pattern: ^[a-f\d]{24}$
+      responses:
+        "200":
+          description: Artículo eliminado del carrito exitosamente
+        "404":
+          description: Artículo no encontrado
+        "500":
+          description: Error en el servidor
+
+  /cart/restorePassword:
+    get:
+      summary: Ofrece la opción de restaurar la contraseña del usuario
+      responses:
+        "200":
+          description: Página de restauración de contraseña renderizada
+        "500":
+          description: Error en el servidor
+
+  /cart/sendMailRestorePassword:
+    post:
+      summary: Envía un correo para restablecer la contraseña
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Correo electrónico del usuario
+                  example: user@example.com
+      responses:
+        "200":
+          description: Correo enviado exitosamente
+        "400":
+          description: Solicitud inválida
+        "500":
+          description: Error en el servidor
+
+  /cart/restoreConfirmPassword:
+    get:
+      summary: Confirma la restauración de la contraseña
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: Token de restauración de contraseña
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Confirmación de token exitosa
+        "400":
+          description: Token inválido o expirado
+        "500":
+          description: Error en el servidor

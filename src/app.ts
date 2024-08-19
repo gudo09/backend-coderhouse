@@ -5,6 +5,8 @@ import MongoStore from "connect-mongo";
 import session from "express-session";
 import passport from "passport";
 import cors from "cors";
+import swaggerJsdoc, { Options } from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 
 import config from "./config.js";
 import initSocket from "./services/socket.js";
@@ -97,6 +99,24 @@ try {
     app.use("/api/sessions", new AuthCustomRouter().getRouter());
     app.use("/api/tickets", new TicketsCustomRouter().getRouter());
     app.use("/api/log", new LoggingCustomRouter().getRouter());
+
+    /**
+     * Generamos objeto base config Swagger y levantamos endpoint para servir la documentación
+     *
+     */
+    const swaggerOptions: Options = {
+      definition: {
+        openapi: "3.0.1",
+        info: {
+          title: "Documentación sistema AdoptMe",
+          description: "Esta documentación cubre toda la API habilitada para AdoptMe",
+          version: "1.0.0",
+        },
+      },
+      apis: ["./src/docs/**/*.yaml"], // todos los archivos de configuración de rutas estarán aquí
+    };
+    const specs = swaggerJsdoc(swaggerOptions);
+    app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
     app.use(errorsHandler);
 

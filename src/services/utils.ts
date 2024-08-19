@@ -10,10 +10,29 @@ import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { errorsDictionary } from "../config.js";
 import CustomError from "./customError.class.js";
 
+/**
+ * Crea un hash (o encriptado) de la contraseña recibida
+ * 
+ * @param {string} password Contraseña a encriptar
+ * @returns {string} Contraseña hasheada
+ */
 export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
+/**
+ * Compara dos contraseñas encriptadas
+ * 
+ * @param {string} enteredPassword Contraseña ingresada por el usuario (encriptada)
+ * @param {string} savedPassword Contraseña con la cual comparar (encriptada)
+ * @returns {boolean} Si las contraseñas coinciden o no
+ */
 export const isValidPassword = (enteredPassword: string, savedPassword: string) => bcrypt.compareSync(enteredPassword, savedPassword);
 
+/**
+ * 
+ * 
+ * @param {string []} requiredFields 
+ * @returns 
+ */
 export const verifyRequiredBody = (requiredFields: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     // Inicializo allOk como true
