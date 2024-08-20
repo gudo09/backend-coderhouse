@@ -1,6 +1,12 @@
+tags:
+  - name: Users
+    description: Endpoints para gestionar usuarios
+
 paths:
-  /users/{id}:
+  /api/users/{id}:
     get:
+      tags:
+        - Users
       summary: Obtiene un usuario por ID
       parameters:
         - name: id
@@ -26,8 +32,10 @@ paths:
         "404":
           description: Usuario no encontrado
 
-  /users/paginate/{page}/{limit}:
+  /api/users/paginate/{page}/{limit}:
     get:
+      tags:
+        - Users
       summary: Obtiene usuarios paginados con rol de administrador
       parameters:
         - name: page
@@ -80,8 +88,10 @@ paths:
         "500":
           description: Error en el servidor
 
-  /users:
+  /api/users:
     post:
+      tags:
+        - Users
       summary: Agrega un nuevo usuario
       requestBody:
         required: true
@@ -138,3 +148,47 @@ paths:
           description: Solicitud inválida (por ejemplo, datos de entrada no válidos)
         "500":
           description: Error en el servidor
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        password:
+          type: string
+          example: "password123"
+        role:
+          type: string
+          enum:
+            - admin
+            - user
+            - premium
+          default: user
+          example: "user"
+        orders:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: "60b8d295f2a3d95f4d8c17d2"
+        cart_id:
+          type: string
+          format: uuid
+          example: "60b8d295f2a3d95f4d8c17d1"
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - role
+        - cart_id

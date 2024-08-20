@@ -1,6 +1,12 @@
+tags:
+  - name: Carts
+    description: Endpoints para gestionar carritos de compra
+
 paths:
-  /cart/paginate/{page}/{limit}:
+  /api/cart/paginate/{page}/{limit}:
     get:
+      tags:
+        - Carts
       summary: Obtiene artículos del carrito paginados
       parameters:
         - name: page
@@ -41,8 +47,10 @@ paths:
         "500":
           description: Error en el servidor
 
-  /cart:
+  /api/cart:
     post:
+      tags:
+        - Carts
       summary: Agrega un artículo al carrito
       requestBody:
         required: true
@@ -82,8 +90,10 @@ paths:
         "500":
           description: Error en el servidor
 
-  /cart/{id}:
+  /api/cart/{id}:
     put:
+      tags:
+        - Carts
       summary: Actualiza la cantidad de un artículo en el carrito
       parameters:
         - name: id
@@ -113,8 +123,9 @@ paths:
           description: Artículo no encontrado
         "500":
           description: Error en el servidor
-
     delete:
+      tags:
+        - Carts
       summary: Elimina un artículo del carrito
       parameters:
         - name: id
@@ -132,8 +143,10 @@ paths:
         "500":
           description: Error en el servidor
 
-  /cart/restorePassword:
+  /api/cart/restorePassword:
     get:
+      tags:
+        - Carts
       summary: Ofrece la opción de restaurar la contraseña del usuario
       responses:
         "200":
@@ -141,8 +154,10 @@ paths:
         "500":
           description: Error en el servidor
 
-  /cart/sendMailRestorePassword:
+  /api/cart/sendMailRestorePassword:
     post:
+      tags:
+        - Carts
       summary: Envía un correo para restablecer la contraseña
       requestBody:
         required: true
@@ -163,8 +178,10 @@ paths:
         "500":
           description: Error en el servidor
 
-  /cart/restoreConfirmPassword:
+  /api/cart/restoreConfirmPassword:
     get:
+      tags:
+        - Carts
       summary: Confirma la restauración de la contraseña
       parameters:
         - name: token
@@ -180,3 +197,34 @@ paths:
           description: Token inválido o expirado
         "500":
           description: Error en el servidor
+
+components:
+  schemas:
+    Cart:
+      tags:
+        - Carts
+      type: object
+      properties:
+        _user_id:
+          type: string
+          format: uuid
+          example: "60b8d295f2a3d95f4d8c17d3"
+          description: "ID del usuario al que pertenece el carrito."
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                format: uuid
+                example: "60b8d295f2a3d95f4d8c17d2"
+                description: "ID del producto en el carrito."
+              quantity:
+                type: integer
+                example: 2
+                description: "Cantidad del producto en el carrito."
+          description: "Lista de productos en el carrito."
+      required:
+        - _user_id
+        - products

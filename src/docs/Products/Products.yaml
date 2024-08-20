@@ -1,6 +1,12 @@
+tags:
+  - name: Products
+    description: Endpoints para gestionar productos
+
 paths:
-  /products:
+  /api/products:
     get:
+      tags:
+        - Products
       summary: Obtiene todos los productos
       parameters:
         - name: limit
@@ -28,117 +34,73 @@ paths:
             type: string
             example: electronics
       responses:
-        '200':
+        "200":
           description: Lista de productos
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-                    description:
-                      type: string
-                    price:
-                      type: number
-                    thumbnails:
-                      type: array
-                      items:
-                        type: string
-                    code:
-                      type: string
-                    stock:
-                      type: integer
-                    status:
-                      type: boolean
-                    category:
-                      type: string
-        '500':
+                type: object
+                properties:
+                  docs:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+                  totalDocs:
+                    type: integer
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  totalPages:
+                    type: integer
+        "500":
           description: Error en el servidor
+
     post:
+      tags:
+        - Products
       summary: Agrega un nuevo producto
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                  description: Título del producto
-                  example: Product Name
-                description:
-                  type: string
-                  description: Descripción del producto
-                  example: Product Description
-                price:
-                  type: number
-                  description: Precio del producto
-                  example: 19.99
-                thumbnails:
-                  type: array
-                  items:
-                    type: string
-                  description: Imágenes del producto
-                  example:
-                    - https://example.com/image1.jpg
-                    - https://example.com/image2.jpg
-                code:
-                  type: string
-                  description: Código del producto
-                  example: 12345
-                stock:
-                  type: integer
-                  description: Cantidad en stock
-                  example: 100
-                status:
-                  type: boolean
-                  description: Estado del producto (disponible o no)
-                  example: true
-                category:
-                  type: string
-                  description: Categoría del producto
-                  example: electronics
+              $ref: "#/components/schemas/Product"
+            example:
+              title: "Laptop X200"
+              description: "Una laptop ligera con 16GB de RAM y SSD de 512GB."
+              price: 1299.99
+              thumbnail: ["https://example.com/laptop1.jpg"]
+              code: "LAPTOP12345"
+              stock: 50
+              status: true
+              category: "Computadoras"
+              owner: "6123456789abcdef01234567"
       responses:
-        '201':
+        "201":
           description: Producto agregado exitosamente
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  id:
+                  origin:
                     type: string
-                  title:
+                    example: "Id del server."
+                  payload:
+                    $ref: "#/components/schemas/Product"
+                  message:
                     type: string
-                  description:
-                    type: string
-                  price:
-                    type: number
-                  thumbnails:
-                    type: array
-                    items:
-                      type: string
-                  code:
-                    type: string
-                  stock:
-                    type: integer
-                  status:
-                    type: boolean
-                  category:
-                    type: string
-        '400':
+                    example: "Se ha agregado un nuevo producto."
+        "400":
           description: Solicitud inválida (por ejemplo, datos de entrada no válidos)
-        '500':
+        "500":
           description: Error en el servidor
 
-  /products/fakeProducts/{qty}:
+  /api/products/fakeProducts/{qty}:
     get:
+      tags:
+        - Products
       summary: Genera productos ficticios
       parameters:
         - name: qty
@@ -149,7 +111,7 @@ paths:
             type: integer
             example: 100
       responses:
-        '200':
+        "200":
           description: Lista de productos ficticios
           content:
             application/json:
@@ -176,11 +138,13 @@ paths:
                       type: boolean
                     category:
                       type: string
-        '500':
+        "500":
           description: Error en el servidor
 
-  /products/{pid}:
+  /api/products/{pid}:
     get:
+      tags:
+        - Products
       summary: Obtiene un producto por ID
       parameters:
         - name: pid
@@ -192,7 +156,7 @@ paths:
             pattern: ^[a-f\d]{24}$
             example: 507f1f77bcf86cd799439011
       responses:
-        '200':
+        "200":
           description: Información del producto
           content:
             application/json:
@@ -219,14 +183,16 @@ paths:
                     type: boolean
                   category:
                     type: string
-        '400':
+        "400":
           description: ID no válido
-        '404':
+        "404":
           description: Producto no encontrado
-        '500':
+        "500":
           description: Error en el servidor
 
     put:
+      tags:
+        - Products
       summary: Actualiza un producto por ID
       parameters:
         - name: pid
@@ -263,7 +229,7 @@ paths:
                 category:
                   type: string
       responses:
-        '200':
+        "200":
           description: Producto actualizado exitosamente
           content:
             application/json:
@@ -290,14 +256,16 @@ paths:
                     type: boolean
                   category:
                     type: string
-        '400':
+        "400":
           description: ID no válido o datos de entrada inválidos
-        '404':
+        "404":
           description: Producto no encontrado
-        '500':
+        "500":
           description: Error en el servidor
 
     delete:
+      tags:
+        - Products
       summary: Elimina un producto por ID
       parameters:
         - name: pid
@@ -309,7 +277,7 @@ paths:
             pattern: ^[a-f\d]{24}$
             example: 507f1f77bcf86cd799439011
       responses:
-        '200':
+        "200":
           description: Producto eliminado exitosamente
           content:
             application/json:
@@ -319,9 +287,52 @@ paths:
                   message:
                     type: string
                     example: Producto eliminado exitosamente
-        '400':
+        "400":
           description: ID no válido
-        '404':
+        "404":
           description: Producto no encontrado
-        '500':
+        "500":
           description: Error en el servidor
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título del producto
+        description:
+          type: string
+          description: Descripción del producto
+        price:
+          type: number
+          description: Precio del producto
+        thumbnail:
+          type: array
+          items:
+            type: string
+          description: URLs de las imágenes del producto
+        code:
+          type: string
+          description: Código único del producto
+        stock:
+          type: integer
+          description: Stock disponible del producto
+        status:
+          type: boolean
+          description: Estado del producto (activo o no)
+        category:
+          type: string
+          description: Categoría del producto
+        owner:
+          type: string
+          description: ID del propietario del producto
+      required:
+        - title
+        - description
+        - price
+        - code
+        - stock
+        - category
+        - owner
