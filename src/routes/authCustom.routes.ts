@@ -45,7 +45,7 @@ export default class AuthCustomRouter extends CustomRouter {
           return;
         }
 
-        const { password, ...filteredUser } = login; //.toJSON(); // toJSON() para evitar el formateo de mongoose
+        const { password: _passwordLogin, ...filteredUser } = login; //.toJSON(); // toJSON() para evitar el formateo de mongoose
 
         req.session.user = filteredUser;
 
@@ -60,7 +60,7 @@ export default class AuthCustomRouter extends CustomRouter {
     });
 
     //login con github a traves de passport
-    this.get("/ghlogin", passport.authenticate("ghlogin", { scope: ["user"] }), async (req, res) => {});
+    this.get("/ghlogin", passport.authenticate("ghlogin", { scope: ["user"] }), async (_req, _res) => {});
 
     this.get("/ghlogincallback", passport.authenticate("ghlogin", { failureRedirect: `/login?error=${encodeURI("Error al identificar con Github.")}` }), async (req, res) => {
       try {
@@ -97,7 +97,7 @@ export default class AuthCustomRouter extends CustomRouter {
           return;
         }
 
-        const { password, ...filteredUser } = login; //.toJSON(); // toJSON() para evitar el formateo de mongoose
+        const { password: _passwordLogin, ...filteredUser } = login; //.toJSON(); // toJSON() para evitar el formateo de mongoose
 
         req.session.user = filteredUser;
 

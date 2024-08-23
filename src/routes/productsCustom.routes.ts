@@ -10,7 +10,7 @@ const controller = new ProductsController();
 
 export default class ProductsCustomRouter extends CustomRouter {
   init() {
-    this.router.param("pid", async (req, res, next, pid) => {
+    this.router.param("pid", async (req: Request, res: Response, next: NextFunction, pid) => {
       if (!config.MONGODB_ID_REGEX.test(pid)) {
         return res.sendServerError(new Error("Id no válido"));
       }
@@ -19,7 +19,7 @@ export default class ProductsCustomRouter extends CustomRouter {
     });
 
     // el callback es async porque espera las respuestas de mongoose
-    this.get("/", verifyToken("auth"), async (req, res) => {
+    this.get("/", verifyToken("auth"), async (req: Request, res: Response) => {
   
       try {
         const limit = req.query.limit;

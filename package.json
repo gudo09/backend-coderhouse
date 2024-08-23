@@ -13,6 +13,7 @@
     "node": ">=16"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.0",
     "@faker-js/faker": "^8.4.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.7",
@@ -29,9 +30,14 @@
     "@types/passport-local": "^1.0.38",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
+    "chai": "^4.4.1",
+    "eslint": "^9.9.0",
     "esm": "^3.2.25",
+    "globals": "^15.9.0",
+    "mocha": "^10.6.0",
     "nodemon": "^3.1.1",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.2.0"
   },
   "dependencies": {
     "axios": "^1.6.8",

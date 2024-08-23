@@ -3,7 +3,7 @@ import { transport } from "../services/transportNodemailer.js";
 import TicketsController from "../controllers/tickets.controller.mdb.js";
 import config from "../config.js";
 
-const controller = new TicketsController();
+const _controller = new TicketsController();
 
 
 export default class TicketsCustomRouter extends CustomRouter {

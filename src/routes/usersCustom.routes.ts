@@ -11,7 +11,7 @@ const controller = new UsersController();
 
 export default class UsersCustomRouter extends CustomRouter {
   init() {
-    this.router.param("id", async (req, res, next, pid) => {
+    this.router.param("id", async (req, res, next , pid) => {
       if (!config.MONGODB_ID_REGEX.test(pid)) {
         return res.sendServerError(new Error("Id no válido"));
       }
@@ -40,7 +40,7 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.put("premium/:uid", async (req, res) => {
+    this.put("premium/:uid", async (_req, _res, _next: NextFunction) => {
       //Permitirá cambiar el rol de un usuario, de “user” a “premium” y viceversa.
     });
 

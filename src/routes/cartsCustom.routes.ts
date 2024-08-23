@@ -149,7 +149,7 @@ export default class CartsCustomRouter extends CustomRouter {
       */
 
       try {
-        // 1- traer los datos del carrito 
+        // 1- traer los datos del carrito
         // 2- recorrerlo comparando el quantity con el stock de cada producto
         // 3- generar el ticket
         // 4- actualizar el stock de los productos
@@ -159,7 +159,7 @@ export default class CartsCustomRouter extends CustomRouter {
     });
 
     // Falta implementar
-    this.put("/:cid", async (req, res) => {
+    this.put("/:cid", async (_req, _res) => {
       /*PUT api/carts/:cid deberá actualizar el carrito con un arreglo de productos con el siguiente formato:
       {
 	      status:success/error
@@ -177,7 +177,7 @@ export default class CartsCustomRouter extends CustomRouter {
     });
 
     // Falta implementar
-    this.put("/:cid/products/:pid", async (req, res) => {});
+    this.put("/:cid/products/:pid", async (_req, _res) => {});
 
     //Siempre al último por si no entra a ningún otro endpoint
     this.router.all("*", async (req, res) => {

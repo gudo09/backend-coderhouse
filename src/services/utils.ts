@@ -28,7 +28,7 @@ export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt
 export const isValidPassword = (enteredPassword: string, savedPassword: string) => bcrypt.compareSync(enteredPassword, savedPassword);
 
 /**
- * 
+ * Verifica que el body contiene propiedades especificas
  * 
  * @param {string []} requiredFields 
  * @returns 
@@ -40,7 +40,7 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
 
     requiredFields.forEach((field) => {
       // Si el campo está presente y no es vacío, null o undefined; lo cambio a false
-      if (!req.body?.hasOwnProperty(field) || req.body[field] === "" || req.body[field] === null || req.body[field] === undefined) allOk = false;
+      if (!(field in req.body) || req.body[field] === "" || req.body[field] === null || req.body[field] === undefined) allOk = false;
     });
 
     // Si alguna verificación falla, enviamos una respuesta de error
@@ -54,7 +54,7 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
   };
 };
 
-export const createToken = <T extends Object>(payload: T, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
+export const createToken = <T extends object>(payload: T, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
 
 export const verifyToken = (typeToken: "auth" | "restorePassword") => {
   return async (req: Request, res: Response, next: NextFunction) => {                                        

@@ -1,9 +1,9 @@
-import { Ticket } from "@models/tickets.model.js";
+import { Ticket } from "../models/tickets.model.js";
 import { factoryTicketService } from "../services/dao/dao.factory.js";
 
-const service = factoryTicketService;
+const _service = factoryTicketService;
 
-class TicketDTO {
+class _TicketDTO {
   ticket: Ticket;
   constructor(ticket: Ticket) {
     this.ticket = ticket;

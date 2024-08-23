@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import config from "../config";
+import config from "../config.js";
 
 export default class MongoSingleton {
   static #instance: MongoSingleton | null = null;

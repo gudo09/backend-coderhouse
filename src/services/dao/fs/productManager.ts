@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import config from "@/config.js";
+import config from "../../../config.js";
 
 // Defino una interfaz para Product
 interface Product {
@@ -125,7 +125,7 @@ class ProductManager {
   //metodo toString para imprimir cada producto
   toString(prod: ProductWithId): string {
     let result: string = "\n";
-    for (let propiedad in prod) {
+    for (const propiedad in prod) {
       result += `${propiedad}: ${prod[propiedad]}\n`;
     }
     return result;
