@@ -14,7 +14,6 @@ import MongoSingleton from "./services/mongodb.singleton.js";
 import errorsHandler from "./services/errors.handler.js";
 import addLogger from "./services/logger.js";
 
-import TestCustomRouter from "./routes/testCustom.routes.js";
 import ViewsCustomRouter from "./routes/viewsCustom.routes.js";
 import ProductsCustomRouter from "./routes/productsCustom.routes.js";
 import UsersCustomRouter from "./routes/usersCustom.routes.js";
@@ -91,7 +90,6 @@ try {
     // hago uso de las rutas
     // Instancio un objeto de TestCustomRouter
     // y llamo al getRouter para que me devuelva un tipo express.Router
-    app.use("/api/test", new TestCustomRouter().getRouter());
     app.use("/", new ViewsCustomRouter().getRouter());
     app.use("/api/products", new ProductsCustomRouter().getRouter());
     app.use("/api/users", new UsersCustomRouter().getRouter());

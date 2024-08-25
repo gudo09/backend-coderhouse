@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 
 import { ProductWithId } from "./productManager.js";
-import config from "@/config.js";
+import config from "../../../config.js";
 
 // Defino una interfaz para Cart
 interface Cart {

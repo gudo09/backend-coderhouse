@@ -5,9 +5,9 @@ import { FilterQuery, PaginateOptions } from "mongoose";
 class UsersService implements IUserService {
   constructor() {}
 
-  getAll = async (limit: number) => {
+  getAll = async (limit?: number): Promise <User[]> => {
     try {
-      return limit === 0 ? await usersModel.find().lean() : await usersModel.find().limit(limit).lean();
+      return (limit === 0 || limit === undefined ) ? await usersModel.find().lean() : await usersModel.find().limit(limit).lean();
     } catch (err) {
       throw new Error((err as Error).message);
     }

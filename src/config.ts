@@ -1,6 +1,10 @@
+//import path from "path";
 import * as url from "url";
 import dotenv from "dotenv";
 import { Command } from "commander";
+
+//const __filename = url.fileURLToPath(new URL('file://' + __dirname));
+//const DIRNAME = path.dirname(__filename);
 
 const commandLine =new Command()
 

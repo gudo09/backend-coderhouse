@@ -186,9 +186,6 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.router.all("*", async (req, res) => {
-      res.sendServerError(new Error("No se encuentra la ruta seleccionada"));
-    });
   }
 }
 
