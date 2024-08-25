@@ -1,17 +1,17 @@
 import { Response, Request, NextFunction } from "express";
-import CustomRouter from "./custom.routes.js";
-import UsersController from "../controllers/users.controller.mdb.js";
-import config from "../config.js";
-import { transport } from "../services/transportNodemailer.js";
-import { createToken, verifyToken } from "../services/utils.js";
-import CustomError from "../services/customError.class.js";
-import { errorsDictionary } from "../config.js";
+import CustomRouter from "./custom.routes.ts";
+import UsersController from "../controllers/users.controller.mdb.ts";
+import config from "../config.ts";
+import { transport } from "../services/transportNodemailer.ts";
+import { createToken, verifyToken } from "../services/utils.ts";
+import CustomError from "../services/customError.class.ts";
+import { errorsDictionary } from "../config.ts";
 
 const controller = new UsersController();
 
 export default class UsersCustomRouter extends CustomRouter {
   init() {
-    this.router.param("id", async (req, res, next , pid) => {
+    this.router.param("id", async (req: Request, res: Response, next, pid) => {
       if (!config.MONGODB_ID_REGEX.test(pid)) {
         return res.sendServerError(new Error("Id no válido"));
       }
@@ -19,7 +19,7 @@ export default class UsersCustomRouter extends CustomRouter {
       next();
     });
 
-    this.get("/paginate/:page/:limit", async (req, res) => {
+    this.get("/paginate/:page/:limit", async (req: Request, res: Response) => {
       try {
         const filter = { role: "admin" };
         const options = { page: parseInt(req.params.page), limit: parseInt(req.params.limit), sort: { lastName: 1 } };
@@ -31,7 +31,7 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/", async (req, res) => {
+    this.post("/", async (req: Request, res: Response) => {
       try {
         const process = await controller.add(req.body);
         res.sendSuccess(process);
@@ -40,11 +40,11 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.put("premium/:uid", async (_req, _res, _next: NextFunction) => {
+    this.put("premium/:uid", async (_req: Request, _res: Response, _next: NextFunction) => {
       //Permitirá cambiar el rol de un usuario, de “user” a “premium” y viceversa.
     });
 
-    this.put("/:id", async (req, res) => {
+    this.put("/:id", async (req: Request, res: Response) => {
       try {
         const filter = { _id: req.params.id };
         const update = req.body;
@@ -57,7 +57,7 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.delete("/:id", async (req, res) => {
+    this.delete("/:id", async (req: Request, res: Response) => {
       try {
         const filter = { _id: req.params.id };
         const process = await controller.delete(filter);
@@ -67,7 +67,7 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/restorePassword", async (req, res) => {
+    this.get("/restorePassword", async (req: Request, res: Response) => {
       // Le ofrecemos la opcion de restaurar la contraseña al usuario
       // el usuario solo debe ingresar su email
       try {
@@ -77,7 +77,7 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/sendMailRestorePassword", async (req, res) => {
+    this.post("/sendMailRestorePassword", async (req: Request, res: Response) => {
       // Este endpoint se encarga de enviar el mail para reestablecer la contraseña
       // Se busca el usuario por su email
       // Si existe, se genera el token de corta duracion (5 min)
@@ -172,20 +172,19 @@ export default class UsersCustomRouter extends CustomRouter {
     });
 
     // Falta implementar
-    this.get("/restoreConfirmPassword", verifyToken("restorePassword"),async (req: Request, res: Response) => {
+    this.get("/restoreConfirmPassword", verifyToken("restorePassword"), async (req: Request, res: Response) => {
       // Este endpoint recibe el token generado para cambiar la contraseña
       // Debe estar protegida por un token de corta duracion
       // Si el token expira, debe redireccionar a /restorePassword
       // Debe incluir un formulario donde debe repetir la nueva contraseña
       // No debe ser igual a la anterior contraseña (verificar que los hash nuevo y anterior sean distintos)
       try {
-        const token = req.query.token; 
+        const token = req.query.token;
         res.sendSuccess(`Token: ${token}`);
       } catch (err) {
         res.sendServerError(err as Error);
       }
     });
-
   }
 }
 

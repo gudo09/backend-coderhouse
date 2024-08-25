@@ -1,5 +1,5 @@
-import usersModel, { User } from "../../../models/users.model.js";
-import { IUserService } from "../interfaces.js";
+import usersModel, { User } from "../../../models/users.model.ts";
+import { IUserService } from "../interfaces.ts";
 import { FilterQuery, PaginateOptions } from "mongoose";
 
 class UsersService implements IUserService {

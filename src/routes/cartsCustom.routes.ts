@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-import CustomRouter from "./custom.routes.js";
-import CartsController from "../controllers/carts.controller.mdb.js";
-import ProductsController from "../controllers/products.controller.mdb.js";
-import { handlePolicies } from "../services/utils.js";
+import CustomRouter from "./custom.routes.ts";
+import CartsController from "../controllers/carts.controller.mdb.ts";
+import ProductsController from "../controllers/products.controller.mdb.ts";
+import { handlePolicies } from "../services/utils.ts";
+import { Request, Response } from "express";
 
 const controller = new CartsController();
 const productsController = new ProductsController();
@@ -10,7 +11,7 @@ const productsController = new ProductsController();
 export default class CartsCustomRouter extends CustomRouter {
   init() {
     // Uso param para validar el id del cart
-    this.router.param("cid", async (req, res, next, cid) => {
+    this.router.param("cid", async (req: Request, res: Response, next, cid) => {
       //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
       const id = cid;
 
@@ -32,7 +33,7 @@ export default class CartsCustomRouter extends CustomRouter {
     });
 
     // Uso param para validar el id del producto
-    this.router.param("pid", async (req, res, next, pid) => {
+    this.router.param("pid", async (req: Request, res: Response, next, pid) => {
       //Valido si el pid es string y lo parseo con el operador + a number, en caso contrario le asigno 0
       const id = pid;
 
@@ -50,7 +51,7 @@ export default class CartsCustomRouter extends CustomRouter {
       next();
     });
 
-    this.get("/", async (req, res) => {
+    this.get("/", async (req: Request, res: Response) => {
       try {
         const limit = req.query.limit;
         const page = req.query.page;
@@ -61,7 +62,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/one/:cid", async (req, res) => {
+    this.get("/one/:cid", async (req: Request, res: Response) => {
       /*
         La ruta GET /:cid deberá listar los productos que pertenezcan al carrito con el parámetro 
         cid proporcionados.
@@ -75,7 +76,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/", async (req, res) => {
+    this.post("/", async (req: Request, res: Response) => {
       /*
         La ruta raíz POST / deberá crear un nuevo carrito con la siguiente estructura:
         - Id:Number/String (A tu elección, de igual manera como con los productos, debes asegurar que nunca se dupliquen los ids y que este se autogenere).
@@ -89,7 +90,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/:cid/products/:pid", handlePolicies(["self"]), async (req, res) => {
+    this.post("/:cid/products/:pid", handlePolicies(["self"]), async (req: Request, res: Response) => {
       /*
         La ruta POST  /:cid/product/:pid deberá agregar el producto al arreglo “products” del carrito seleccionado, agregándose como un objeto bajo el siguiente formato:
         - product: SÓLO DEBE CONTENER EL ID DEL PRODUCTO (Es crucial que no agregues el producto completo)
@@ -109,7 +110,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    this.delete("/:cid", async (req, res) => {
+    this.delete("/:cid", async (req: Request, res: Response) => {
       try {
         //"DELETE /:cid/products" Vacía el array del carrito cid
         const id = req.params.cid;
@@ -120,7 +121,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    this.delete("/:cid/products/:pid", async (req, res) => {
+    this.delete("/:cid/products/:pid", async (req: Request, res: Response) => {
       try {
         //"DELETE /:cid/products/:pid" Quita el producto pid del array del carrito cid
         const cartId = req.params.cid;
@@ -134,7 +135,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/:cid/purchase", async (req, res) => {
+    this.post("/:cid/purchase", async (req: Request, res: Response) => {
       /*
       Implementar, en el router de carts, la ruta /:cid/purchase, la cual permitirá finalizar el proceso de compra de dicho carrito.
       
@@ -159,7 +160,7 @@ export default class CartsCustomRouter extends CustomRouter {
     });
 
     // Falta implementar
-    this.put("/:cid", async (_req, _res) => {
+    this.put("/:cid", async (_req: Request, _res: Response) => {
       /*PUT api/carts/:cid deberá actualizar el carrito con un arreglo de productos con el siguiente formato:
       {
 	      status:success/error
@@ -177,10 +178,10 @@ export default class CartsCustomRouter extends CustomRouter {
     });
 
     // Falta implementar
-    this.put("/:cid/products/:pid", async (_req, _res) => {});
+    this.put("/:cid/products/:pid", async (_req: Request, _res: Response) => {});
 
     //Siempre al último por si no entra a ningún otro endpoint
-    this.router.all("*", async (req, res) => {
+    this.router.all("*", async (req: Request, res: Response) => {
       res.sendServerError(new Error("No se encuentra la ruta seleccionada"));
     });
   }

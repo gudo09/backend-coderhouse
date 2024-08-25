@@ -1,5 +1,5 @@
-import config from "../../config.js";
-import { ICartService, IProductService, ITicketService, IUserService } from "./interfaces.js";
+import config from "../../config.ts";
+import { ICartService, IProductService, ITicketService, IUserService } from "./interfaces.ts";
 
 export let factoryProductService: IProductService;
 export let factoryCartService: ICartService;
@@ -8,19 +8,19 @@ export let factoryTicketService: ITicketService;
 
 switch (config.PERSISTENCE) {
   case "mongo": {
-    const { default: MongoSingleton } = await import("../../services/mongodb.singleton.js");
+    const { default: MongoSingleton } = await import("../../services/mongodb.singleton.ts");
     MongoSingleton.getInstance();
 
-    const MongoProductService = await import("../../services/dao/mdb/products.dao.mdb.js");
+    const MongoProductService = await import("../../services/dao/mdb/products.dao.mdb.ts");
     factoryProductService = new MongoProductService.default();
 
-    const MongoUserService = await import("../../services/dao/mdb/users.dao.mdb.js");
+    const MongoUserService = await import("../../services/dao/mdb/users.dao.mdb.ts");
     factoryUserService = new MongoUserService.default();
 
-    const MongoCartService = await import("../../services/dao/mdb/carts.dao.mdb.js");
+    const MongoCartService = await import("../../services/dao/mdb/carts.dao.mdb.ts");
     factoryCartService = new MongoCartService.default();
 
-    const MongoTicketService = await import("../../services/dao/mdb/tickets.dao.mdb.js");
+    const MongoTicketService = await import("../../services/dao/mdb/tickets.dao.mdb.ts");
     factoryTicketService = new MongoTicketService.default();
 
     break;

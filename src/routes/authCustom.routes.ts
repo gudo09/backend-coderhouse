@@ -1,13 +1,14 @@
-import UsersController from "../controllers/users.controller.mdb.js";
-import config from "../config.js";
+import UsersController from "../controllers/users.controller.mdb.ts";
+import config from "../config.ts";
 import passport from "passport";
 
-import { User, UserSession } from "../models/users.model.js";
+import { User, UserSession } from "../models/users.model.ts";
 
-import { createToken, handlePolicies, verifyRequiredBody, verifyToken } from "../services/utils.js";
-import CustomRouter from "../routes/custom.routes.js";
+import { createToken, handlePolicies, verifyRequiredBody, verifyToken } from "../services/utils.ts";
+import CustomRouter from "../routes/custom.routes.ts";
 
-import initAuthStrategies, { passportCall } from "../auth/passport.strategies.js";
+import initAuthStrategies, { passportCall } from "../auth/passport.strategies.ts";
+import { Request, Response } from "express";
 
 const usersController = new UsersController();
 initAuthStrategies();
@@ -15,7 +16,7 @@ initAuthStrategies();
 export default class AuthCustomRouter extends CustomRouter {
   init() {
     // valida los datos requeridos en el body
-    this.post("/login", verifyRequiredBody(["email", "password"]), async (req, res) => {
+    this.post("/login", verifyRequiredBody(["email", "password"]), async (req: Request, res: Response) => {
       try {
         const { email, password } = req.body;
         const login = await usersController.login(email, password);
@@ -34,7 +35,7 @@ export default class AuthCustomRouter extends CustomRouter {
     });
 
     // login con passort y session
-    this.post("/pplogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req, res) => {
+    this.post("/pplogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req: Request, res: Response) => {
       try {
         const { email, password: _password } = req.body;
         const login = await usersController.login(email, _password);
@@ -60,9 +61,9 @@ export default class AuthCustomRouter extends CustomRouter {
     });
 
     //login con github a traves de passport
-    this.get("/ghlogin", passport.authenticate("ghlogin", { scope: ["user"] }), async (_req, _res) => {});
+    this.get("/ghlogin", passport.authenticate("ghlogin", { scope: ["user"] }), async (_req: Request, _res: Response) => {});
 
-    this.get("/ghlogincallback", passport.authenticate("ghlogin", { failureRedirect: `/login?error=${encodeURI("Error al identificar con Github.")}` }), async (req, res) => {
+    this.get("/ghlogincallback", passport.authenticate("ghlogin", { failureRedirect: `/login?error=${encodeURI("Error al identificar con Github.")}` }), async (req: Request, res: Response) => {
       try {
         req.session.user = req.user as UserSession;
         req.session.save((err) => {
@@ -74,7 +75,7 @@ export default class AuthCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/logout", async (req, res) => {
+    this.get("/logout", async (req: Request, res: Response) => {
       try {
         //destruyo los datos de la sesion
         req.session.destroy((err) => {
@@ -86,7 +87,7 @@ export default class AuthCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), passport.authenticate("register", { failureRedirect: `/register?error=${encodeURI("Error al registrar usuario.")}` }), async (req, res) => {
+    this.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), passport.authenticate("register", { failureRedirect: `/register?error=${encodeURI("Error al registrar usuario.")}` }), async (req: Request, res: Response) => {
       try {
         const { email, password: _password } = req.body;
         const login = await usersController.login(email, _password);
@@ -111,7 +112,7 @@ export default class AuthCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/current", passportCall("jwtlogin"), async (req, res) => {
+    this.get("/current", passportCall("jwtlogin"), async (req: Request, res: Response) => {
       try {
         const currentUserFirstName = (req.user as User).firstName;
         const currentUserLastName = (req.user as User).lastName;
@@ -122,14 +123,14 @@ export default class AuthCustomRouter extends CustomRouter {
     });
 
     // usa passport base para el login y crea un token en la cookie con jwt
-    this.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req, res) => {
+    this.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req: Request, res: Response) => {
       try {
         if (!req.user) return res.sendUserError(new Error("Usuario no encontrado."));
         req.session.user = req.user;
         const token = createToken(req.user as User, "1h");
         res.cookie(config.COOKIE_NAME, token, { maxAge: 60 * 60 * 1000 * 24, httpOnly: true });
         req.logger.debug(`${new Date().toString()} Usuario autenticado. Token: ${token} ${req.method} ${req.url}`);
-        res.redirect("/profile")
+        res.redirect("/profile");
       } catch (err) {
         res.sendServerError(err as Error);
       }
@@ -138,7 +139,7 @@ export default class AuthCustomRouter extends CustomRouter {
     // verifica el token con jwt para acceder a admin
     // funciona tanto como por req.query.access_token, header (con prefijo "Bearer") ó
     // con cookies. Todo esto lo gestiona "verifyToken"
-    this.get("/jwtLocalAdmin", verifyToken("auth"), handlePolicies(["admin"]), async (req, res) => {
+    this.get("/jwtLocalAdmin", verifyToken("auth"), handlePolicies(["admin"]), async (req: Request, res: Response) => {
       try {
         res.sendSuccess("Bienvenido admin.");
       } catch (err) {
@@ -148,7 +149,7 @@ export default class AuthCustomRouter extends CustomRouter {
 
     // verifica el token con passport-jwt mediante el middleware passportCall y la estrategia jwtlogin para acceder a admin
     // usa cookies, es decir que requiere estar logueado con las cookies cargadas con el token
-    this.get("/jwtppAdmin", passportCall("jwtlogin"), handlePolicies(["admin"]), async (req, res) => {
+    this.get("/jwtppAdmin", passportCall("jwtlogin"), handlePolicies(["admin"]), async (req: Request, res: Response) => {
       try {
         res.sendSuccess("Bienvenido admin.");
       } catch (err) {
@@ -157,7 +158,7 @@ export default class AuthCustomRouter extends CustomRouter {
     });
 
     //Siempre al último por si no entra a ningún otro endpoint
-    this.router.all("*", async (req, res) => {
+    this.router.all("*", async (req: Request, res: Response) => {
       res.sendServerError(new Error("No se encuentra la ruta seleccionada"));
     });
   }

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
-import CustomRouter from "../routes/custom.routes.js";
-import ProductsController from "../controllers/products.controller.mdb.js";
-import config from "../config.js";
-import { validateBody, verifyToken, handlePolicies } from "../services/utils.js";
+import CustomRouter from "../routes/custom.routes.ts";
+import ProductsController from "../controllers/products.controller.mdb.ts";
+import config from "../config.ts";
+import { validateBody, verifyToken, handlePolicies } from "../services/utils.ts";
 import { faker } from "@faker-js/faker";
 
 const controller = new ProductsController();
@@ -18,16 +18,22 @@ export default class ProductsCustomRouter extends CustomRouter {
       next();
     });
 
+    this.get("/all/", async (req: Request, res: Response) => {
+      try {
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
+    });
+
     // el callback es async porque espera las respuestas de mongoose
     this.get("/", verifyToken("auth"), async (req: Request, res: Response) => {
-  
       try {
         const limit = req.query.limit;
         const sort = req.query.sort;
         const page = req.query.page;
         const query = req.query.query;
 
-        const products = await controller.getAll(limit, sort, query, page);
+        const products = await controller.getPaginated(limit, sort, query, page);
 
         res.sendSuccess(products);
       } catch (err) {
@@ -36,7 +42,7 @@ export default class ProductsCustomRouter extends CustomRouter {
     });
 
     // genera datos mock para products
-    this.get("/fakeProducts/:qty?", async (req, res) => {
+    this.get("/fakeProducts/:qty?", async (req: Request, res: Response) => {
       try {
         const quantity = +req.params.qty || 100;
         const CATEGORIES = ["category1", "category2", "category3", "category4"];
@@ -58,7 +64,7 @@ export default class ProductsCustomRouter extends CustomRouter {
             thumbnails.push(element);
           }
 
-          data.push({title, description, price, thumbnails, code, stock, status, category})
+          data.push({ title, description, price, thumbnails, code, stock, status, category });
         }
 
         res.sendSuccess(data);
@@ -67,7 +73,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/", verifyToken("auth"), validateBody, handlePolicies(["admin, premium"]), async (req, res) => {
+    this.post("/", verifyToken("auth"), validateBody, handlePolicies(["admin, premium"]), async (req: Request, res: Response) => {
       try {
         const body = req.body;
         const productAdded = await controller.add(body);
@@ -77,7 +83,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/:pid", verifyToken("auth"), async (req, res) => {
+    this.get("/:pid", verifyToken("auth"), async (req: Request, res: Response) => {
       try {
         const id = req.params.pid;
         const product = await controller.getById(id);
@@ -87,7 +93,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.put("/:pid", verifyToken("auth"), handlePolicies(["admin"]), async (req, res) => {
+    this.put("/:pid", verifyToken("auth"), handlePolicies(["admin"]), async (req: Request, res: Response) => {
       try {
         const id = req.params.pid;
         const body = req.body;
@@ -99,7 +105,7 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    this.delete("/:pid", verifyToken("auth"), handlePolicies(["admin"]), async (req, res) => {
+    this.delete("/:pid", verifyToken("auth"), handlePolicies(["admin"]), async (req: Request, res: Response) => {
       try {
         const id = req.params.pid;
         const productDeleted = await controller.delete(id);
@@ -111,7 +117,7 @@ export default class ProductsCustomRouter extends CustomRouter {
     });
 
     //Siempre al último por si no entra a ningún otro endpoint
-    this.router.all("*", async (req, res) => {
+    this.router.all("*", async (req: Request, res: Response) => {
       res.sendServerError(new Error("No se encuentra la ruta seleccionada"));
     });
   }

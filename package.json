@@ -8,12 +8,13 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "dev": "nodemon --mode=devel",
-    "test": "mocha -r ts-node/register --loader=ts-node/esm --es-module-specifier-resolution=node src/test/**.test.ts",
+    "dev-node22": "node --loader=ts-node/esm src/app.ts --mode=devel",
+    "test": "mocha --loader=ts-node/esm test/products.dao.test.ts",
     "test2": "cross-env TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\": \\\"commonjs\\\"}\" mocha",
-    "test3": "mocha src/test/*.js"
+    "test3": "mocha --loader=ts-node/esm"
   },
   "engines": {
-    "node": ">=20.11.1"
+    "node": ">=22.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

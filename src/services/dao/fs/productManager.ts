@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import config from "../../../config.js";
+import config from "../../../config.ts";
 
 // Defino una interfaz para Product
 interface Product {
@@ -71,9 +71,7 @@ class ProductManager {
   async getProducts(limit: number): Promise<ProductWithId[]> {
     const importProducts: string = await fs.readFile(this.path, "utf-8");
     // si el json esta vacío le asigno un []
-    const products: ProductWithId[] = importProducts
-      ? JSON.parse(importProducts)
-      : [];
+    const products: ProductWithId[] = importProducts ? JSON.parse(importProducts) : [];
     return limit === 0 ? products : products.slice(0, limit);
   }
 
@@ -81,9 +79,7 @@ class ProductManager {
   async getProductById(id: number): Promise<ProductWithId | undefined> {
     await this.updateArrayProducts();
     // busco el producto y lo devuelvo
-    const result: ProductWithId | undefined = this.products.find(
-      (prod: ProductWithId) => id === prod.id
-    );
+    const result: ProductWithId | undefined = this.products.find((prod: ProductWithId) => id === prod.id);
     return result;
   }
 
@@ -95,9 +91,7 @@ class ProductManager {
   //el metodo deteleProduct recibe un id y elimila el producto con ese id
   async deteleProduct(id: number): Promise<string> {
     //elimino el producto del arreglo, actualizo el json y devuelvo mensaje
-    this.products = this.products.filter(
-      (prod: ProductWithId) => prod.id !== id
-    );
+    this.products = this.products.filter((prod: ProductWithId) => prod.id !== id);
 
     //escribo el arreglo actualizado en el json
     await this.updateJson();
@@ -105,16 +99,11 @@ class ProductManager {
   }
 
   //updateProduct recube un id y un objeto de tipo Product para actualizar el producto con dicho id
-  async updateProduct(
-    id: number,
-    updatedProduct: Product
-  ): Promise<ProductWithId> {
+  async updateProduct(id: number, updatedProduct: Product): Promise<ProductWithId> {
     await this.updateArrayProducts();
 
     //elimino el producto con ese id del arreglo
-    this.products = this.products.filter(
-      (prod: ProductWithId) => prod.id !== id
-    );
+    this.products = this.products.filter((prod: ProductWithId) => prod.id !== id);
 
     //agrego el producto actualizado con ese id al arreglo y actualizo el json
     this.products.push({ id: id, ...updatedProduct });
@@ -137,22 +126,16 @@ class ProductManager {
   }
 
   //metodo para buscar si hay algun producto con alguna propiedad y valor en especifico
-  async isSomeProductWith(
-    propertyName: string,
-    propertyValue: any
-  ): Promise<boolean> {
+  async isSomeProductWith(propertyName: string, propertyValue: any): Promise<boolean> {
     await this.updateArrayProducts();
-    return this.products.some(
-      (product: ProductWithId) => propertyValue === product[propertyName]
-    );
+    return this.products.some((product: ProductWithId) => propertyValue === product[propertyName]);
   }
 
   //metodo para imprimir por consola todos los productos
   async printProducts() {
     try {
       await this.updateArrayProducts();
-      let result: string =
-        "\n---------------------------\nListado de productos:\n---------------------------\n";
+      let result: string = "\n---------------------------\nListado de productos:\n---------------------------\n";
       //recorro el array de productos y ejecuto el toString para cada producto
       this.products.forEach((prod: ProductWithId) => {
         result += this.toString(prod);

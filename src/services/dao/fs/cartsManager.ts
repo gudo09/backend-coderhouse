@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 
-import { ProductWithId } from "./productManager.js";
-import config from "../../../config.js";
+import { ProductWithId } from "./productManager.ts";
+import config from "../../../config.ts";
 
 // Defino una interfaz para Cart
 interface Cart {
@@ -67,10 +67,7 @@ class cartsManager {
 
   //el metodo es de tipo Promise<CartWithId[]> porque retorna una promesa de un arreglo con los carts y su respectivos id
   async getCarts(limit: number): Promise<CartWithId[]> {
-    const importCarts: string | undefined = await fs.readFile(
-      this.path,
-      "utf-8"
-    );
+    const importCarts: string | undefined = await fs.readFile(this.path, "utf-8");
 
     // si el json esta vacío le asigno un []
     const carts: CartWithId[] = importCarts ? JSON.parse(importCarts) : [];
@@ -83,10 +80,7 @@ class cartsManager {
   }
 
   //metodo para buscar si hay algun carrito con alguna propiedad y valor en especifico
-  async isSomeCartWith(
-    propertyName: string,
-    propertyValue: any
-  ): Promise<boolean> {
+  async isSomeCartWith(propertyName: string, propertyValue: any): Promise<boolean> {
     await this.updateArrayCarts();
     return this.carts.some((cart) => propertyValue === cart[propertyName]);
   }
@@ -95,9 +89,7 @@ class cartsManager {
   async getCartById(id: number): Promise<CartWithId> {
     await this.updateArrayCarts();
     // busco el carrito y lo devuelvo
-    const result: CartWithId = this.carts.find(
-      (cart: CartWithId) => id === cart.id
-    ) as CartWithId;
+    const result: CartWithId = this.carts.find((cart: CartWithId) => id === cart.id) as CartWithId;
     return result;
   }
 
@@ -108,9 +100,7 @@ class cartsManager {
       //busco el carrito con el id en cuestion
       if (cart.id === cartId) {
         // busco si existe el producto con el id en cuestion
-        const findProduct = cart.products.find(
-          (product) => product.id === productId
-        );
+        const findProduct = cart.products.find((product) => product.id === productId);
 
         findProduct
           ? //si lo encuentro y su quantity es undefined, lo igualo a 0 y le sumo 1

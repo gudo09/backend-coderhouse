@@ -1,7 +1,7 @@
-import { factoryUserService } from "../services/dao/dao.factory.js";
+import { factoryUserService } from "../services/dao/dao.factory.ts";
 import { FilterQuery, PaginateOptions } from "mongoose";
-import { isValidPassword } from "../services/utils.js";
-import { User } from "../models/users.model.js";
+import { isValidPassword } from "../services/utils.ts";
+import { User } from "../models/users.model.ts";
 
 const service = factoryUserService;
 

@@ -1,20 +1,15 @@
 import assert from "assert";
-//import config from "../config.js";
+//import config from "../config.ts";
 
 //import mongoose from "mongoose";
-import UsersService from "../services/dao/mdb/users.dao.mdb.js";
-import { after, afterEach, before, beforeEach, describe, it } from "node:test";
-//import { User } from "models/users.model.js";
+import UsersService from "../src/services/dao/mdb/users.dao.mdb.ts";
+//import { User } from "models/users.model.ts";
 
 //console.log(new URL('../src/services/dao/mdb/users.dao.mdb.js'))
 
 //const UsersService = await import(new URL('../src/services/dao/mdb/users.dao.mdb.js', import.meta.url).pathname);
 
-
-
-
 //const connection = await mongoose.connect(config.MONGOBD_URI)
-
 
 const dao = new UsersService();
 //const assert = Assert.strict

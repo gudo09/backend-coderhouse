@@ -1,5 +1,5 @@
-import cartModel, { Cart } from "../../../models/carts.model.js";
-import { ICartService } from "../interfaces.js";
+import cartModel, { Cart } from "../../../models/carts.model.ts";
+import { ICartService } from "../interfaces.ts";
 import { FilterQuery, ObjectId, PaginateOptions, PaginateResult } from "mongoose";
 
 class CartsService implements ICartService {
@@ -70,15 +70,15 @@ class CartsService implements ICartService {
     }
   };
 
-  createCart = async (newProducts: {product: ObjectId, quantity: number}[]): Promise<Cart | null> =>{
+  createCart = async (newProducts: { product: ObjectId; quantity: number }[]): Promise<Cart | null> => {
     try {
       return await cartModel.create({ products: newProducts });
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  }
+  };
 
-  deleteOneProduct = async (cid: any, pid: any): Promise<Cart|null> => {
+  deleteOneProduct = async (cid: any, pid: any): Promise<Cart | null> => {
     try {
       // Elimino el producto del carrito
       return await cartModel.findByIdAndUpdate(

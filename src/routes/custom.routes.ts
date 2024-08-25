@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
 
-import config from "../config.js";
+import config from "../config.ts";
 
 //tipado para params y callbacks
 //Request y Response son requeridos, el resto opcionales
@@ -41,7 +41,7 @@ export default class CustomRouter {
   generateCustomResponses(req: Request, res: Response, next: NextFunction) {
     res.sendSuccess = (payload, message) => res.status(200).send({ origin: config.SERVER, payload: payload, message: message });
 
-    res.sendUserError = (err, payload) => res.status(400).send({ origin: config.SERVER, payload: payload ? payload : null , message: err.message });
+    res.sendUserError = (err, payload) => res.status(400).send({ origin: config.SERVER, payload: payload ? payload : null, message: err.message });
 
     res.sendServerError = (err, payload) => res.status(500).send({ origin: config.SERVER, payload: payload ? payload : null, message: err.message });
     next();

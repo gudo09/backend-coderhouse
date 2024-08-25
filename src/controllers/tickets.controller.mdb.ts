@@ -1,5 +1,5 @@
-import { Ticket } from "../models/tickets.model.js";
-import { factoryTicketService } from "../services/dao/dao.factory.js";
+import { Ticket } from "../models/tickets.model.ts";
+import { factoryTicketService } from "../services/dao/dao.factory.ts";
 
 const _service = factoryTicketService;
 
@@ -12,9 +12,7 @@ class _TicketDTO {
 }
 
 class TicketsController {
-  constructor() {
-
-  }
+  constructor() {}
 }
 
 export default TicketsController;

@@ -1,18 +1,18 @@
 import { NextFunction, Request, Response } from "express";
-import config from "../config.js";
+import config from "../config.ts";
 
-import { User } from "../models/users.model.js";
+import { User } from "../models/users.model.ts";
 import mongoose from "mongoose";
 
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 
-import { errorsDictionary } from "../config.js";
-import CustomError from "./customError.class.js";
+import { errorsDictionary } from "../config.ts";
+import CustomError from "./customError.class.ts";
 
 /**
  * Crea un hash (o encriptado) de la contraseña recibida
- * 
+ *
  * @param {string} password Contraseña a encriptar
  * @returns {string} Contraseña hasheada
  */
@@ -20,7 +20,7 @@ export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt
 
 /**
  * Compara dos contraseñas encriptadas
- * 
+ *
  * @param {string} enteredPassword Contraseña ingresada por el usuario (encriptada)
  * @param {string} savedPassword Contraseña con la cual comparar (encriptada)
  * @returns {boolean} Si las contraseñas coinciden o no
@@ -29,9 +29,9 @@ export const isValidPassword = (enteredPassword: string, savedPassword: string) 
 
 /**
  * Verifica que el body contiene propiedades especificas
- * 
- * @param {string []} requiredFields 
- * @returns 
+ *
+ * @param {string []} requiredFields
+ * @returns
  */
 export const verifyRequiredBody = (requiredFields: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
@@ -57,7 +57,7 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
 export const createToken = <T extends object>(payload: T, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
 
 export const verifyToken = (typeToken: "auth" | "restorePassword") => {
-  return async (req: Request, res: Response, next: NextFunction) => {                                        
+  return async (req: Request, res: Response, next: NextFunction) => {
     if (!typeToken) return res.sendServerError(new Error("Se requiere indicar el tipo de token"));
 
     let headerToken;
@@ -103,7 +103,7 @@ export const verifyToken = (typeToken: "auth" | "restorePassword") => {
 
       if (typeToken === "restorePassword") {
         req.logger.debug(`Token restore password: ${JSON.stringify(payload, null, 2)}`);
-        return res.render("restorePasswordConfirm")
+        return res.render("restorePasswordConfirm");
       }
 
       next();

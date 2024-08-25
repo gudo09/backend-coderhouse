@@ -6,6 +6,8 @@ import { Command } from "commander";
 //const __filename = url.fileURLToPath(new URL('file://' + __dirname));
 //const DIRNAME = path.dirname(__filename);
 
+
+
 const commandLine =new Command()
 
 commandLine
@@ -15,6 +17,7 @@ commandLine
 commandLine.parse()
 const clsOptions = commandLine.opts();
 
+console.log(`Cargando modo de configuracion: ${clsOptions.mode}`);
 
 dotenv.config({ path: clsOptions.mode === "devel" ? ".env.devel" : ".env.prod" });
 

@@ -1,8 +1,8 @@
 // services/interfaces.ts
 
-import { Cart } from "../../models/carts.model.js";
-import { Product } from "../../models/products.model.js";
-import { User } from "../../models/users.model.js";
+import { Cart } from "../../models/carts.model.ts";
+import { Product } from "../../models/products.model.ts";
+import { User } from "../../models/users.model.ts";
 import { FilterQuery, ModifyResult, ObjectId, PaginateOptions, PaginateResult, Types } from "mongoose";
 
 export interface IProductService {

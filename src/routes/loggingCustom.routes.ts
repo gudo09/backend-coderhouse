@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import CustomRouter from "./custom.routes.js";
+import CustomRouter from "./custom.routes.ts";
 
 export default class LoggingCustomRouter extends CustomRouter {
   init() {
@@ -9,27 +9,27 @@ export default class LoggingCustomRouter extends CustomRouter {
 
         const response = async (type: keyof typeof req.logger) => {
           req.logger[type](`${new Date().toString()} Este es un logging de tipo ${type.toString().toUpperCase()}. ${req.method} ${req.url}`);
-          res.sendSuccess(type.toString().toUpperCase())
-        }
+          res.sendSuccess(type.toString().toUpperCase());
+        };
 
         switch (loggerType) {
           case "fatal":
-            await response("fatal")
+            await response("fatal");
             break;
           case "error":
-            await response("error")
+            await response("error");
             break;
           case "warning":
-            await response("warning")
+            await response("warning");
             break;
           case "info":
-            await response("info")
+            await response("info");
             break;
           case "http":
-            await response("http")
+            await response("http");
             break;
           case "debug":
-            await response("debug")
+            await response("debug");
             break;
           default:
             res.sendServerError(new Error("Tipo de logger no válido."));
@@ -41,7 +41,7 @@ export default class LoggingCustomRouter extends CustomRouter {
     });
 
     //Siempre al último por si no entra a ningún otro endpoint
-    this.router.all("*", async (req, res) => {
+    this.router.all("*", async (req: Request, res: Response) => {
       res.sendServerError(new Error("No se encuentra la ruta seleccionada"));
     });
   }

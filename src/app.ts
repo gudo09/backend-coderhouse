@@ -8,19 +8,19 @@ import cors from "cors";
 import swaggerJsdoc, { Options } from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
 
-import config from "./config.js";
-import initSocket from "./services/socket.js";
-import MongoSingleton from "./services/mongodb.singleton.js";
-import errorsHandler from "./services/errors.handler.js";
-import addLogger from "./services/logger.js";
+import config from "./config.ts";
+import initSocket from "./services/socket.ts";
+import MongoSingleton from "./services/mongodb.singleton.ts";
+import errorsHandler from "./services/errors.handler.ts";
+import addLogger from "./services/logger.ts";
 
-import ViewsCustomRouter from "./routes/viewsCustom.routes.js";
-import ProductsCustomRouter from "./routes/productsCustom.routes.js";
-import UsersCustomRouter from "./routes/usersCustom.routes.js";
-import CartsCustomRouter from "./routes/cartsCustom.routes.js";
-import TicketsCustomRouter from "./routes/ticketsCustom.routes.js";
-import AuthCustomRouter from "./routes/authCustom.routes.js";
-import LoggingCustomRouter from "./routes/loggingCustom.routes.js";
+import ViewsCustomRouter from "./routes/viewsCustom.routes.ts";
+import ProductsCustomRouter from "./routes/productsCustom.routes.ts";
+import UsersCustomRouter from "./routes/usersCustom.routes.ts";
+import CartsCustomRouter from "./routes/cartsCustom.routes.ts";
+import TicketsCustomRouter from "./routes/ticketsCustom.routes.ts";
+import AuthCustomRouter from "./routes/authCustom.routes.ts";
+import LoggingCustomRouter from "./routes/loggingCustom.routes.ts";
 
 /*
 import cluster from "cluster";

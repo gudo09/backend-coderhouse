@@ -1,12 +1,12 @@
-import { Product } from "../models/products.model.js";
-import { factoryProductService } from "../services/dao/dao.factory.js";
+import { Product } from "../models/products.model.ts";
+import { factoryProductService } from "../services/dao/dao.factory.ts";
 
 const service = factoryProductService;
 
 class ProductDTO {
   product: Product;
   constructor(product: Product) {
-    this.product= product;
+    this.product = product;
     this.product.title = this.product.title.toUpperCase();
   }
 }
@@ -14,7 +14,7 @@ class ProductDTO {
 class ProductsController {
   constructor() {}
 
-  getAll = async (_limit: any, _sort: any, _query: any, _page: any) => {
+  getPaginated = async (_limit: any, _sort: any, _query: any, _page: any) => {
     try {
       //Valido los parametros y les pongo valores por defecto en caso de no recibirlos
       const limit: number = typeof _limit === "string" ? +_limit : 10;
@@ -50,18 +50,18 @@ class ProductsController {
     }
   };
 
-  getOnlyIds = async() => {
+  getOnlyIds = async () => {
     try {
       return await service.getOnlyIds();
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  }
+  };
 
   add = async (newData: Product) => {
     try {
       // valido si el código del producto a agregar está repetido
-      const isDuplicateCode = await service.exists({code: newData.code});
+      const isDuplicateCode = await service.exists({ code: newData.code });
 
       // verifico que el codigo a agregar ya existe
       if (isDuplicateCode) {
@@ -76,7 +76,7 @@ class ProductsController {
 
   getById = async (id: string) => {
     try {
-      const product = await  service.getById(id);
+      const product = await service.getById(id);
       if (!product) {
         throw new Error("Producto no encontrado");
       }

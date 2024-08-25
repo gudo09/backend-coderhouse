@@ -1,5 +1,5 @@
-import CartsService from "../services/dao/mdb/carts.dao.mdb.js";
-import ProductsController from "./products.controller.mdb.js";
+import CartsService from "../services/dao/mdb/carts.dao.mdb.ts";
+import ProductsController from "./products.controller.mdb.ts";
 
 const service = new CartsService();
 
@@ -85,14 +85,14 @@ class cartsManager {
   create = async () => {
     // Crea un carrito con todos los productos con cantidad 0
     try {
-      const products = await productsController.getOnlyIds()
+      const products = await productsController.getOnlyIds();
 
       //agrego el campo quantity a cada producto
       const newProducts = products.map((element) => {
         return { product: element._id, quantity: 0 };
       });
 
-      const cart = await service.createCart( newProducts );
+      const cart = await service.createCart(newProducts);
 
       // Eliminar temporalmente los _id de los productos en la respuesta
       const cartWithoutIds = {

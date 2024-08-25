@@ -1,12 +1,12 @@
-import CustomRouter from "../routes/custom.routes.js";
+import CustomRouter from "../routes/custom.routes.ts";
 
 import axios from "axios";
-import config from "../config.js";
-import { Request } from "express";
+import config from "../config.ts";
+import { Request, Response } from "express";
 
 export default class ViewsCustomRouter extends CustomRouter {
   init() {
-    this.get("/bienvenida", async (req, res) => {
+    this.get("/bienvenida", async (req: Request, res: Response) => {
       try {
         const user = { name: "Franco" };
         res.render("index", user);
@@ -15,7 +15,7 @@ export default class ViewsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/products", async (req, res) => {
+    this.get("/products", async (req: Request, res: Response) => {
       try {
         // Valores por defecto
         const { limit = 10, sort = 1, query, page = 1 }: { limit?: number; sort?: number; query?: Record<string, any>; page?: number } = req.query;
@@ -37,7 +37,7 @@ export default class ViewsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/carts/:cid", async (req, res) => {
+    this.get("/carts/:cid", async (req: Request, res: Response) => {
       try {
         const { data } = await axios.get(`${config.BASE_URL}/api/carts/one/${req.params.cid}`);
         const { payload } = data;
@@ -47,7 +47,7 @@ export default class ViewsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/register", async (req, res) => {
+    this.get("/register", async (req: Request, res: Response) => {
       try {
         res.render("register", { showError: req.query.error ? true : false, errorMessage: req.query.error });
       } catch (err) {
@@ -55,7 +55,7 @@ export default class ViewsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/login", async (req, res) => {
+    this.get("/login", async (req: Request, res: Response) => {
       try {
         if (req.user) return res.redirect("/profile");
         res.render("login", { showError: req.query.error ? true : false, errorMessage: req.query.error });
@@ -64,7 +64,7 @@ export default class ViewsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/profile", async (req:Request, res) => {
+    this.get("/profile", async (req: Request, res: Response) => {
       try {
         if (!req.session.user) return res.redirect("/login");
         res.render("profile", { user: req.session.user });
@@ -74,7 +74,7 @@ export default class ViewsCustomRouter extends CustomRouter {
       }
     });
 
-    this.get("/current", async (req, res) => {
+    this.get("/current", async (req: Request, res: Response) => {
       try {
         if (!req.session.user) res.sendUserError(new Error("Actualmente no hay usuario loggeado"));
 
