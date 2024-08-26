@@ -14,6 +14,12 @@ class ProductDTO {
 class ProductsController {
   constructor() {}
 
+  getAll = async (limit?:number) => {
+    limit = limit || 0
+    const result = await service.getAll(limit);
+    return result
+  }
+
   getPaginated = async (_limit: any, _sort: any, _query: any, _page: any) => {
     try {
       //Valido los parametros y les pongo valores por defecto en caso de no recibirlos

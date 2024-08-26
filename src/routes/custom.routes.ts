@@ -43,7 +43,7 @@ export default class CustomRouter {
 
     res.sendUserError = (err, payload) => res.status(400).send({ origin: config.SERVER, payload: payload ? payload : null, message: err.message });
 
-    res.sendServerError = (err, payload) => res.status(500).send({ origin: config.SERVER, payload: payload ? payload : null, message: err.message });
+    res.sendServerError = (err) => res.status(500).send({ origin: config.SERVER, payload : null, message: err.message });
     next();
   }
 

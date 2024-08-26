@@ -9,7 +9,7 @@
     "watch": "tsc --watch",
     "dev": "nodemon --mode=devel",
     "dev-node22": "node --loader=ts-node/esm src/app.ts --mode=devel",
-    "test": "mocha --loader=ts-node/esm test/products.dao.test.ts",
+    "test": "mocha --loader=ts-node/esm test/supertest.products.test.ts --no-warnings=ExperimentalWarning",
     "test2": "cross-env TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\": \\\"commonjs\\\"}\" mocha",
     "test3": "mocha --loader=ts-node/esm"
   },
@@ -44,6 +44,7 @@
     "globals": "^15.9.0",
     "mocha": "^10.6.0",
     "nodemon": "^3.1.1",
+    "supertest": "^7.0.0",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",

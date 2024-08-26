@@ -75,6 +75,18 @@ class usersManager {
       throw (err as Error).message;
     }
   };
+
+  register = async (_email: string): Promise<User | null> => {
+    try {
+      const user = await service.getOne({ email: _email });
+
+      if (!user) return null;
+
+      return user;
+    } catch (err) {
+      throw (err as Error).message;
+    }
+  };
 }
 
 export default usersManager;

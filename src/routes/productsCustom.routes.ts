@@ -18,8 +18,13 @@ export default class ProductsCustomRouter extends CustomRouter {
       next();
     });
 
-    this.get("/all/", async (req: Request, res: Response) => {
+    this.get("/all/:limit?", async (req: Request, res) => {
       try {
+        const limit = + req.params.limit || 0;
+
+        const products = await controller.getAll(limit);
+
+        res.sendSuccess(products);
       } catch (err) {
         res.sendServerError(err as Error);
       }
@@ -116,9 +121,5 @@ export default class ProductsCustomRouter extends CustomRouter {
       }
     });
 
-    //Siempre al último por si no entra a ningún otro endpoint
-    this.router.all("*", async (req: Request, res: Response) => {
-      res.sendServerError(new Error("No se encuentra la ruta seleccionada"));
-    });
   }
 }

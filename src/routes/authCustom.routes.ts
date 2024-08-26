@@ -87,12 +87,14 @@ export default class AuthCustomRouter extends CustomRouter {
       }
     });
 
+    //falta corregir, debe hacerse el registro con jwt
     this.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), passport.authenticate("register", { failureRedirect: `/register?error=${encodeURI("Error al registrar usuario.")}` }), async (req: Request, res: Response) => {
       try {
         const { email, password: _password } = req.body;
-        const login = await usersController.login(email, _password);
-
-        if (!login) {
+        req.logger.debug(`Intentando registrar al usuario con el email: ${email} y password: ${_password}`);
+        const registered = await usersController.register(email);
+        req.logger.debug(`Login result: ${registered}`);
+        if (registered) {
           console.log("Error al registrar usuario.");
           res.redirect(`/register?error=${encodeURI("Error al registrar usuario.")}`);
           return;

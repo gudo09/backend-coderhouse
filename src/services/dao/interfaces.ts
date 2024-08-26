@@ -7,6 +7,7 @@ import { FilterQuery, ModifyResult, ObjectId, PaginateOptions, PaginateResult, T
 
 export interface IProductService {
   // Métodos y propiedades del servicio de productos
+  getAll(limit?:number): Promise<Product[]>;
   getById(id: string): Promise<Product | null>;
   getOnlyIds(): Promise<[{ _id: ObjectId }]>;
   find(filter: FilterQuery<Product>): Promise<Product[]>;

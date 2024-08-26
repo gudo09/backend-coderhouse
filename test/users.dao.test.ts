@@ -1,4 +1,5 @@
 import assert from "assert";
+import mongoose from "mongoose";
 //import config from "../config.ts";
 
 //import mongoose from "mongoose";
@@ -19,6 +20,7 @@ const testUser = {
   email: "john@example.com",
   password: "",
   role: "premium",
+  cart_id: new mongoose.Types.ObjectId("6668ec41aecadcdf3fc7b15b")
 };
 
 /**
