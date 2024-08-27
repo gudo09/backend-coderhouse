@@ -17,8 +17,13 @@ const testUser = {
   password: "124",
   role: "premium",
   cart_id: new mongoose.Types.ObjectId("6668ec41aecadcdf3fc7b15b"),
-  orders: []
+  orders: [],
 };
+
+const testUserAdmin = {
+    email: "admin@example.com",
+    password: "adminpassword"
+}
 
 /**
  *
@@ -28,31 +33,26 @@ const testUser = {
  * @function afterEach se ejecuta despues de cada una de las pruebas it()
  */
 describe("Test de integracion ProductsService", () => {
-  before(() => {});
+  before(async () => {
+    // Verificar que estamos conectados a la base de datos de prueba
+    const response = await requester.get("/api/dev/db");
+
+    // Verifica que la URI de la base de datos contenga el sufijo "_test"
+    expect(response.body.payload).to.be.equal("TEST", 'La base de datos conectada no es una base de datos de prueba. Pruebe ejecutando "npm run dev-test"');
+  });
   beforeEach(() => {});
   after(() => {});
   afterEach(() => {});
 
-  it("POST /api/sessions/register debe registrar un usuario nuevo", async function () {
-    /**
-     * En el send se envía el usuario nuevo en el body
-     * En _body está la respuesta del requester de supertest
-     */
-    const {_body, statusCode , header,...response} = await requester.post("/api/sessions/register").send(testUser)
+  it("POST /api/sessions/jwtlogin Debe devolver un token JWT y redirigir a '/profile' ", async function () {
+    const response = await requester
+      .post("/api/sessions/jwtlogin")
+      .send(testUserAdmin)
+      .redirects(10) // hago seguimiento hasta 10 redirecciones
 
-    //console.log(_body)
-    //console.log(statusCode)
-    //console.log(`Redirige a "${header.location}"`)
-    //console.log(_body)
-
-
-    expect(header.location).to.equal("/profile")
-    expect(statusCode).to.equal(200)
-    //expect(_body.payload).to.be.ok
+    expect(response.redirects[0]).to.equal('http://localhost:5000/profile');
+    expect(response.statusCode).to.be.equal(200);
 
   });
 
-  it("POST /api/sessions/register No debe volver a registrar un usuario con el mismo mail", async function () {
-    
-  });
 });

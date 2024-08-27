@@ -27,7 +27,13 @@ const testProduct: Product = {
  * @function afterEach se ejecuta despues de cada una de las pruebas it()
  */
 describe("Test de integracion ProductsService", () => {
-  before(() => {});
+  before(async () => {
+    // Verificar que estamos conectados a la base de datos de prueba
+    const response = await requester.get('/api/dev/db');
+    
+    // Verifica que la URI de la base de datos contenga el sufijo "_test"
+    expect(response.body.payload).to.be.equal('TEST', 'La base de datos conectada no es una base de datos de prueba. Pruebe ejecutando "npm run dev-test"');
+  });
   beforeEach(() => {});
   after(() => {});
   afterEach(() => {});
@@ -37,15 +43,12 @@ describe("Test de integracion ProductsService", () => {
      * En el send se envía el usuario nuevo en el body
      * En _body está la respuesta del requester de supertest
      */
-    const { _body, statusCode, ...response } = await requester.get("/api/products/all");
+    const response = await requester.get("/api/products/all")
 
-    //console.log(_body)
-    //console.log(statusCode)
-    //console.log(`Redirige a "${header.location}"`)
-    //console.log(_body)
+    //console.log(JSON.stringify(response.redirects))
 
-    expect(_body.error).to.be.undefined;
-    expect(_body.payload).to.be.an("array");
-    expect(statusCode).to.equal(200);
+    expect(response.body.error).to.be.undefined;
+    expect(response.body.payload).to.be.an("array");
+    expect(response.statusCode).to.equal(200);
   });
 });

@@ -42,7 +42,7 @@ class cartsManager {
         page: page,
         populate: {
           path: "products.product",
-          model: "products",
+          model: `products`,
         },
       };
 

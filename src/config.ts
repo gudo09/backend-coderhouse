@@ -19,14 +19,28 @@ const clsOptions = commandLine.opts();
 
 console.log(`Cargando modo de configuracion: ${clsOptions.mode}`);
 
-dotenv.config({ path: clsOptions.mode === "devel" ? ".env.devel" : ".env.prod" });
+const { mode } = commandLine.opts(); // Modo por defecto "prod"
+
+const envFiles: Record<string, string> = {
+  devel: ".env.devel",
+  test: ".env.devel", // queda .env.devel porque se modifica MONGOBD_URI en config cuando es test
+  production: ".env.prod",
+  // Agrega aquí otros modos según sea necesario
+} as const;
+
+// Obtener el archivo .env correspondiente o usar .env.prod como predeterminado
+const envFilePath = envFiles[mode] || ".env.prod";
+
+
+// Cargar el archivo .env correspondiente
+dotenv.config({ path: envFilePath });
 
 const config = {
   APP_NAME: "coder_53160_FG",
-  SERVER: "AtlasServer coder_53160",
+  SERVER: mode === 'test' ? `AtlasServer coder_53160_test` : "AtlasServer coder_53160",
   PORT: (process.env.PORT as string) || 8080,
   DIRNAME: url.fileURLToPath(new URL(".", import.meta.url)), //direccion absoluta del src
-  MONGOBD_URI: process.env.MONGOBD_URI as string,
+  MONGOBD_URI: mode === 'test' ? `${process.env.MONGOBD_URI}_test` : process.env.MONGOBD_URI,
   SECRET: process.env.SECRET as string,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID as string,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET as string,
@@ -35,7 +49,6 @@ const config = {
   GMAIL_APP_USER: process.env.GMAIL_APP_USER as string,
   GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD as string,
   PERSISTENCE: "mongo",
-  MODE: "dev",
 
   get COOKIE_NAME() {
     return `${this.APP_NAME}_cookie`;

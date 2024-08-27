@@ -21,6 +21,7 @@ import CartsCustomRouter from "./routes/cartsCustom.routes.ts";
 import TicketsCustomRouter from "./routes/ticketsCustom.routes.ts";
 import AuthCustomRouter from "./routes/authCustom.routes.ts";
 import LoggingCustomRouter from "./routes/loggingCustom.routes.ts";
+import DevCustomRouter from "./routes/devCustom.routes.ts";
 
 /*
 import cluster from "cluster";
@@ -69,7 +70,7 @@ try {
     // configuraciones de session
     app.use(
       session({
-        store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300 }),
+        store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300, collectionName: `sessions` }),
         secret: config.SECRET,
         resave: true,
         saveUninitialized: true,
@@ -97,16 +98,17 @@ try {
     app.use("/api/sessions", new AuthCustomRouter().getRouter());
     app.use("/api/tickets", new TicketsCustomRouter().getRouter());
     app.use("/api/log", new LoggingCustomRouter().getRouter());
+    app.use("/api/dev", new DevCustomRouter().getRouter());
 
-    /**
-     * Generamos objeto base config Swagger y levantamos endpoint para servir la documentación
+    /** Generamos objeto base config Swagger y levantamos endpoint para servir la documentación
+     * 
      *
      */
     const swaggerOptions: Options = {
       definition: {
         openapi: "3.0.1",
         info: {
-          title: "Documentación sistema AdoptMe",
+          title: "Documentación sistema Coder_53160",
           description: "Esta documentación cubre toda la API habilitada para AdoptMe",
           version: "1.0.0",
         },
@@ -116,11 +118,12 @@ try {
     const specs = swaggerJsdoc(swaggerOptions);
     app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
-    app.use(errorsHandler);
+    // Falta impementar (implementado pero falta testear)
+    //app.use(errorsHandler);
 
-    console.log(`Servidor iniciado en el puerto ${config.PORT} (PID ${process.pid})`);
     console.log(`Ruta raíz: ${config.DIRNAME}`);
     console.log(`Puedes acceder desde ${config.BASE_URL}/login`);
+    console.log(`Servidor iniciado en el puerto ${config.PORT} (PID ${process.pid})`);
   });
 } catch (err) {
   console.log((err as Error).message);

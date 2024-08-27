@@ -163,7 +163,8 @@ export default class UsersCustomRouter extends CustomRouter {
           attachments: [],
         });
 
-        if (!sendedMail) throw new CustomError(errorsDictionary.NODEMAILER_SEND_ERROR);
+        //if (!sendedMail) throw new CustomError(errorsDictionary.NODEMAILER_SEND_ERROR);
+        if (!sendedMail) throw new Error("no se ha podido enviar el correo");
 
         res.render("sendPasswordEmailSuccess", { emailTo: sendedMail.envelope.to });
       } catch (err) {

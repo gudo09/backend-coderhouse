@@ -1,10 +1,9 @@
-
 import mongoose, { InferSchemaType, PaginateModel, Schema } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 mongoose.pluralize(null);
 
-const collection = "users";
+const collection = `users`;
 
 export const userSchema = new Schema({
   firstName: { type: "string", required: true },
@@ -15,10 +14,10 @@ export const userSchema = new Schema({
   orders: [
     {
       type: Schema.Types.ObjectId,
-      ref: "tickets",
+      ref: `tickets`,
     },
   ],
-  cart_id: { type: Schema.Types.ObjectId, required: true}
+  cart_id: { type: Schema.Types.ObjectId, required: true },
 });
 
 userSchema.plugin(mongoosePaginate);
@@ -27,7 +26,7 @@ userSchema.plugin(mongoosePaginate);
 export type User = InferSchemaType<typeof userSchema>;
 
 export type UserSession = Omit<User, "password"> & {
-  // Aquí password es opcional para el uso de sessiones 
+  // Aquí password es opcional para el uso de sessiones
   password?: string;
 };
 

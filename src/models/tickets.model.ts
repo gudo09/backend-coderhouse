@@ -3,12 +3,12 @@ import mongoose, { InferSchemaType, PaginateModel, Schema } from "mongoose";
 
 mongoose.pluralize(null);
 
-const collection = "tickets";
+const collection = `tickets`;
 
 const productSchema = new Schema({
   product: {
     type: Schema.Types.ObjectId,
-    ref: "products",
+    ref: `products`,
     required: true,
   },
   quantity: {

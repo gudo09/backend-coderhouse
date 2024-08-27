@@ -18,7 +18,7 @@ class CartsService implements ICartService {
         .findById(id)
         .populate({
           path: "products.product",
-          model: "products",
+          model: `products`,
         })
         .lean();
     } catch (err) {

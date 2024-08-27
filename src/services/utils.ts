@@ -45,7 +45,8 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
 
     // Si alguna verificación falla, enviamos una respuesta de error
     if (!allOk) {
-      res.sendServerError(new CustomError(errorsDictionary.FEW_PARAMETERS), requiredFields);
+      //res.sendServerError(new CustomError(errorsDictionary.FEW_PARAMETERS), requiredFields);
+      res.sendServerError(new Error("Faltan campos requeridos"), requiredFields);
       return;
     }
 

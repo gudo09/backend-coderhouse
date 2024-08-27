@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import config from "../config.ts";
+import config from "../../src/config.ts";
 
 export default class MongoSingleton {
   static #instance: MongoSingleton | null = null;
@@ -9,7 +9,7 @@ export default class MongoSingleton {
   }
 
   async connect() {
-    await mongoose.connect(config.MONGOBD_URI);
+    await mongoose.connect(config.MONGOBD_URI as string);
   }
 
   static getInstance(): MongoSingleton {

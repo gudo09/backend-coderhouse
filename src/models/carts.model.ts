@@ -3,12 +3,12 @@ import mongoosePaginate from "mongoose-paginate-v2";
 
 mongoose.pluralize(null);
 
-const collection = "carts";
+const collection = `carts`;
 
 const productSchema = new Schema({
   product: {
     type: Schema.Types.ObjectId,
-    ref: "products",
+    ref: `products`,
     required: true,
   },
   quantity: {
@@ -21,7 +21,7 @@ const schema = new Schema({
   _user_id: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: "users",
+    ref: `users`,
   },
   products: [productSchema],
 });

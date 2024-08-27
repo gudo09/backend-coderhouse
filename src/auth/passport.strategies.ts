@@ -17,13 +17,15 @@ const JwtExtractor = jwt.ExtractJwt;
 // toma la cookie del req y la devuelve sólo el token que se llame "codercookietoken" de esa cookie
 const cookieExtractor = (req: Request) => {
   let token = null;
-  if (req && req.cookies) token = req.cookies[config.COOKIE_NAME];
+  if (req.cookies) token = req.cookies[config.COOKIE_NAME];
 
   return token;
 };
 
 const initAuthStrategies = () => {
-  // Estrategia login local (cotejamos contra nuestra base de datos)
+  /** LocalStrategy - Estrategia login local (cotejamos contra nuestra base de datos)
+   *
+   */
   passport.use(
     "login",
     new LocalStrategy(
@@ -48,7 +50,9 @@ const initAuthStrategies = () => {
     )
   );
 
-  // Estrategia register local (cotejamos contra nuestra base de datos)
+  /** LocalStrategy - Estrategia register local (cotejamos contra nuestra base de datos)
+   *
+   */
   passport.use(
     "register",
     new LocalStrategy(
@@ -82,7 +86,9 @@ const initAuthStrategies = () => {
     )
   );
 
-  // Estrategia para login con jwt
+  /** JwtStrategy - Estrategia para login con jwt
+   *
+   */
   passport.use(
     "jwtlogin",
     new JwtStrategy(
@@ -100,7 +106,9 @@ const initAuthStrategies = () => {
     )
   );
 
-  // Estrategia de terceros (autenticamos a través de un servicio externo), en este caso Github
+  /** GitHubStrategy - Estrategia de terceros (autenticamos a través de un servicio externo), en este caso Github
+   *
+   */
   passport.use(
     "ghlogin",
     new GitHubStrategy(
@@ -145,6 +153,9 @@ const initAuthStrategies = () => {
   );
 };
 
+/** Llama a las estrategias inicializadas en initAuthStrategies()
+ * 
+ */
 export const passportCall = (strategy: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     //{session: false} para deshabilitar el uso de sesiones de express-session
