@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import CustomRouter from "./custom.routes.ts";
 import mongoose from "mongoose";
 
+
 export default class DevCustomRouter extends CustomRouter {
   init() {
     this.get("/db", async (req: Request, res: Response) => {

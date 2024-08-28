@@ -1,21 +1,22 @@
 import mongoose from "mongoose";
-import config from "../../src/config.ts";
+import config from "../config.ts";
 
 export default class MongoSingleton {
-  static #instance: MongoSingleton | null = null;
+  static #instance: MongoSingleton;
 
   constructor() {
     this.connect();
   }
 
   async connect() {
-    await mongoose.connect(config.MONGOBD_URI as string);
+    await mongoose.connect(config.MONGOBD_URI);
   }
 
-  static getInstance(): MongoSingleton {
+  static async getInstance(): Promise<MongoSingleton> {
     if (!this.#instance) {
       this.#instance = new MongoSingleton();
-      console.log("Conexión a base de datos CREADA");
+      // envio mensaje al proceso principal
+      process.send?.("readyDB")
     } else {
       console.log("Conexión a base de datos RECUPERADA");
     }

@@ -9,11 +9,11 @@ export let factoryTicketService: ITicketService;
 switch (config.PERSISTENCE) {
   case "mongo": {
     const { default: MongoSingleton } = await import("../../services/mongodb.singleton.ts");
-    MongoSingleton.getInstance();
+    await MongoSingleton.getInstance();
 
     const MongoProductService = await import("../../services/dao/mdb/products.dao.mdb.ts");
     factoryProductService = new MongoProductService.default();
-
+    
     const MongoUserService = await import("../../services/dao/mdb/users.dao.mdb.ts");
     factoryUserService = new MongoUserService.default();
 
@@ -22,7 +22,6 @@ switch (config.PERSISTENCE) {
 
     const MongoTicketService = await import("../../services/dao/mdb/tickets.dao.mdb.ts");
     factoryTicketService = new MongoTicketService.default();
-
     break;
   }
 

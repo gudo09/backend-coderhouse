@@ -13,7 +13,9 @@
     "test": "mocha --loader=ts-node/esm test/products.dao.test.ts --no-warnings=ExperimentalWarning",
     "supertest": "mocha --loader=ts-node/esm test/supertest.**.test.ts --no-warnings=ExperimentalWarning",
     "test2": "cross-env TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\": \\\"commonjs\\\"}\" mocha",
-    "test3": "mocha --loader=ts-node/esm"
+    "test3": "mocha --loader=ts-node/esm",
+
+    "docker:build:dev": "docker compose --env-file ./.env.devel -f docker-compose.dev.yml up --build"
   },
   "engines": {
     "node": ">=22.7.0"

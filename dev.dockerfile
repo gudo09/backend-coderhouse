@@ -1,5 +1,5 @@
 # Usa una imagen base oficial de Node.js en Alpine para mantener la imagen ligera
-FROM node:20-alpine
+FROM node:22.7.0-alpine
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app

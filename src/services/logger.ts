@@ -55,9 +55,10 @@ const prodLogger = winston.createLogger({
 // middleware para uso general en app.ts
 const addLogger = (req: Request, res: Response, next: NextFunction) => {
   // Uso dinamicamente el logger
-  config.MODE === "dev" ? (req.logger = devLogger) : (req.logger = prodLogger);
+  req.logger = (config.MODE === "devel" || config.MODE === "test") ? devLogger : prodLogger;
 
-  req.logger.http(`${new Date().toString()} ${req.method} ${req.url}`);
+  req.logger.http(`${new Date().toString()} ${req.method} ${req.url} (PID ${process.pid})`);
+  
   next();
 };
 

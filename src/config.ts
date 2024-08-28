@@ -2,6 +2,7 @@
 import * as url from "url";
 import dotenv from "dotenv";
 import { Command } from "commander";
+import cluster from "cluster";
 
 //const __filename = url.fileURLToPath(new URL('file://' + __dirname));
 //const DIRNAME = path.dirname(__filename);
@@ -17,7 +18,8 @@ commandLine
 commandLine.parse()
 const clsOptions = commandLine.opts();
 
-console.log(`Cargando modo de configuracion: ${clsOptions.mode}`);
+
+
 
 const { mode } = commandLine.opts(); // Modo por defecto "prod"
 
@@ -40,7 +42,7 @@ const config = {
   SERVER: mode === 'test' ? `AtlasServer coder_53160_test` : "AtlasServer coder_53160",
   PORT: (process.env.PORT as string) || 8080,
   DIRNAME: url.fileURLToPath(new URL(".", import.meta.url)), //direccion absoluta del src
-  MONGOBD_URI: mode === 'test' ? `${process.env.MONGOBD_URI}_test` : process.env.MONGOBD_URI,
+  MONGOBD_URI: (mode === 'test' ? `${process.env.MONGOBD_URI}_test` : process.env.MONGOBD_URI)as string,
   SECRET: process.env.SECRET as string,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID as string,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET as string,
@@ -49,6 +51,7 @@ const config = {
   GMAIL_APP_USER: process.env.GMAIL_APP_USER as string,
   GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD as string,
   PERSISTENCE: "mongo",
+  MODE: mode,
 
   get COOKIE_NAME() {
     return `${this.APP_NAME}_cookie`;
