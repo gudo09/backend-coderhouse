@@ -1,5 +1,5 @@
 {
   "watch": ["src"],
   "ext": "ts",
-  "exec": "node -e \"console.clear(); console.log('Iniciando servidor...');\" && npx node -r ts-node/register --no-warnings=ExperimentalWarning --loader ts-node/esm src/app.ts "
+  "exec": "node -e \"console.clear(); console.log('Iniciando servidor...');\" && node --import=tsx src/app.ts "
 }

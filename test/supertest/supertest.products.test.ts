@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import chai from "chai";
 import supertest from "supertest";
-import { Product } from "../src/models/products.model";
+import { Product } from "../../src/models/products.model";
 import mongoose from "mongoose";
 
 const expect = chai.expect;
