@@ -33,6 +33,9 @@ const devLogger = winston.createLogger({
       // colores personalizados
       format: winston.format.combine(winston.format.colorize({ colors: customLevelsOptions.colors }), winston.format.simple()),
     }),
+
+    // Guarda un archivo .log para los registros en modo dev
+    new winston.transports.File({ level: "info", filename: `${config.DIRNAME}/logs/dev_logs.log` }),
   ],
 });
 

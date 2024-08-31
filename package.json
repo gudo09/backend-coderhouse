@@ -15,6 +15,9 @@
     "test2": "cross-env TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\": \\\"commonjs\\\"}\" mocha",
     "test3": "mocha --loader=ts-node/esm",
 
+    "push": "npm run push:commit --",
+    "push:commit": "git add . && git commit -m \"$1\" && git push origin main",
+
     "docker:build:dev": "docker compose --env-file ./.env.devel -f docker-compose.dev.yml up --build"
   },
   "engines": {

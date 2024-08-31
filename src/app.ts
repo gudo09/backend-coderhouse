@@ -10,8 +10,8 @@ import swaggerUiExpress from "swagger-ui-express";
 
 import config from "./config.ts";
 import initSocket from "./services/socket.ts";
-//import MongoSingleton from "./services/mongodb.singleton.ts";
-import errorsHandler from "./services/errors.handler.ts";
+//import _MongoSingleton from "./services/mongodb.singleton.ts";
+//import _errorsHandler from "./services/errors.handler.ts";
 import addLogger from "./services/logger.ts";
 
 import ViewsCustomRouter from "./routes/viewsCustom.routes.ts";
@@ -28,7 +28,7 @@ import { cpus } from "os";
 import mongoose from "mongoose";
 
 // Conexión a MongoDB
-async function connectToMongoDB() {
+async function _connectToMongoDB() {
   try {
     await mongoose.connect(config.MONGOBD_URI as string);
     console.log("Conexión a MongoDB establecida");
@@ -72,7 +72,7 @@ if (cluster.isPrimary) {
   }
 
   // Si una instancia se cae, la levanto nuevamente con un nuevo pid
-  cluster.on("exit", (worker, code, signal) => {
+  cluster.on("exit", (worker, _code, _signal) => {
     console.log(`Se cayó la instancia${worker.process.pid}`);
     cluster.fork();
   });

@@ -7,19 +7,11 @@ import cluster from "cluster";
 //const __filename = url.fileURLToPath(new URL('file://' + __dirname));
 //const DIRNAME = path.dirname(__filename);
 
+const commandLine = new Command();
 
-
-const commandLine =new Command()
-
-commandLine
-  .option("--mode <mode>")
-  .option("--port <port>")
-  .option("--setup <setup>")
-commandLine.parse()
+commandLine.option("--mode <mode>").option("--port <port>").option("--setup <setup>");
+commandLine.parse();
 const clsOptions = commandLine.opts();
-
-
-
 
 const { mode } = commandLine.opts(); // Modo por defecto "prod"
 
@@ -33,16 +25,15 @@ const envFiles: Record<string, string> = {
 // Obtener el archivo .env correspondiente o usar .env.prod como predeterminado
 const envFilePath = envFiles[mode] || ".env.prod";
 
-
 // Cargar el archivo .env correspondiente
 dotenv.config({ path: envFilePath });
 
 const config = {
   APP_NAME: "coder_53160_FG",
-  SERVER: mode === 'test' ? `AtlasServer coder_53160_test` : "AtlasServer coder_53160",
+  SERVER: mode === "test" ? `AtlasServer coder_53160_test` : "AtlasServer coder_53160",
   PORT: (process.env.PORT as string) || 8080,
   DIRNAME: url.fileURLToPath(new URL(".", import.meta.url)), //direccion absoluta del src
-  MONGOBD_URI: (mode === 'test' ? `${process.env.MONGOBD_URI}_test` : process.env.MONGOBD_URI)as string,
+  MONGOBD_URI: (mode === "test" ? `${process.env.MONGOBD_URI}_test` : process.env.MONGOBD_URI) as string,
   SECRET: process.env.SECRET as string,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID as string,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET as string,
@@ -84,7 +75,7 @@ export const errorsDictionary = {
   INTERNAL_ERROR: { code: 9, status: 500, message: "Error interno de ejecución del servidor" },
   RECORD_CREATION_ERROR: { code: 10, status: 500, message: "Error al intentar crear el registro" },
   RECORD_CREATION_OK: { code: 11, status: 200, message: "Registro creado" },
-  NODEMAILER_SEND_ERROR: { code: 12, status: 500, message:"No se pudo enviar el email"},
+  NODEMAILER_SEND_ERROR: { code: 12, status: 500, message: "No se pudo enviar el email" },
   DATABASE_USER_NOT_FOUND: { code: 13, status: 400, message: "No se encuentra el usuario" },
 };
 

@@ -1,0 +1,38 @@
+{
+  "workbench.colorTheme": "NightNode",
+
+  "editor.fontFamily": "JetBrains Mono",
+  "editor.fontSize": 14,
+
+  "peacock.favoriteColors": [
+    {
+      "name": "Node",
+      "value": "#253821"
+    }
+  ],
+  "peacock.color": "#253821",
+
+  
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#3a5834",
+    "activityBar.background": "#3a5834",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#181a28",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#3a5834",
+    "statusBar.background": "#253821",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#3a5834",
+    "statusBarItem.remoteBackground": "#253821",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#253821",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#25382199",
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "terminal.background": "#252725",
+    "terminal.foreground": "#87c48c"
+  },
+  
+}
