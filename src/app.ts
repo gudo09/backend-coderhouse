@@ -22,6 +22,7 @@ import TicketsCustomRouter from "./routes/ticketsCustom.routes.ts";
 import AuthCustomRouter from "./routes/authCustom.routes.ts";
 import LoggingCustomRouter from "./routes/loggingCustom.routes.ts";
 import DevCustomRouter from "./routes/devCustom.routes.ts";
+import UploadCustomRouter from "./routes/uploadCustom.routes.ts";
 
 import cluster from "cluster";
 import { cpus } from "os";
@@ -132,6 +133,7 @@ if (cluster.isPrimary) {
       app.use("/api/tickets", new TicketsCustomRouter().getRouter());
       app.use("/api/log", new LoggingCustomRouter().getRouter());
       app.use("/api/dev", new DevCustomRouter().getRouter());
+      app.use("/api/upload", new UploadCustomRouter().getRouter());
 
       /** Generamos objeto base config Swagger y levantamos endpoint para servir la documentación
        *
@@ -151,7 +153,7 @@ if (cluster.isPrimary) {
       const specs = swaggerJsdoc(swaggerOptions);
       app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
-      // Falta impementar (implementado pero falta testear)
+      // FIXME: Falta impementar (implementado pero falta testear)
       //app.use(errorsHandler);
 
       console.log(`Servidor iniciado en el puerto ${config.PORT} (PID ${process.pid})`);

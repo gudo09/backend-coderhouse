@@ -42,7 +42,7 @@ export default class AuthCustomRouter extends CustomRouter {
       }
     });
 
-    //falta corregir, debe hacerse el registro con jwt
+    // FIXME: Falta corregir, debe hacerse el registro con jwt
     this.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), passport.authenticate("register", { failureRedirect: `/register?error=${encodeURI("Error al registrar usuario.")}` }), async (req: Request, res: Response) => {
       try {
         const { email, password: _password } = req.body;

@@ -7,7 +7,7 @@ const collection = `products`;
 
 const defaultAdminUserId = "6660bc95a74513d9aea821d9"; // ID real del usuario admin
 
-export const schema = new Schema({
+export const productSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
@@ -24,23 +24,13 @@ export const schema = new Schema({
   },
 });
 
-schema.plugin(mongoosePaginate);
+productSchema.plugin(mongoosePaginate);
 
-export interface Product extends InferSchemaType<typeof schema> {}
-const model = mongoose.model<Product, PaginateModel<Product>>(collection, schema);
-
-/*
-export interface ProductDocument extends Document {
-  title: string;
-  description: string;
-  price: number;
-  thumbnail?: string[];
-  code: string;
-  stock: number;
-  status: boolean;
-  category: string;
+// Creo la interfaz Product con el productSchema
+export interface Product extends InferSchemaType<typeof productSchema> {
+  _id: mongoose.Types.ObjectId;
 }
 
-const model = mongoose.model<ProductDocument, PaginateModel<ProductDocument>>(collection, schema);
-*/
+const model = mongoose.model<Product, PaginateModel<Product>>(collection, productSchema);
+
 export default model;

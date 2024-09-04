@@ -1,18 +1,12 @@
-//import path from "path";
+import path from "path";
 import * as url from "url";
 import dotenv from "dotenv";
 import { Command } from "commander";
-import cluster from "cluster";
-
-//const __filename = url.fileURLToPath(new URL('file://' + __dirname));
-//const DIRNAME = path.dirname(__filename);
 
 const commandLine = new Command();
 
 commandLine.option("--mode <mode>").option("--port <port>").option("--setup <setup>");
 commandLine.parse();
-const clsOptions = commandLine.opts();
-
 const { mode } = commandLine.opts(); // Modo por defecto "prod"
 
 const envFiles: Record<string, string> = {
@@ -31,7 +25,7 @@ dotenv.config({ path: envFilePath });
 const config = {
   APP_NAME: "coder_53160_FG",
   SERVER: mode === "test" ? `AtlasServer coder_53160_test` : "AtlasServer coder_53160",
-  PORT: (process.env.PORT as string) || 8080,
+  PORT: process.env.PORT || 8080,
   DIRNAME: url.fileURLToPath(new URL(".", import.meta.url)), //direccion absoluta del src
   MONGOBD_URI: (mode === "test" ? `${process.env.MONGOBD_URI}_test` : process.env.MONGOBD_URI) as string,
   SECRET: process.env.SECRET as string,
@@ -49,7 +43,7 @@ const config = {
   },
 
   get UPLOAD_DIR() {
-    return `${this.DIRNAME}/public/images`;
+    return path.join(this.DIRNAME, "public", "uploads");
   }, //src/public/images
 
   get BASE_URL() {
@@ -57,8 +51,8 @@ const config = {
   }, // Base URL para el servidor
 
   get GITHUB_CALLBACK_URL() {
-    return `${this.BASE_URL}${this.GITHUB_CALLBACK_PATH}`;
-  },
+    return new URL(this.GITHUB_CALLBACK_PATH, this.BASE_URL).href;
+  }, // concateno en el formato URL
 };
 
 // diccionario para manejar errores

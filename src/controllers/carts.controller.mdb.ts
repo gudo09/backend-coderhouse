@@ -23,8 +23,8 @@ class cartsManager {
             throw new Error("Estructura no esperada en product _id");
           }
         });
-      //Retorno todo lo que había en cart pero con el array de productos formateado
 
+      //Retorno todo lo que había en cart pero con el array de productos formateado
       return { ...cart, products: productsArray };
     } catch (err) {
       throw new Error((err as Error).message);
@@ -108,7 +108,7 @@ class cartsManager {
     }
   };
 
-  // no implementado
+  // FIXME: Falta implementar
   update = async (_id: any, _updProd: any) => {
     try {
     } catch (err) {

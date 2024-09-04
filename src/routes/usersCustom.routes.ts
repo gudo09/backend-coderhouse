@@ -6,6 +6,7 @@ import { transport } from "../services/transportNodemailer.ts";
 import { createToken, verifyToken } from "../services/utils.ts";
 import CustomError from "../services/customError.class.ts";
 import { errorsDictionary } from "../config.ts";
+import { uploader } from "@src/services/uploader.ts";
 
 const controller = new UsersController();
 
@@ -40,8 +41,27 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    this.put("premium/:uid", async (_req: Request, _res: Response, _next: NextFunction) => {
+    /** FIXME: Falta implementar
+     *  De momento solo sube los archivos, falta cambiar de user a premium una vez subidos los archivos
+     */
+    this.post("/documents/premiumRequests/:uid", uploader.array("documentImages", 3),async (req: Request, res: Response, _next: NextFunction) => {
       //Permitirá cambiar el rol de un usuario, de “user” a “premium” y viceversa.
+
+      try {
+        res.sendSuccess({ files: req.files }, "Imagenes subidas correctamente.");
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
+    });
+
+    this.post("/images/profiles/:uid", uploader.single("profileImage"), async (req: Request, res: Response, _next: NextFunction) => {
+      //Permitirá cambiar el rol de un usuario, de “user” a “premium” y viceversa.
+
+      try {
+        res.sendSuccess({ file: req.file }, "Imagen de perfil subida correctamente.");
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
     });
 
     this.put("/:id", async (req: Request, res: Response) => {
@@ -172,7 +192,7 @@ export default class UsersCustomRouter extends CustomRouter {
       }
     });
 
-    // Falta implementar
+    // FIXME: Falta implementar
     this.get("/restoreConfirmPassword", verifyToken("restorePassword"), async (req: Request, res: Response) => {
       // Este endpoint recibe el token generado para cambiar la contraseña
       // Debe estar protegida por un token de corta duracion

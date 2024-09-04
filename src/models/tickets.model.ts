@@ -25,8 +25,11 @@ const ticketSchema = new Schema({
   amount: { type: Number },
 });
 
-// Creo el tipo Order con el schema
-export interface Ticket extends InferSchemaType<typeof ticketSchema> {}
+// Creo la interfaz Ticket con el schema
+export interface Ticket extends InferSchemaType<typeof ticketSchema> {
+  _id: mongoose.Types.ObjectId;
+}
+
 const model = mongoose.model<Ticket, PaginateModel<Ticket>>(collection, ticketSchema);
 
 export default model;

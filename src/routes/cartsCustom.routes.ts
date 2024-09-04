@@ -159,7 +159,7 @@ export default class CartsCustomRouter extends CustomRouter {
       }
     });
 
-    // Falta implementar
+    // FIXME: Falta implementar
     this.put("/:cid", async (_req: Request, _res: Response) => {
       /*PUT api/carts/:cid deberá actualizar el carrito con un arreglo de productos con el siguiente formato:
       {
@@ -177,7 +177,7 @@ export default class CartsCustomRouter extends CustomRouter {
       */
     });
 
-    // Falta implementar
+    // FIXME: Falta implementar
     this.put("/:cid/products/:pid", async (_req: Request, _res: Response) => {});
 
     //Siempre al último por si no entra a ningún otro endpoint

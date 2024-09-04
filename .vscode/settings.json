@@ -1,9 +1,12 @@
 {
   "workbench.colorTheme": "NightNode",
-
+  
   "editor.fontFamily": "JetBrains Mono",
   "editor.fontSize": 14,
-
+  "editor.tokenColorCustomizations": {
+    "comments": "#868b87" // Aquí puedes poner el color que prefieras en formato hexadecimal
+  },
+  
   "peacock.favoriteColors": [
     {
       "name": "Node",
@@ -12,7 +15,6 @@
   ],
   "peacock.color": "#253821",
 
-  
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#3a5834",
     "activityBar.background": "#3a5834",
@@ -34,5 +36,5 @@
     "terminal.background": "#252725",
     "terminal.foreground": "#87c48c"
   },
-  
+
 }

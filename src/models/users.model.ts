@@ -11,19 +11,35 @@ export const userSchema = new Schema({
   email: { type: "string", required: true, unique: true },
   password: { type: "string", required: true },
   role: { type: "string", enum: ["admin", "user", "premium"], default: "user" },
+  // FIXME: verificar que sea requerido en las solicitudes de User
   orders: [
     {
       type: Schema.Types.ObjectId,
       ref: `tickets`,
     },
   ],
+  // FIXME: verificar que sea requerido en las solicitudes de User
+  documents: [
+    {
+      name: { type: String, required: true },
+      reference: { type: String, required: true, default: "" },
+    },
+  ],
+  // FIXME: verificar que sea requerido en las solicitudes de User e implementar que cambie cuando se conecte el usuario o guarde la hora cuando se desconecte 
+  last_connection: { type: Date, required: true},
+  // FIXME: verificar que sea requerido en las solicitudes de User
   cart_id: { type: Schema.Types.ObjectId, required: true },
 });
 
 userSchema.plugin(mongoosePaginate);
 
+// Creo la interfaz User con el schema
+export interface User extends InferSchemaType<typeof userSchema> {
+  _id: mongoose.Types.ObjectId;
+}
+
 // Creo el tipo User con el schema
-export type User = InferSchemaType<typeof userSchema>;
+//export type User = InferSchemaType<typeof userSchema> & { _id: mongoose.Types.ObjectId };
 
 export type UserSession = Omit<User, "password"> & {
   // Aquí password es opcional para el uso de sessiones
@@ -31,12 +47,5 @@ export type UserSession = Omit<User, "password"> & {
 };
 
 const model = mongoose.model<User, PaginateModel<User>>(collection, userSchema);
-
-/*
-const usersModel = mongoose.model<User, PaginateModel<User>>(
-  collection,
-  userSchema
-);
-*/
 
 export default model;

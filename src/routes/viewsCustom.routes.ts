@@ -3,6 +3,7 @@ import CustomRouter from "../routes/custom.routes.ts";
 import axios from "axios";
 import config from "../config.ts";
 import { Request, Response } from "express";
+import { verifyToken } from "@src/services/utils.ts";
 
 export default class ViewsCustomRouter extends CustomRouter {
   init() {
@@ -36,6 +37,33 @@ export default class ViewsCustomRouter extends CustomRouter {
         res.sendServerError(err as Error);
       }
     });
+
+    this.get("/uploadImages/product", verifyToken("auth"), async (req: Request, res: Response) => {
+      try {
+        res.render("productImageUploader" )
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
+
+    })
+
+    this.get("/uploadImages/profile", verifyToken("auth"), async (req: Request, res: Response) => {
+      try {
+        res.render("profileImageUploader", {uid: req.user?._id} )
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
+
+    })
+
+    this.get("/uploadImages/document", verifyToken("auth"), async (req: Request, res: Response) => {
+      try {
+        res.render("premiumRequestDocumentUploader", {uid: req.user?._id} )
+      } catch (err) {
+        res.sendServerError(err as Error);
+      }
+
+    })
 
     this.get("/carts/:cid", async (req: Request, res: Response) => {
       try {

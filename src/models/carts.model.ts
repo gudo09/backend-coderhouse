@@ -17,7 +17,7 @@ const productSchema = new Schema({
   },
 });
 
-const schema = new Schema({
+const cartSchema = new Schema({
   _user_id: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -26,9 +26,13 @@ const schema = new Schema({
   products: [productSchema],
 });
 
-schema.plugin(mongoosePaginate);
+cartSchema.plugin(mongoosePaginate);
 
-export interface Cart extends InferSchemaType<typeof schema> {}
-const model = mongoose.model<Cart, PaginateModel<Cart>>(collection, schema);
+// Creo la interfaz Cart con el cartSchema
+export interface Cart extends InferSchemaType<typeof cartSchema> {
+  _id: mongoose.Types.ObjectId;
+}
+
+const model = mongoose.model<Cart, PaginateModel<Cart>>(collection, cartSchema);
 
 export default model;

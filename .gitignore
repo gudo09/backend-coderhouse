@@ -7,3 +7,4 @@ Dockerfile
 dockerfile
 .dockerignore
 docker-compose.yml
+src/public/uploads/*
