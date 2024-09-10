@@ -80,10 +80,11 @@ export const verifyToken = (typeToken: "auth" | "restorePassword") => {
 
     // el token puede venir por header, cookie o query
     const recivedToken = headerToken || cookieToken || queryToken;
-
+    
+    console.log(JSON.stringify(recivedToken));
     // Envio respuesta en caso de que no se reciba un token
     if (!recivedToken) return res.sendUserError(new Error("Se requiere token para poder acceder"));
-
+    
     jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
       //Verificacion del token
       if (err) {

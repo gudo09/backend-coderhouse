@@ -53,6 +53,7 @@
     "typescript-eslint": "^8.2.0"
   },
   "dependencies": {
+    "@socket.io/cluster-adapter": "^0.2.2",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "commander": "^12.1.0",

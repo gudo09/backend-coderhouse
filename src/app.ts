@@ -1,4 +1,5 @@
 import express from "express";
+import { createServer } from "http";
 import cookieParser from "cookie-parser";
 import handlebars from "express-handlebars";
 import MongoStore from "connect-mongo";
@@ -89,72 +90,76 @@ if (cluster.isPrimary) {
     //ruta para archivos estaticos
     app.use("/static", express.static(`${config.DIRNAME}/public`));
 
-    const expressInstance = app.listen(config.PORT, async () => {
-      //inicializo el server de socket.io desde el archivo socket.js
-      const socketServer = initSocket(expressInstance);
-      app.set("socketServer", socketServer);
+    //configuraciones de express
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
-      //configuraciones de express
-      app.use(express.json());
-      app.use(express.urlencoded({ extended: true }));
+    //configuraciones de cors
+    app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE"], credentials: true }));
 
-      //configuraciones de cors
-      app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE"] }));
+    // configuraciones de session
+    app.use(
+      session({
+        store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300, collectionName: `sessions` }),
+        secret: config.SECRET,
+        resave: true,
+        saveUninitialized: true,
+      })
+    );
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(cookieParser(config.SECRET));
 
-      // configuraciones de session
-      app.use(
-        session({
-          store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300, collectionName: `sessions` }),
-          secret: config.SECRET,
-          resave: true,
-          saveUninitialized: true,
-        })
-      );
-      app.use(passport.initialize());
-      app.use(passport.session());
-      app.use(cookieParser(config.SECRET));
+    // configuraciones Handlebars
+    app.engine("handlebars", handlebars.engine());
+    app.set("views", `${config.DIRNAME}/views`);
+    app.set("view engine", "handlebars");
 
-      // configuraciones Handlebars
-      app.engine("handlebars", handlebars.engine());
-      app.set("views", `${config.DIRNAME}/views`);
-      app.set("view engine", "handlebars");
+    // uso el Logger para registros
+    app.use(addLogger);
 
-      // uso el Logger para registros
-      app.use(addLogger);
+    // hago uso de las rutas
+    // Instancio un objeto de TestCustomRouter
+    // y llamo al getRouter para que me devuelva un tipo express.Router
+    app.use("/", new ViewsCustomRouter().getRouter());
+    app.use("/api/products", new ProductsCustomRouter().getRouter());
+    app.use("/api/users", new UsersCustomRouter().getRouter());
+    app.use("/api/carts", new CartsCustomRouter().getRouter());
+    app.use("/api/sessions", new AuthCustomRouter().getRouter());
+    app.use("/api/tickets", new TicketsCustomRouter().getRouter());
+    app.use("/api/log", new LoggingCustomRouter().getRouter());
+    app.use("/api/dev", new DevCustomRouter().getRouter());
+    app.use("/api/upload", new UploadCustomRouter().getRouter());
 
-      // hago uso de las rutas
-      // Instancio un objeto de TestCustomRouter
-      // y llamo al getRouter para que me devuelva un tipo express.Router
-      app.use("/", new ViewsCustomRouter().getRouter());
-      app.use("/api/products", new ProductsCustomRouter().getRouter());
-      app.use("/api/users", new UsersCustomRouter().getRouter());
-      app.use("/api/carts", new CartsCustomRouter().getRouter());
-      app.use("/api/sessions", new AuthCustomRouter().getRouter());
-      app.use("/api/tickets", new TicketsCustomRouter().getRouter());
-      app.use("/api/log", new LoggingCustomRouter().getRouter());
-      app.use("/api/dev", new DevCustomRouter().getRouter());
-      app.use("/api/upload", new UploadCustomRouter().getRouter());
-
-      /** Generamos objeto base config Swagger y levantamos endpoint para servir la documentación
-       *
-       *
-       */
-      const swaggerOptions: Options = {
-        definition: {
-          openapi: "3.0.1",
-          info: {
-            title: "Documentación sistema Coder_53160",
-            description: "Esta documentación cubre toda la API habilitada para AdoptMe",
-            version: "1.0.0",
-          },
+    /** Generamos objeto base config Swagger y levantamos endpoint para servir la documentación
+     *
+     *
+     */
+    const swaggerOptions: Options = {
+      definition: {
+        openapi: "3.0.1",
+        info: {
+          title: "Documentación sistema Coder_53160",
+          description: "Esta documentación cubre toda la API habilitada para AdoptMe",
+          version: "1.0.0",
         },
-        apis: ["./src/docs/**/*.yaml"], // todos los archivos de configuración de rutas estarán aquí
-      };
-      const specs = swaggerJsdoc(swaggerOptions);
-      app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+      },
+      apis: ["./src/docs/**/*.yaml"], // todos los archivos de configuración de rutas estarán aquí
+    };
+    const specs = swaggerJsdoc(swaggerOptions);
+    app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
-      // FIXME: Falta impementar (implementado pero falta testear)
-      //app.use(errorsHandler);
+    // FIXME: Falta impementar (implementado pero falta testear)
+    //app.use(errorsHandler);
+
+    // Crear el servidor HTTP
+    const server = createServer(app);
+
+    // Inicializar Socket.IO
+    initSocket(server);
+
+    server.listen(config.PORT, async () => {
+      //inicializo el server de socket.io desde el archivo socket.js
 
       console.log(`Servidor iniciado en el puerto ${config.PORT} (PID ${process.pid})`);
 

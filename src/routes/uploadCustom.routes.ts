@@ -14,10 +14,6 @@ export default class UploadCustomRouter extends CustomRouter {
       }
     });
 
-    this.post("/documents/premiumRequests", uploader.array("documentImages", 3), async (req: Request, res: Response) => {
-      
-    });
-
     this.post("/images/profiles", uploader.single("profileImage"), async (req: Request, res: Response) => {
       try {
         res.sendSuccess({ files: req.file }, "Imagenes subidas correctamente.");

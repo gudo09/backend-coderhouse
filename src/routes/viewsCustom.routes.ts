@@ -18,14 +18,17 @@ export default class ViewsCustomRouter extends CustomRouter {
 
     this.get("/products", async (req: Request, res: Response) => {
       try {
+        console.log(req.cookies[config.COOKIE_NAME])
         // Valores por defecto
         const { limit = 10, sort = 1, query, page = 1 }: { limit?: number; sort?: number; query?: Record<string, any>; page?: number } = req.query;
 
         // Armo el query params con todos los datos enviados en la url
-        const queryParams = new URLSearchParams({ limit: limit.toString(), sort: sort.toString(), page: page.toString() });
+        const queryParams = new URLSearchParams({ limit: limit.toString(), sort: sort.toString(), page: page.toString(), access_token: req.cookies[config.COOKIE_NAME] });
 
         // Si query no es undefined, lo agrego (para evitar errores)
         const queryParam = query ? `&query=${query}` : "";
+
+        console.log(`${config.BASE_URL}/api/products?${queryParams.toString()}${queryParam}`);
 
         // Obtengo los datos de la consulta con axios
         const { data } = await axios.get(`${config.BASE_URL}/api/products?${queryParams.toString()}${queryParam}`);
@@ -40,30 +43,27 @@ export default class ViewsCustomRouter extends CustomRouter {
 
     this.get("/uploadImages/product", verifyToken("auth"), async (req: Request, res: Response) => {
       try {
-        res.render("productImageUploader" )
+        res.render("productImageUploader");
       } catch (err) {
         res.sendServerError(err as Error);
       }
-
-    })
+    });
 
     this.get("/uploadImages/profile", verifyToken("auth"), async (req: Request, res: Response) => {
       try {
-        res.render("profileImageUploader", {uid: req.user?._id} )
+        res.render("profileImageUploader", { uid: req.user?._id });
       } catch (err) {
         res.sendServerError(err as Error);
       }
-
-    })
+    });
 
     this.get("/uploadImages/document", verifyToken("auth"), async (req: Request, res: Response) => {
       try {
-        res.render("premiumRequestDocumentUploader", {uid: req.user?._id} )
+        res.render("premiumRequestDocumentUploader", { uid: req.user?._id });
       } catch (err) {
         res.sendServerError(err as Error);
       }
-
-    })
+    });
 
     this.get("/carts/:cid", async (req: Request, res: Response) => {
       try {
