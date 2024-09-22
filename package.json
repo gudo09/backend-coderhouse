@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node dist/app.js --mode=prod",
-    "start-ts": "nodemon --mode=prod",
+    "start-ts": "node --import=tsx src/app.ts --mode=prod",
     "build": "tsc",
     "watch": "tsc --watch",
     "dev": "nodemon --mode=devel",
