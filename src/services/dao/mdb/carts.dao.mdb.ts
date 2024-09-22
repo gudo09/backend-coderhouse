@@ -1,6 +1,6 @@
 import cartModel, { Cart } from "../../../models/carts.model.ts";
 import { ICartService } from "../interfaces.ts";
-import { FilterQuery, ObjectId, PaginateOptions, PaginateResult } from "mongoose";
+import { FilterQuery, Types, PaginateOptions, PaginateResult } from "mongoose";
 
 class CartsService implements ICartService {
   constructor() {}
@@ -70,7 +70,7 @@ class CartsService implements ICartService {
     }
   };
 
-  createCart = async (newProducts: { product: ObjectId; quantity: number }[]): Promise<Cart | null> => {
+  createCart = async (newProducts: { product: Types.ObjectId; quantity: number }[]): Promise<Cart | null> => {
     try {
       return await cartModel.create({ products: newProducts });
     } catch (err) {

@@ -4,7 +4,8 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "start": "node --watch src/app.js",
+    "start": "node dist/app.js --mode=prod",
+    "start-ts": "nodemon --mode=prod",
     "build": "tsc",
     "watch": "tsc --watch",
     "dev": "nodemon --mode=devel",

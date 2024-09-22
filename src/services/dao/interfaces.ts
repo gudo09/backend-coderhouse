@@ -3,13 +3,13 @@
 import { Cart } from "../../models/carts.model.ts";
 import { Product } from "../../models/products.model.ts";
 import { User } from "../../models/users.model.ts";
-import { FilterQuery, ModifyResult, ObjectId, PaginateOptions, PaginateResult, Types } from "mongoose";
+import { FilterQuery, ModifyResult, PaginateOptions, PaginateResult, Types } from "mongoose";
 
 export interface IProductService {
   // Métodos y propiedades del servicio de productos
   getAll(limit?:number): Promise<Product[]>;
   getById(id: string): Promise<Product | null>;
-  getOnlyIds(): Promise<[{ _id: ObjectId }]>;
+  getOnlyIds(): Promise<{ _id: Types.ObjectId }[]>;
   find(filter: FilterQuery<Product>): Promise<Product[]>;
   getPaginated(query: FilterQuery<Product>, options: PaginateOptions): Promise<PaginateResult<Product>>;
   exists(filter: FilterQuery<Product>): Promise<{ _id: Types.ObjectId } | null>;
@@ -37,7 +37,7 @@ export interface ICartService {
   add(cid: string, pid: string): Promise<Cart | null>;
   clearCart(id: string): Promise<Cart | null>;
   deleteOneProduct(cid: any, pid: any): Promise<Cart | null>;
-  createCart(newProducts: { product: ObjectId; quantity: number }[]): Promise<Cart | null>;
+  createCart(newProducts: { product: Types.ObjectId; quantity: number }[]): Promise<Cart | null>;
   // Otros métodos...
 }
 

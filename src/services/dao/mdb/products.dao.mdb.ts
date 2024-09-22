@@ -1,6 +1,6 @@
 import productModel, { Product } from "../../../models/products.model.ts";
 
-import { FilterQuery, ObjectId, PaginateOptions } from "mongoose";
+import { FilterQuery, Types, PaginateOptions } from "mongoose";
 import { IProductService } from "../interfaces.ts";
 
 class ProductsService implements IProductService {
@@ -22,9 +22,13 @@ class ProductsService implements IProductService {
     }
   };
 
-  getOnlyIds = async (): Promise<[{ _id: ObjectId }]> => {
+  getOnlyIds = async (): Promise<{ _id: Types.ObjectId }[]> => {
     try {
-      return await productModel.find({}, { _id: 1 }).lean();
+      const result = await productModel.find({}, { _id: 1 }).lean();
+      if (result.length === 0) {
+        return [];
+      }
+      return result
     } catch (err) {
       throw new Error((err as Error).message);
     }

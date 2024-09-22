@@ -12,7 +12,7 @@ const { mode } = commandLine.opts(); // Modo por defecto "prod"
 const envFiles: Record<string, string> = {
   devel: ".env.devel",
   test: ".env.devel", // queda .env.devel porque se modifica MONGOBD_URI en config cuando es test
-  production: ".env.prod",
+  prod: ".env.prod",
   // Agrega aquí otros modos según sea necesario
 } as const;
 
