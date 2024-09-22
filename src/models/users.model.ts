@@ -1,3 +1,4 @@
+import moment from "moment";
 import mongoose, { InferSchemaType, PaginateModel, Schema } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
@@ -26,9 +27,9 @@ export const userSchema = new Schema({
     },
   ],
   // FIXME: verificar que sea requerido en las solicitudes de User e implementar que cambie cuando se conecte el usuario o guarde la hora cuando se desconecte 
-  last_connection: { type: Date, required: true},
+  last_connection: { type: Date, required: true, default: moment().format("YYYY-MM-DD HH:mm:ss")},
   // FIXME: verificar que sea requerido en las solicitudes de User
-  cart_id: { type: Schema.Types.ObjectId, required: true },
+  cart_id: { type: Schema.Types.ObjectId, required: true, default: new mongoose.Types.ObjectId },
 });
 
 userSchema.plugin(mongoosePaginate);
@@ -36,6 +37,7 @@ userSchema.plugin(mongoosePaginate);
 // Creo la interfaz User con el schema
 export interface User extends InferSchemaType<typeof userSchema> {
   _id: mongoose.Types.ObjectId;
+  toJSON: any;
 }
 
 // Creo el tipo User con el schema

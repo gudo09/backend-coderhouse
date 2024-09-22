@@ -1,4 +1,6 @@
-// tipado para usar session en params
+// tipado para usar session en params - NOTE: Express Sessions DESHABILITADO
+
+/*
 import { UserSessions } from "../models/users.model.ts";
 
 declare module "express-session" {
@@ -7,3 +9,4 @@ declare module "express-session" {
     counter?: number;
   }
 }
+*/

@@ -2,7 +2,7 @@ import UsersController from "../controllers/users.controller.mdb.ts";
 import config from "../config.ts";
 import passport from "passport";
 
-import { User, UserSession } from "../models/users.model.ts";
+import { User } from "../models/users.model.ts";
 
 import { createToken, handlePolicies, verifyRequiredBody, verifyToken } from "../services/utils.ts";
 import CustomRouter from "../routes/custom.routes.ts";
@@ -18,13 +18,17 @@ export default class AuthCustomRouter extends CustomRouter {
     //login con github a traves de passport
     this.get("/ghlogin", passport.authenticate("ghlogin", { scope: ["user"] }), async (_req: Request, _res: Response) => {});
 
+    // FIXME: esto deberia hacerse con JWT
     this.get("/ghlogincallback", passport.authenticate("ghlogin", { failureRedirect: `/login?error=${encodeURI("Error al identificar con Github.")}` }), async (req: Request, res: Response) => {
       try {
-        req.session.user = req.user as UserSession;
-        req.session.save((err) => {
-          if (err) return res.sendServerError(err as Error);
-          res.redirect("/profile");
-        });
+        const token = createToken(req.user as User, "1h");
+
+        // Seteo la cookie con el token de JWT en el cliente
+        res.cookie(config.COOKIE_NAME, token, { maxAge: 60 * 60 * 1000 * 24, httpOnly: true });
+
+        req.logger.debug(`${new Date().toString()} Usuario autenticado con Github. Token: ${token} ${req.method} ${req.url}`);
+
+        res.redirect("/profile");
       } catch (err) {
         res.sendServerError(err as Error);
       }
@@ -32,48 +36,31 @@ export default class AuthCustomRouter extends CustomRouter {
 
     this.get("/logout", async (req: Request, res: Response) => {
       try {
-        //destruyo los datos de la sesion
-        req.session.destroy((err) => {
-          if (err) return res.sendServerError(err as Error);
-          return res.redirect("/login");
-        });
+        //destruyo los datos de la cookie y de req.user
+        res.clearCookie(config.COOKIE_NAME);
+        req.user = undefined;
+
+        return res.redirect("/login");
       } catch (err) {
         res.sendServerError(err as Error);
       }
     });
 
     // FIXME: Falta corregir, debe hacerse el registro con jwt
-    this.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), passport.authenticate("register", { failureRedirect: `/register?error=${encodeURI("Error al registrar usuario.")}` }), async (req: Request, res: Response) => {
+    this.post("/register", verifyRequiredBody(["firstName", "lastName", "email", "password"]), passportCall("register"), async (req: Request, res: Response) => {
       try {
-        const { email, password: _password } = req.body;
-        req.logger.debug(`Intentando registrar al usuario con el email: ${email} y password: ${_password}`);
-        const registered = await usersController.register(email);
-        req.logger.debug(`Login result: ${registered}`);
-        if (registered) {
-          console.log("Error al registrar usuario.");
-          res.redirect(`/register?error=${encodeURI("Error al registrar usuario.")}`);
-          return;
+        if (!req.user) {
+          throw new Error("Error de usuario");
         }
+        const { password, ...filteredUser } = req.user;
+        req.logger.debug(`Intentando registrar al usuario con el email: ${filteredUser.email} y password: ${password}`);
 
-        const { password: _passwordLogin, ...filteredUser } = login; //.toJSON(); // toJSON() para evitar el formateo de mongoose
+        const token = createToken(req.user, "1h");
 
-        req.session.user = filteredUser;
+        // Seteo la cookie con el token de JWT en el cliente
+        res.cookie(config.COOKIE_NAME, token, { maxAge: 60 * 60 * 1000 * 24, httpOnly: true });
 
-        // Uso req.session.save para mantener la asincronía
-        req.session.save((err) => {
-          if (err) res.sendServerError(err as Error);
-          res.redirect("/profile");
-        });
-      } catch (err) {
-        res.sendServerError(err as Error);
-      }
-    });
-
-    this.get("/current", passportCall("jwtlogin"), async (req: Request, res: Response) => {
-      try {
-        const currentUserFirstName = (req.user as User).firstName;
-        const currentUserLastName = (req.user as User).lastName;
-        res.sendSuccess(`El usuario actualmente autenticado es ${currentUserFirstName} ${currentUserLastName}`);
+        res.redirect("/profile");
       } catch (err) {
         res.sendServerError(err as Error);
       }
@@ -82,10 +69,14 @@ export default class AuthCustomRouter extends CustomRouter {
     /** Login con JWT y passport local
      * usa passport base para el login y crea un token en la cookie con jwt
      */
-    this.post("/jwtlogin", verifyRequiredBody(["email", "password"]), passport.authenticate("login", { failureRedirect: `/login?error=${encodeURI("Usuario o contraseña no válidos.")}` }), async (req: Request, res: Response) => {
+    this.post("/login", verifyRequiredBody(["email", "password"]), passportCall("login"), async (req: Request, res: Response) => {
       try {
-        if (!req.user) return res.sendUserError(new Error("Usuario no encontrado."));
-        req.session.user = req.user;
+        // Acá req.user ya debería estar definido por passport
+        if (!req.user) {
+          console.log (req.user)
+          return res.sendServerError(new Error("Error al autenticarse."));
+        }
+
         const token = createToken(req.user as User, "1h");
 
         // Seteo la cookie con el token de JWT en el cliente

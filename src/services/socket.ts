@@ -12,7 +12,7 @@ const initSocket = (httpServer: HttpServer) => {
 
   // Listener: escucho los eventos de conexion
   io.on("connection", (client) => {
-    console.log(`Cliente conectado! id: ${client.id} desde ${client.handshake.address} `);
+    console.log(`Cliente conectado! id: ${client.id} desde ${client.handshake.address} (PID: ${process.pid})`);
 
     // Suscripcion al topico deleteProduct
     client.on("deleteProduct", (data) => {

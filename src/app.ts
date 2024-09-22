@@ -2,8 +2,8 @@ import express from "express";
 import { createServer } from "http";
 import cookieParser from "cookie-parser";
 import handlebars from "express-handlebars";
-import MongoStore from "connect-mongo";
-import session from "express-session";
+//import session from "express-session";
+//import MongoStore from "connect-mongo";
 import passport from "passport";
 import cors from "cors";
 import swaggerJsdoc, { Options } from "swagger-jsdoc";
@@ -27,18 +27,6 @@ import UploadCustomRouter from "./routes/uploadCustom.routes.ts";
 
 import cluster from "cluster";
 import { cpus } from "os";
-import mongoose from "mongoose";
-
-// Conexión a MongoDB
-async function _connectToMongoDB() {
-  try {
-    await mongoose.connect(config.MONGOBD_URI as string);
-    console.log("Conexión a MongoDB establecida");
-  } catch (err) {
-    console.error("Error al conectar a MongoDB:", (err as Error).message);
-    process.exit(1); // Salir con un código de error si no se puede conectar
-  }
-}
 
 if (cluster.isPrimary) {
   console.log(`Cargando modo de configuración: ${config.MODE}`);
@@ -97,7 +85,8 @@ if (cluster.isPrimary) {
     //configuraciones de cors
     app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE"], credentials: true }));
 
-    // configuraciones de session
+    // configuraciones de session NOTE: DESHABILITADO
+    /*
     app.use(
       session({
         store: MongoStore.create({ mongoUrl: config.MONGOBD_URI, ttl: 300, collectionName: `sessions` }),
@@ -106,8 +95,10 @@ if (cluster.isPrimary) {
         saveUninitialized: true,
       })
     );
+    */
+    
     app.use(passport.initialize());
-    app.use(passport.session());
+    //app.use(passport.session());
     app.use(cookieParser(config.SECRET));
 
     // configuraciones Handlebars
@@ -152,14 +143,14 @@ if (cluster.isPrimary) {
     // FIXME: Falta impementar (implementado pero falta testear)
     //app.use(errorsHandler);
 
-    // Crear el servidor HTTP
+    // Creo el servidor HTTP
     const server = createServer(app);
 
-    // Inicializar Socket.IO
+    // Inicializo Socket.IO
     initSocket(server);
 
+    // Pongo el servidor a escuchar en el puerto de la configuración
     server.listen(config.PORT, async () => {
-      //inicializo el server de socket.io desde el archivo socket.js
 
       console.log(`Servidor iniciado en el puerto ${config.PORT} (PID ${process.pid})`);
 

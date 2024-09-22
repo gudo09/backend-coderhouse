@@ -10,16 +10,14 @@ import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { errorsDictionary } from "../config.ts";
 import CustomError from "./customError.class.ts";
 
-/**
- * Crea un hash (o encriptado) de la contraseña recibida
+/** Crea un hash (o encriptado) de la contraseña recibida
  *
  * @param {string} password Contraseña a encriptar
  * @returns {string} Contraseña hasheada
  */
 export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-/**
- * Compara dos contraseñas encriptadas
+/** Compara dos contraseñas encriptadas
  *
  * @param {string} enteredPassword Contraseña ingresada por el usuario (encriptada)
  * @param {string} savedPassword Contraseña con la cual comparar (encriptada)
@@ -27,8 +25,7 @@ export const createHash = (password: string) => bcrypt.hashSync(password, bcrypt
  */
 export const isValidPassword = (enteredPassword: string, savedPassword: string) => bcrypt.compareSync(enteredPassword, savedPassword);
 
-/**
- * Verifica que el body contiene propiedades especificas
+/** Verifica que el body contiene propiedades especificas
  *
  * @param {string []} requiredFields
  * @returns
@@ -57,7 +54,7 @@ export const verifyRequiredBody = (requiredFields: string[]) => {
 
 export const createToken = <T extends object>(payload: T, duration: string) => jwt.sign(payload, config.SECRET, { expiresIn: duration });
 
-export const verifyToken = (typeToken: "auth" | "restorePassword") => {
+export const verifyToken = (typeToken: "auth" | "restorePassword" | "login") => {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!typeToken) return res.sendServerError(new Error("Se requiere indicar el tipo de token"));
 
@@ -79,24 +76,40 @@ export const verifyToken = (typeToken: "auth" | "restorePassword") => {
     }
 
     // el token puede venir por header, cookie o query
-    const recivedToken = headerToken || cookieToken || queryToken;
-    
-    console.log(JSON.stringify(recivedToken));
+    const receivedToken = headerToken || cookieToken || queryToken;
+
+    // Si no se recibe un token
+    if (!receivedToken) {
+      // y no viene desde /login redirecciono con mensaje para que inicie sesión
+      if (req.path !== "/login") {
+        return res.redirect(`/login?error=${encodeURI("Se requiere iniciar sesión.")}`);
+      } else {
+        // caso contrario dejo que pase y muestre el /login
+        return next();
+      }
+    }
+
+    req.logger.debug(`token: ${receivedToken}`);
     // Envio respuesta en caso de que no se reciba un token
-    if (!recivedToken) return res.sendUserError(new Error("Se requiere token para poder acceder"));
-    
-    jwt.verify(recivedToken, config.SECRET, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
+
+    jwt.verify(receivedToken, config.SECRET, (err: VerifyErrors | null, payload: string | JwtPayload | undefined) => {
+      // si el token no es valido retorna undefined
+      req.logger.debug(`token desencriptado: ${JSON.stringify(payload, null, 2)}`);
+      req.logger.debug(`req.path: ${req.path}`);
+
       //Verificacion del token
       if (err) {
         // Respuesta token expirado
         if (err.name === "TokenExpiredError") {
-          return res.sendServerError(new Error("El token ha expirado"));
+          if (req.path !== "/login") return res.redirect(`/login?error=${encodeURI("Sesión expirada.")}`);
         }
         // Respuesta token no valido
-        return res.sendServerError(new Error("Token no válido"));
+        if (req.path !== "/login") return res.redirect(`/login?error=${encodeURI("Error al recuperar la sesión.")}`);
       }
 
-      if (typeToken === "auth") {
+      if (payload) {
+        // Redirijo a /profile si el usuario ya esta autenticado con una cookie válida
+        if (typeToken === "auth" && req.path === "/login") return res.redirect("/profile");
         req.logger.debug(`Token authentication: ${JSON.stringify(payload, null, 2)}`);
         // Guardo las credenciales en el req.user
         req.user = payload as User;

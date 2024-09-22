@@ -21,9 +21,9 @@ const testUser = {
 };
 
 const testUserAdmin = {
-    email: "admin@example.com",
-    password: "adminpassword"
-}
+  email: "admin@example.com",
+  password: "adminpassword",
+};
 
 /**
  *
@@ -44,15 +44,10 @@ describe("Test de integracion ProductsService", () => {
   after(() => {});
   afterEach(() => {});
 
-  it("POST /api/sessions/jwtlogin Debe devolver un token JWT y redirigir a '/profile' ", async function () {
-    const response = await requester
-      .post("/api/sessions/jwtlogin")
-      .send(testUserAdmin)
-      .redirects(10) // hago seguimiento hasta 10 redirecciones
+  it("POST /api/sessions/login Debe devolver un token JWT y redirigir a '/profile' ", async function () {
+    const response = await requester.post("/api/sessions/login").send(testUserAdmin).redirects(10); // hago seguimiento hasta 10 redirecciones
 
-    expect(response.redirects[0]).to.equal('http://localhost:5000/profile');
+    expect(response.redirects[0]).to.equal("http://localhost:5000/profile");
     expect(response.statusCode).to.be.equal(200);
-
   });
-
 });
