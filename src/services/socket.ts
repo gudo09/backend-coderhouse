@@ -1,14 +1,15 @@
 import { Server as HttpServer } from "http";
 import { Server } from "socket.io";
-import { createAdapter } from "@socket.io/cluster-adapter";
 import axios from "axios";
 import config from "../config.ts";
+//import { createAdapter } from "@socket.io/cluster-adapter";
 
 const initSocket = (httpServer: HttpServer) => {
   const io = new Server(httpServer);
-
-  // Uso el adaptador para cluster
+  /* 
+// Uso el adaptador para cluster
   io.adapter(createAdapter());
+*/
 
   // Listener: escucho los eventos de conexion
   io.on("connection", (client) => {

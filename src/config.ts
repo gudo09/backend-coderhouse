@@ -9,6 +9,8 @@ commandLine.option("--mode <mode>").option("--port <port>").option("--setup <set
 commandLine.parse();
 const { mode } = commandLine.opts(); // Modo por defecto "prod"
 
+console.log(`Cargando modo de configuración: ${mode}`);
+
 const envFiles: Record<string, string> = {
   devel: ".env.devel",
   test: ".env.devel", // queda .env.devel porque se modifica MONGOBD_URI en config cuando es test

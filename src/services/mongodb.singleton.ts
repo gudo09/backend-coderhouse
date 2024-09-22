@@ -9,14 +9,17 @@ export default class MongoSingleton {
   }
 
   async connect() {
-    await mongoose.connect(config.MONGOBD_URI);
+    try {
+      await mongoose.connect(config.MONGOBD_URI);
+      console.log("Conexión a base de datos CREADA");
+    } catch (err) {
+      console.error("Error conectando a la base de datos:", err);
+    }
   }
 
   static async getInstance(): Promise<MongoSingleton> {
     if (!this.#instance) {
       this.#instance = new MongoSingleton();
-      // envio mensaje al proceso principal
-      process.send?.("readyDB")
     } else {
       console.log("Conexión a base de datos RECUPERADA");
     }
