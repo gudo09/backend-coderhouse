@@ -34,6 +34,7 @@ class ProductsController {
         page: page,
       };
 
+
       const paginatedProducts = await service.getPaginated(query, options);
 
       // Construyo los enlaces para la página previa y siguiente

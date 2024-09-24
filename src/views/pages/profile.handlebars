@@ -6,8 +6,13 @@
     <li class="list-group-item"><span>Correo Electrónico:</span> {{user.email}}</li>
     <li class="list-group-item"><span>Rol:</span> {{user.role}}</li>
   </ul>
+
   <div class="text-center mt-4">
     <a href="/products" class="btn btn-primary">Ver productos</a>
+    <a href="/uploadImages/profile" class="btn btn-primary">Cambiar foto de perfil</a>
+    <a href="/uploadImages/document" class="btn btn-primary">Nivel de usuario</a>
+  </div>
+
+  <div class="text-center mt-4">
     <a href="/api/sessions/logout" class="btn btn-danger">Cerrar Sesión</a>
   </div>
-</main>

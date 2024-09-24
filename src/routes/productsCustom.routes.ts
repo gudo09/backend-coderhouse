@@ -20,7 +20,7 @@ export default class ProductsCustomRouter extends CustomRouter {
 
     this.get("/all/:limit?", async (req: Request, res) => {
       try {
-        const limit = + req.params.limit || 0;
+        const limit = +req.params.limit || 0;
 
         const products = await controller.getAll(limit);
 
@@ -31,7 +31,7 @@ export default class ProductsCustomRouter extends CustomRouter {
     });
 
     // el callback es async porque espera las respuestas de mongoose
-    this.get("/", verifyToken("auth"), async (req: Request, res: Response) => {
+    this.get("/", async (req: Request, res: Response) => {
       try {
         const limit = req.query.limit;
         const sort = req.query.sort;
@@ -120,6 +120,5 @@ export default class ProductsCustomRouter extends CustomRouter {
         res.sendServerError(err as Error);
       }
     });
-
   }
 }

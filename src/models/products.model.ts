@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, PaginateModel, Schema } from "mongoose";
+import mongoose, { InferSchemaType, PaginateModel, Schema, Types } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 mongoose.pluralize(null);
@@ -28,9 +28,9 @@ productSchema.plugin(mongoosePaginate);
 
 // Creo la interfaz Product con el productSchema
 export interface Product extends InferSchemaType<typeof productSchema> {
-  _id: mongoose.Types.ObjectId;
+  _id: Types.ObjectId;
 }
 
-const model = mongoose.model<Product, PaginateModel<Product>>(collection, productSchema);
+const model = mongoose.model<Product,PaginateModel<Product>>(collection, productSchema);
 
 export default model;

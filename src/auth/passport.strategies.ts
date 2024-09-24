@@ -7,16 +7,15 @@ import usersManager from "../controllers/users.controller.mdb.ts";
 import { createHash, isValidPassword } from "../services/utils.ts";
 import { NextFunction, Request, Response } from "express";
 import { User } from "../models/users.model.ts";
-import path from "path";
 
 const manager = new usersManager();
 
 const LocalStrategy = local.Strategy;
-const JwtStrategy = jwt.Strategy;
-const JwtExtractor = jwt.ExtractJwt;
+const _JwtStrategy = jwt.Strategy;
+const _JwtExtractor = jwt.ExtractJwt;
 
-// toma la cookie del req y la devuelve sólo el token que se llame "codercookietoken" de esa cookie
-const cookieExtractor = (req: Request) => {
+// toma la cookie del req y la devuelve sólo el token que se llame como está en el config
+const _cookieExtractor = (req: Request) => {
   let token = null;
 
   token = req.cookies[config.COOKIE_NAME] || null;
@@ -183,7 +182,7 @@ export const passportCall = (strategy: string, options: passport.AuthenticateOpt
 
         // Para la ruta de login, no redirigimos en bucle, simplemente mostramos el formulario
         if (req.path === "/login") {
-          return res.render("login", { error: info?.message || null });
+          return res.render("pages/login", { error: info?.message || null });
         }
 
 

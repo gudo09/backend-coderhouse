@@ -4,8 +4,8 @@ import UsersController from "../controllers/users.controller.mdb.ts";
 import config from "../config.ts";
 import { transport } from "../services/transportNodemailer.ts";
 import { createToken, verifyToken } from "../services/utils.ts";
-import CustomError from "../services/customError.class.ts";
-import { errorsDictionary } from "../config.ts";
+//import CustomError from "../services/customError.class.ts";
+//import { errorsDictionary } from "../config.ts";
 import { uploader } from "@src/services/uploader.ts";
 
 const controller = new UsersController();
@@ -91,12 +91,13 @@ export default class UsersCustomRouter extends CustomRouter {
       // Le ofrecemos la opcion de restaurar la contraseña al usuario
       // el usuario solo debe ingresar su email
       try {
-        res.render("restorePassword", { showError: req.query.message ? true : false, message: req.query.message });
+        res.render("pages/restorePassword", { showError: req.query.message ? true : false, message: req.query.message });
       } catch (err) {
         res.sendServerError(err as Error);
       }
     });
 
+    // NOTE: Se puede mejorar usando handlebars como plantilla para los correos
     this.post("/sendMailRestorePassword", async (req: Request, res: Response) => {
       // Este endpoint se encarga de enviar el mail para reestablecer la contraseña
       // Se busca el usuario por su email
@@ -186,14 +187,14 @@ export default class UsersCustomRouter extends CustomRouter {
         //if (!sendedMail) throw new CustomError(errorsDictionary.NODEMAILER_SEND_ERROR);
         if (!sendedMail) throw new Error("no se ha podido enviar el correo");
 
-        res.render("sendPasswordEmailSuccess", { emailTo: sendedMail.envelope.to });
+        res.render("pages/sendPasswordEmailSuccess", { emailTo: sendedMail.envelope.to });
       } catch (err) {
         res.sendServerError(err as Error);
       }
     });
 
     // FIXME: Falta implementar
-    this.get("/restoreConfirmPassword", verifyToken("restorePassword"), async (req: Request, res: Response) => {
+    this.get("pages/restoreConfirmPassword", verifyToken("restorePassword"), async (req: Request, res: Response) => {
       // Este endpoint recibe el token generado para cambiar la contraseña
       // Debe estar protegida por un token de corta duracion
       // Si el token expira, debe redireccionar a /restorePassword

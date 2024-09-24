@@ -117,7 +117,6 @@ app.use(addLogger);
 // hago uso de las rutas
 // Instancio un objeto de TestCustomRouter
 // y llamo al getRouter para que me devuelva un tipo express.Router
-app.use("/", new ViewsCustomRouter().getRouter());
 app.use("/api/products", new ProductsCustomRouter().getRouter());
 app.use("/api/users", new UsersCustomRouter().getRouter());
 app.use("/api/carts", new CartsCustomRouter().getRouter());
@@ -126,6 +125,12 @@ app.use("/api/tickets", new TicketsCustomRouter().getRouter());
 app.use("/api/log", new LoggingCustomRouter().getRouter());
 app.use("/api/dev", new DevCustomRouter().getRouter());
 app.use("/api/upload", new UploadCustomRouter().getRouter());
+app.use("/", new ViewsCustomRouter().getRouter());
+
+// Middleware para manejar rutas no encontradas (404)
+app.use((req, res) => {
+  res.render("pages/404");
+});
 
 /** Generamos objeto base config Swagger y levantamos endpoint para servir la documentación
  *
@@ -160,4 +165,3 @@ server.listen(config.PORT, async () => {
   console.log(`Ruta raíz: ${config.DIRNAME}`);
   console.log(`Puedes acceder desde ${config.BASE_URL}/login`);
 });
-

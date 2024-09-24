@@ -1,5 +1,6 @@
 <main class="register-container card">
   <h1 class="mb-4 text-center form-title">Registro</h1>
+
   <form action="/api/sessions/register" method="POST">
     <div class="mb-3">
       <label for="firstName" class="form-label">Nombre</label>
@@ -25,8 +26,8 @@
     {{/if}}
 
     <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+
     <div class="text-center mt-3">
       <a href="/login" class="btn btn-link">¿Ya tienes cuenta? Inicia Sesión</a>
     </div>
   </form>
-</main>
