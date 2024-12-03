@@ -1,0 +1,52 @@
+* {
+  box-sizing: border-box;
+  position: relative;
+  min-width: 0;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.card {
+  padding: 1rem 1rem;
+  background-color: #1E0342;
+  color:#FAF7F0;
+}
+
+.card>ul{
+  padding: 0;
+}
+
+.card-item {
+  background-color: #9AC8CD;
+}
+
+.card > .list-group {
+  padding:  1rem 0;
+  margin: 0.1rem 0;
+  border: none;
+}
+
+.list-group-item > span {
+  font-weight: bold;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Deshabilita la apariencia predeterminada */
+  margin: 0; /* Elimina el margen */
+}

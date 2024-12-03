@@ -1,0 +1,116 @@
+<form method="get" id="formAddProduct" class=" card">
+  <h4>Agregar un producto</h4>
+
+  <div class="row mx-0 my-1">
+    <label for="titleAddProduct" class="form-label col-4 col-form-label px-0">Título del producto:</label>
+    <input type="text" name="titleAddProduct" id="titleAddProduct" class="col-form-control col-8" />
+  </div>
+  <div class="row mx-0 my-1">
+    <label for="descriptionAddProduct" class="form-label col-4 col-form-label px-0">Descripción del producto:</label>
+    <input type="text" name="descriptionAddProduct" id="descriptionAddProduct" class="col-form-control col-8" />
+  </div>
+  <div class="row mx-0 my-1">
+    <label for="priceAddProduct" class="form-label col-4 col-form-label px-0">Precio del producto:</label>
+    <input type="number" name="priceAddProduct" id="priceAddProduct" class="col-form-control col-8" />
+  </div>
+  <div class="row mx-0 my-1">
+    <label for="thumbnailsAddProduct" class="form-label col-4 col-form-label px-0">Thumbnails del producto:</label>
+    <input type="text" name="thumbnailsAddProduct" id="thumbnailsAddProduct" class="col-form-control col-8" />
+  </div>
+  <div class="row mx-0 my-1">
+    <label for="codeAddProduct" class="form-label col-4 col-form-label px-0">Código del producto:</label>
+    <input type="text" name="codeAddProduct" id="codeAddProduct" class="col-form-control col-8" />
+  </div>
+  <div class="row mx-0 my-1">
+    <label for="stockAddProduct" class="form-label col-4 col-form-label px-0">Stock del producto:</label>
+    <input type="number" name="stockAddProduct" id="stockAddProduct" class="col-form-control col-8" />
+  </div>
+  <div class="row mx-0 my-1">
+    <label for="categoryAddProduct" class="form-label col-4 col-form-label px-0">Categoría del producto:</label>
+    <input type="text" name="categoryAddProduct" id="categoryAddProduct" class="col-form-control col-8" />
+  </div>
+  <div class="col">
+    <button type="submit" class="btn btn-primary mt-3 float-end">Agregar producto</button>
+  </div>
+</form>
+
+<script>
+  const formAddProduct = document.getElementById("formAddProduct");
+
+  formAddProduct.addEventListener("submit", (e) => {
+    // prevengo el envío del formulario
+    e.preventDefault();
+    addProduct();
+  });
+
+  const addProduct = () => {
+    const title = document.getElementById("titleAddProduct");
+    const description = document.getElementById("descriptionAddProduct");
+    const price = document.getElementById("priceAddProduct");
+    const thumbnail = document.getElementById("thumbnailsAddProduct");
+    const code = document.getElementById("codeAddProduct");
+    const stock = document.getElementById("stockAddProduct");
+    const category = document.getElementById("categoryAddProduct");
+
+    const headers = {
+      title: title.value,
+      description: description.value,
+      price: +price.value,
+      thumbnail: thumbnail.value,
+      code: code.value,
+      stock: +stock.value,
+      status: true,
+      category: category.value,
+    }
+    // emito el topico addProduct
+    socketClient.emit("addProduct", headers)
+  };
+
+  const addProductToHTML = (data) => {
+    let { id, title, description, price, thumbnail, code, stock, status, category, quantity } = data;
+    const productList = document.getElementById("product-list");
+    quantity = quantity || "";
+    productList.innerHTML += `<div class="col" id="product-card-${id}">
+        <ul class="list-group card h-100 card-item">
+          <li class="list-group-item"><span>id: </span>${id}</li>
+          <li class="list-group-item"><span>title: </span>${title}</li>
+          <li class="list-group-item"><span>description:
+            </span>${description}</li>
+          <li class="list-group-item"><span>price: </span>${price}</li>
+          <li class="list-group-item"><span>thumbnail: </span>${thumbnail}</li>
+          <li class="list-group-item"><span>code: </span>${code}</li>
+          <li class="list-group-item"><span>stock: </span>${stock}</li>
+          <li class="list-group-item"><span>status: </span>${status}</li>
+          <li class="list-group-item"><span>category: </span>${category}</li>
+          <li class="list-group-item"><span>quantity: </span>${quantity}</li>
+        </ul>
+      </div>`
+  }
+
+  socketClient.on("productAdded", (data) => {
+    addProductToHTML(data);
+  })
+
+  socketClient.on("AddProduct_OkMessage", data => {
+    Toastify({
+      text: data,
+      className: "info",
+      gravity: "bottom",
+      position: "right",
+      close: true,
+      style: {
+        background: "linear-gradient(to right, #0e6615, #1b7916, #298d16, #38a114, #48b50d)",
+      }
+    }).showToast();
+  });
+
+  socketClient.on("AddProduct_ErrorMessage", data => {
+    // muestro con sweetalert el error por el cual no se pudo eliminar
+    Swal.fire({
+      title: 'Atención!',
+      text: data,
+      icon: 'warning',
+      confirmButtonText: 'Cool'
+    })
+  });
+</script>
