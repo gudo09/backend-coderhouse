@@ -1,0 +1,40 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header text-center">
+          <h2>Login</h2>
+        </div>
+        <div class="card-body">
+          <form action="/api/sessions/pplogin" method="post">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+
+            {{#if showError}}
+            <div class="error-message">
+              {{ errorMessage }}
+            </div>
+            {{/if}}
+
+            <div>
+              <button type="submit" class="btn btn-primary w-100" onclick="">Login</button>
+              <br>
+              <button class="btn btn-primary w-100" onclick=window.location.replace("api/sessions/ghlogin")>Login con
+                Github</button>
+            </div>
+
+          </form>
+        </div>
+        <div class="card-footer text-center">
+          <a href="/register">¿No tenés cuenta? Registrate</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
