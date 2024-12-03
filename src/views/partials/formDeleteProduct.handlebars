@@ -1,0 +1,68 @@
+<form method="get" id="formDeleteProduct" class=" card mb-auto">
+  <h4>Eliminar un producto</h4>
+  <div class="row mx-0">
+    <label for="idDeleteProduct" class="form-label col-4 col-form-label px-0">Id del producto:</label>
+    <input type="number" name="idDeleteProduct" id="idDeleteProduct" class="col-form-control col-8" />
+  </div>
+  <div class="col">
+    <button type="submit" class="btn btn-primary mt-3 float-end">Eliminar producto</button>
+  </div>
+</form>
+
+
+<script>
+  const formDeleteProduct = document.getElementById("formDeleteProduct");
+  //controlo el evento submit del formulario
+  formDeleteProduct.addEventListener("submit", (e) => {
+    // prevengo el envío del formulario
+    e.preventDefault();
+
+    deleteProduct();
+  });
+
+  const deleteProduct = () => {
+    const idDeleteProduct = document.getElementById("idDeleteProduct");
+    
+    if (idDeleteProduct.value !== NaN) {
+      // Emito el topico deleteProduct
+      socketClient.emit("deleteProduct", idDeleteProduct.value);
+    }
+
+    // limpio el input
+    idDeleteProduct.value = "";
+  }
+
+  socketClient.on("DeleteProduct_ErrorMessage", data => {
+    // muestro con sweetalert el error por el cual no se pudo eliminar
+    Swal.fire({
+      title: 'Atención!',
+      text: data,
+      icon: 'warning',
+      confirmButtonText: 'Cool'
+    })
+  });
+
+  socketClient.on("productDeleted", (data) => {
+    const productList = document.getElementById("productList");
+    const productId = data.productId;
+    const productToDelete = document.getElementById(`product-card-${productId}`)
+
+    // remuevo el producto de la vista
+    productToDelete.remove()
+  });
+
+  socketClient.on("DeleteProduct_OkMessage", data => {
+    // muestro toast de que se ha eliminado el producto
+    Toastify({
+      text: data,
+      className: "info",
+      gravity: "bottom",
+      position: "right",
+      close: true,
+      style: {
+        background: "linear-gradient(to right, #d42a2a, #da2f26, #e03521, #e63b1a, #eb4112)",
+      }
+    }).showToast();
+  })
+
+</script>

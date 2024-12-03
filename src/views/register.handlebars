@@ -1,0 +1,32 @@
+<main class="register-container card">
+  <h1 class="mb-4 text-center form-title">Registro</h1>
+  <form action="/api/sessions/register" method="POST">
+    <div class="mb-3">
+      <label for="firstName" class="form-label">Nombre</label>
+      <input type="text" class="form-control input-focus" id="firstName" name="firstName" required>
+    </div>
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Apellido</label>
+      <input type="text" class="form-control input-focus" id="lastName" name="lastName" required>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Correo Electrónico</label>
+      <input type="email" class="form-control input-focus" id="email" name="email" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Contraseña</label>
+      <input type="password" class="form-control input-focus" id="password" name="password" required>
+    </div>
+
+    {{#if showError}}
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+    {{/if}}
+
+    <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+    <div class="text-center mt-3">
+      <a href="/login" class="btn btn-link">¿Ya tienes cuenta? Inicia Sesión</a>
+    </div>
+  </form>
+</main>
