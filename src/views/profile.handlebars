@@ -1,0 +1,13 @@
+<main class="profile-container card">
+        <h1 class="mb-4 text-center profile-title">Perfil de Usuario</h1>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><span>Nombre:</span> {{user.firstName}}</li>
+            <li class="list-group-item"><span>Apellido:</span> {{user.lastName}}</li>
+            <li class="list-group-item"><span>Correo Electrónico:</span> {{user.email}}</li>
+            <li class="list-group-item"><span>Rol:</span> {{user.role}}</li>
+        </ul>
+        <div class="text-center mt-4">
+            <a href="/api/sessions/logout" class="btn btn-primary">Cerrar Sesión</a>
+        </div>
+    </main>
+
